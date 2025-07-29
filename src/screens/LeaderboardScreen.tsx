@@ -1,0 +1,238 @@
+import React, { useState, useCallback } from 'react';
+import { View, Text, FlatList, StyleSheet, RefreshControl } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Trophy, Medal, Award } from 'lucide-react-native';
+import { LocalStorageService } from '@/src/services/localStorage';
+import { LeaderboardEntry } from '@/src/types/game';
+import { useFocusEffect } from '@react-navigation/native';
+
+export default function LeaderboardScreen() {
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const loadLeaderboard = async () => {
+    try {
+      const topScores = await LocalStorageService.getTopScores(20);
+      setLeaderboard(topScores);
+    } catch (error) {
+      console.error('Error loading leaderboard:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      loadLeaderboard();
+    }, [loadLeaderboard])
+  );
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadLeaderboard();
+    setRefreshing(false);
+  };
+
+  const getRankIcon = (rank: number) => {
+    switch (rank) {
+      case 1:
+        return <Trophy size={24} color="#FFD700" />;
+      case 2:
+        return <Medal size={24} color="#C0C0C0" />;
+      case 3:
+        return <Award size={24} color="#CD7F32" />;
+      default:
+        return (
+          <View style={styles.rankNumber}>
+            <Text style={styles.rankNumberText}>{rank}</Text>
+          </View>
+        );
+    }
+  };
+
+  const renderLeaderboardItem = ({ item, index }: { item: LeaderboardEntry; index: number }) => {
+    const rank = index + 1;
+    const date = new Date(item.timestamp);
+    
+    const borderColor = 
+        rank === 1 ? '#FFD700' :
+        rank === 2 ? '#C0C0C0' :
+        rank === 3 ? '#CD7F32' :
+        'transparent';
+
+    return (
+      <View style={[
+        styles.leaderboardItem, 
+        { 
+          borderLeftWidth: rank <= 3 ? 4 : 0, 
+          borderLeftColor: borderColor 
+        }
+      ]}>
+        <View style={styles.rankContainer}>
+          {getRankIcon(rank)}
+        </View>
+        
+        <View style={styles.playerInfo}>
+          <Text style={styles.playerName}>{item.username}</Text>
+          <Text style={styles.scoreText}>{item.score.toLocaleString()} pts</Text>
+        </View>
+        
+        <View style={styles.dateContainer}>
+          <Text style={styles.dateText}>
+            {!isNaN(date.getTime()) ? date.toLocaleDateString() : 'Data inválida'}
+          </Text>
+        </View>
+      </View>
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Classificação</Text>
+        </View>
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>Carregando pontuações...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Classificação</Text>
+        <Text style={styles.subtitle}>Melhores jogadores</Text>
+      </View>
+
+      {leaderboard.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <Trophy size={48} color="#3B82F6" />
+          <Text style={styles.emptyTitle}>Sem pontuações ainda</Text>
+          <Text style={styles.emptySubtitle}>Seja o primeiro a definir um recorde!</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={leaderboard}
+          renderItem={renderLeaderboardItem}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContainer}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        />
+      )}
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F0F9FF',
+    paddingTop: 60,
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  title: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#6B7280',
+    textAlign: 'center',
+    marginTop: 4,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#6B7280',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginTop: 16,
+  },
+  emptySubtitle: {
+    fontSize: 16,
+    color: '#6B7280',
+    textAlign: 'center',
+    marginTop: 8,
+  },
+  listContainer: {
+    padding: 16,
+  },
+  leaderboardItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  rankContainer: {
+    width: 40,
+    alignItems: 'center',
+  },
+  rankNumber: {
+    width: 24,
+    height: 24,
+    backgroundColor: '#E5E7EB',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rankNumberText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#6B7280',
+  },
+  playerInfo: {
+    flex: 1,
+    marginLeft: 16,
+  },
+  playerName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1F2937',
+  },
+  scoreText: {
+    fontSize: 14,
+    color: '#3B82F6',
+    fontWeight: '500',
+    marginTop: 2,
+  },
+  dateContainer: {
+    alignItems: 'flex-end',
+  },
+  dateText: {
+    fontSize: 12,
+    color: '#9CA3AF',
+  },
+});

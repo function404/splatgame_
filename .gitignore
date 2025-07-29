@@ -35,3 +35,18 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# Android/IntelliJ
+build/
+.idea
+.gradle
+local.properties
+*.iml
+.cxx
+android/app/.cxx
+
+# CocoaPods
+/ios/Pods/
+
+# Xcode environment (local configurations should not be committed)
+ios/.xcode.env.local
