@@ -14,7 +14,7 @@ Em **Splat**, os jogadores são desafiados a tocar em frutas que caem na tela pa
 
 <br>
 
-![Gameplay do Quick Drop](./assets/splatdemo.gif)
+![Gameplay do Splat](./assets/splatdemo.gif)
 
 ---
 
@@ -55,7 +55,7 @@ Siga as instruções abaixo para configurar e executar o projeto em seu ambiente
 
 1.  Clone o repositório para a sua máquina:
    ```bash
-   git clone [https://github.com/function404/splatgame_.git]
+   git clone https://github.com/function404/splatgame_.git
    ```
 
 2.  Navegue até o diretório do projeto:
