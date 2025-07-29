@@ -55,12 +55,12 @@ Siga as instruções abaixo para configurar e executar o projeto em seu ambiente
 
 1.  Clone o repositório para a sua máquina:
    ```bash
-   git clone [https://github.com/function404/appgame_.git](https://github.com/function404/appgame_.git)
+   git clone [https://github.com/function404/splatgame_.git]
    ```
 
 2.  Navegue até o diretório do projeto:
    ```bash
-   cd appgame_
+   cd splatgame_
    ```
 
 3.  Instale todas as dependências do projeto:
