@@ -5,6 +5,7 @@ import { Trophy, Medal, Award } from 'lucide-react-native';
 import { LocalStorageService } from '@/src/services/localStorage';
 import { LeaderboardEntry } from '@/src/types/game';
 import { useFocusEffect } from '@react-navigation/native';
+import { ColorsTheme } from '../theme/colors';
 
 export default function LeaderboardScreen() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
@@ -37,11 +38,11 @@ export default function LeaderboardScreen() {
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
-        return <Trophy size={24} color="#FFD700" />;
+        return <Trophy size={24} color={ColorsTheme.yellow100} />;
       case 2:
-        return <Medal size={24} color="#C0C0C0" />;
+        return <Medal size={24} color={ColorsTheme.grey250} />;
       case 3:
-        return <Award size={24} color="#CD7F32" />;
+        return <Award size={24} color={ColorsTheme.brown100} />;
       default:
         return (
           <View style={styles.rankNumber}>
@@ -56,9 +57,9 @@ export default function LeaderboardScreen() {
     const date = new Date(item.timestamp);
     
     const borderColor = 
-        rank === 1 ? '#FFD700' :
-        rank === 2 ? '#C0C0C0' :
-        rank === 3 ? '#CD7F32' :
+        rank === 1 ? ColorsTheme.yellow100 :
+        rank === 2 ? ColorsTheme.grey250 :
+        rank === 3 ? ColorsTheme.brown100 :
         'transparent';
 
     return (
@@ -109,7 +110,7 @@ export default function LeaderboardScreen() {
 
       {leaderboard.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <Trophy size={48} color="#3B82F6" />
+          <Trophy size={48} color={ColorsTheme.blue200} />
           <Text style={styles.emptyTitle}>Sem pontuações ainda</Text>
           <Text style={styles.emptySubtitle}>Seja o primeiro a definir um recorde!</Text>
         </View>
@@ -131,7 +132,7 @@ export default function LeaderboardScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F0F9FF',
+    backgroundColor: ColorsTheme.blue100,
     paddingTop: 60,
   },
   header: {
@@ -141,12 +142,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: ColorsTheme.blue500,
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
-    color: '#6B7280',
+    color: ColorsTheme.grey300,
     textAlign: 'center',
     marginTop: 4,
   },
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 16,
-    color: '#6B7280',
+    color: ColorsTheme.grey300,
   },
   emptyContainer: {
     flex: 1,
@@ -168,12 +169,12 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#1F2937',
+    color: ColorsTheme.blue500,
     marginTop: 16,
   },
   emptySubtitle: {
     fontSize: 16,
-    color: '#6B7280',
+    color: ColorsTheme.grey300,
     textAlign: 'center',
     marginTop: 8,
   },
@@ -183,11 +184,11 @@ const styles = StyleSheet.create({
   leaderboardItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: ColorsTheme.white,
     padding: 16,
     borderRadius: 12,
     marginBottom: 8,
-    shadowColor: '#000',
+    shadowColor: ColorsTheme.black,
     shadowOffset: {
       width: 0,
       height: 1,
@@ -211,7 +212,7 @@ const styles = StyleSheet.create({
   rankNumberText: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#6B7280',
+    color: ColorsTheme.grey300,
   },
   playerInfo: {
     flex: 1,
@@ -220,11 +221,11 @@ const styles = StyleSheet.create({
   playerName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1F2937',
+    color: ColorsTheme.blue500,
   },
   scoreText: {
     fontSize: 14,
-    color: '#3B82F6',
+    color: ColorsTheme.blue200,
     fontWeight: '500',
     marginTop: 2,
   },
@@ -233,6 +234,6 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontSize: 12,
-    color: '#9CA3AF',
+    color: ColorsTheme.blue400,
   },
 });

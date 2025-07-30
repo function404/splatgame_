@@ -9,6 +9,7 @@ import { RootTabParamList } from './src/navigation/types';
 import HomeScreen from '@/src/screens/HomeScreen';
 import GameScreen from '@/src/screens/GameScreen';
 import LeaderboardScreen from '@/src/screens/LeaderboardScreen';
+import { ColorsTheme } from './src/theme/colors';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
@@ -17,15 +18,15 @@ function MyTabs() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#3B82F6',
-        tabBarInactiveTintColor: '#6B7280',
+        tabBarActiveTintColor: ColorsTheme.blue200,
+        tabBarInactiveTintColor: ColorsTheme.grey300,
         tabBarStyle: {
-          backgroundColor: '#FFFFFF',
+          backgroundColor: ColorsTheme.white,
           borderTopWidth: 1,
-          borderTopColor: '#E5E7EB',
-          height: 60,
+          borderTopColor: ColorsTheme.grey200,
+          height: 70,
           paddingBottom: 8,
-          paddingTop: 8,
+          paddingTop: 5,
         },
       }}
     >
@@ -58,12 +59,12 @@ function MyTabs() {
 }
 
 export default function App() {
-   return (
-      <SafeAreaProvider>
-         <NavigationContainer>
-            <MyTabs />
-         </NavigationContainer>
-         <StatusBar style="auto" />
-      </SafeAreaProvider>
-   );
+  return (
+    <SafeAreaProvider style={{ flex: 1 }}>
+        <NavigationContainer>
+          <MyTabs />
+        </NavigationContainer>
+        <StatusBar style="auto" />
+    </SafeAreaProvider>
+  );
 }

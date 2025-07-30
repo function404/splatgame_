@@ -5,6 +5,7 @@ import { LocalStorageService } from '@/src/services/localStorage';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { TabNavigationType } from '@/src/navigation/types';
 import { User } from '@/src/types/game';
+import { ColorsTheme } from '@/src/theme/colors'
 
 export default function HomeScreen() {
   const navigation = useNavigation<TabNavigationType>();
@@ -100,10 +101,10 @@ export default function HomeScreen() {
           placeholder="Digite seu nome de jogador"
           value={usernameInput}
           onChangeText={setUsernameInput}
-          placeholderTextColor="#9CA3AF"
+          placeholderTextColor={ColorsTheme.grey300}
         />
         <TouchableOpacity style={styles.saveButton} onPress={handleSaveUsername}>
-          <Save size={20} color="#FFFFFF" />
+          <Save size={20} color={ColorsTheme.white} />
         </TouchableOpacity>
       </View>
 
@@ -118,22 +119,22 @@ export default function HomeScreen() {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={[styles.button, styles.playButton]} onPress={handlePlayPress}>
-          <Play size={24} color="#FFFFFF" />
+          <Play size={24} color={ColorsTheme.white} />
           <Text style={styles.playButtonText}>Jogar</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={[styles.button, styles.secondaryButton]} onPress={handleLeaderboardPress}>
-          <Trophy size={20} color="#3B82F6" />
+          <Trophy size={20} color={ColorsTheme.blue200} />
           <Text style={styles.secondaryButtonText}>Placar</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={[styles.button, styles.secondaryButton]} onPress={() => Alert.alert('Settings', 'Settings feature coming soon!')}>
-          <Settings size={20} color="#3B82F6" />
+          <Settings size={20} color={ColorsTheme.blue200} />
           <Text style={styles.secondaryButtonText}>Configurações</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={[styles.button, styles.resetButton]} onPress={handleResetData}>
-          <RotateCcw size={20} color="#EF4444" />
+          <RotateCcw size={20} color={ColorsTheme.red300} />
           <Text style={styles.resetButtonText}>Resetar Jogo</Text>
         </TouchableOpacity>
       </View>
@@ -144,7 +145,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F0F9FF',
+    backgroundColor: ColorsTheme.blue100,
     paddingTop: 60,
     paddingHorizontal: 20,
   },
@@ -155,11 +156,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: ColorsTheme.blue500,
   },
   subtitle: {
     fontSize: 16,
-    color: '#6B7280',
+    color: ColorsTheme.grey300,
     marginTop: 4,
   },
   inputContainer: {
@@ -169,17 +170,17 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     borderWidth: 2,
-    borderColor: '#E5E7EB',
+    borderColor: ColorsTheme.grey100,
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 12,
     fontSize: 16,
-    backgroundColor: '#FFFFFF',
-    color: '#1F2937',
+    backgroundColor: ColorsTheme.white,
+    color: ColorsTheme.blue500,
   },
   saveButton: {
     marginLeft: 10,
-    backgroundColor: '#10B981',
+    backgroundColor: ColorsTheme.green200,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 16,
@@ -191,12 +192,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   statBox: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: ColorsTheme.white,
     padding: 20,
     borderRadius: 12,
     alignItems: 'center',
     minWidth: 140,
-    shadowColor: '#000',
+    shadowColor: ColorsTheme.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
@@ -204,13 +205,13 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontSize: 14,
-    color: '#6B7280',
+    color: ColorsTheme.grey300,
     marginBottom: 4,
   },
   statValue: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: ColorsTheme.blue500,
   },
   buttonContainer: {
     gap: 16,
@@ -224,31 +225,31 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   playButton: {
-    backgroundColor: '#3B82F6',
+    backgroundColor: ColorsTheme.blue200,
   },
   playButtonText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: ColorsTheme.white,
   },
   secondaryButton: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: ColorsTheme.white,
     borderWidth: 2,
-    borderColor: '#3B82F6',
+    borderColor: ColorsTheme.blue200,
   },
   secondaryButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#3B82F6',
+    color: ColorsTheme.blue200,
   },
   resetButton: {
-    backgroundColor: '#FEE2E2',
+    backgroundColor: ColorsTheme.red100,
     borderWidth: 2,
-    borderColor: '#FCA5A5',
+    borderColor: ColorsTheme.red200,
   },
   resetButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#EF4444',
+    color: ColorsTheme.red300,
   },
 });

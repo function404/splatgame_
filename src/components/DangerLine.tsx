@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming } from 'react-native-reanimated';
+import { ColorsTheme } from '@/src/theme/colors';
 
 interface DangerLineProps {
   y: number;
@@ -48,13 +49,13 @@ const styles = StyleSheet.create({
   line: {
     width: '100%',
     height: 3,
-    backgroundColor: '#EF4444',
+    backgroundColor: ColorsTheme.red300,
     marginBottom: 5,
   },
   text: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#EF4444',
+    color: ColorsTheme.red300,
     letterSpacing: 1,
   },
 });

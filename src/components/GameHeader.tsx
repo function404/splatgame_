@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Heart } from 'lucide-react-native';
+import { ColorsTheme } from '@/src/theme/colors';
 
 interface GameHeaderProps {
   score: number;
@@ -23,8 +24,8 @@ export const GameHeader: React.FC<GameHeaderProps> = ({ score, level, lives }) =
             <Heart
               key={index}
               size={20}
-              color={index < lives ? '#EF4444' : '#D1D5DB'}
-              fill={index < lives ? '#EF4444' : 'transparent'}
+              color={index < lives ? ColorsTheme.red300 : ColorsTheme.grey200}
+              fill={index < lives ? ColorsTheme.red300 : 'transparent'}
             />
           ))}
         </View>
@@ -40,10 +41,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 15,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: ColorsTheme.white,
     borderBottomWidth: 2,
-    borderBottomColor: '#E5E7EB',
-    shadowColor: '#000',
+    borderBottomColor: ColorsTheme.grey200,
+    shadowColor: ColorsTheme.black,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -62,16 +63,16 @@ const styles = StyleSheet.create({
   scoreText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: ColorsTheme.blue500,
   },
   levelText: {
     fontSize: 14,
-    color: '#6B7280',
+    color: ColorsTheme.grey300,
     marginTop: 2,
   },
   livesLabel: {
     fontSize: 14,
-    color: '#6B7280',
+    color: ColorsTheme.grey300,
     marginRight: 8,
   },
   heartsContainer: {

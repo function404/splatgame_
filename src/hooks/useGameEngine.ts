@@ -14,6 +14,7 @@ const FRUIT_TYPES = [
     { emoji: '🥝', points: 30 }
 ];
 
+const GOLDEN_FRUIT_TYPE = { emoji: '🌟', points: 100 };
 const BOMB_TYPE = { emoji: '💣', points: -50 };
 
 export const useGameEngine = () => {
@@ -30,14 +31,26 @@ export const useGameEngine = () => {
     const spawnTimerRef = useRef<NodeJS.Timeout | null>(null);
 
     const generateRandomObject = useCallback((): GameObject => {
-        const isBomb = Math.random() < 0.2;
-        const objectType = isBomb ? BOMB_TYPE : FRUIT_TYPES[Math.floor(Math.random() * FRUIT_TYPES.length)];
-        
+        const randomNumber = Math.random();
+        let objectType;
+        let type: 'fruit' | 'bomb' | 'golden';
+
+        if (randomNumber < 0.05) {
+            objectType = GOLDEN_FRUIT_TYPE;
+            type = 'golden';
+        } else if (randomNumber < 0.25) {
+            objectType = BOMB_TYPE;
+            type = 'bomb';
+        } else {
+            objectType = FRUIT_TYPES[Math.floor(Math.random() * FRUIT_TYPES.length)];
+            type = 'fruit';
+        }
+
         return {
             id: Math.random().toString(36).substr(2, 9),
             x: Math.random() * (SCREEN_WIDTH - 60),
-            y: -60,
-            type: isBomb ? 'bomb' : 'fruit',
+            y: 0,
+            type: type,
             points: objectType.points,
             emoji: objectType.emoji
         };
@@ -62,7 +75,7 @@ export const useGameEngine = () => {
             const updatedObjects = prev.objects
                 .map(obj => ({ ...obj, y: obj.y + speed }))
                 .filter(obj => {
-                    if (obj.type === 'fruit' && obj.y > DANGER_LINE_Y) {
+                    if ((obj.type === 'fruit' || obj.type === 'golden') && obj.y > DANGER_LINE_Y) {
                         livesLostThisFrame++;
                         return false;
                     }

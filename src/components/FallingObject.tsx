@@ -2,6 +2,7 @@ import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { GameObject } from '@/src/types/game';
+import { ColorsTheme } from '@/src/theme/colors';
 
 interface FallingObjectProps {
   object: GameObject;
@@ -31,7 +32,7 @@ export const FallingObject: React.FC<FallingObjectProps> = ({ object, onTap }) =
         {
           left: object.x,
           top: object.y,
-          backgroundColor: object.type === 'bomb' ? '#FEE2E2' : '#F0FDF4'
+          backgroundColor: object.type === 'bomb' ? ColorsTheme.red100 : ColorsTheme.green100
         },
         animatedStyle
       ]}
@@ -39,7 +40,7 @@ export const FallingObject: React.FC<FallingObjectProps> = ({ object, onTap }) =
       activeOpacity={0.8}
     >
       <Text style={styles.emoji}>{object.emoji}</Text>
-      {object.type === 'fruit' && (
+      {(object.type === 'fruit' || object.type === 'golden') && (
         <Text style={styles.points}>+{object.points}</Text>
       )}
     </AnimatedTouchableOpacity>
@@ -55,8 +56,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#E5E7EB',
-    shadowColor: '#000',
+    borderColor: ColorsTheme.grey200,
+    shadowColor: ColorsTheme.black,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -71,9 +72,10 @@ const styles = StyleSheet.create({
   },
   points: {
     position: 'absolute',
-    bottom: -15,
-    fontSize: 10,
+    top: -7,
+    right: -15,
+    fontSize: 12,
     fontWeight: 'bold',
-    color: '#10B981',
+    color: ColorsTheme.green200,
   },
 });

@@ -2,7 +2,7 @@ export interface GameObject {
   id: string;
   x: number;
   y: number;
-  type: 'fruit' | 'bomb';
+  type: 'fruit' | 'bomb' | 'golden';
   points: number;
   emoji: string;
 }

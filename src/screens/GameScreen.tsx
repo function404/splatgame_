@@ -10,6 +10,7 @@ import { TouchableOpacity, Text } from 'react-native';
 import { Play, RotateCcw, Chrome as Home } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { TabNavigationType } from '@/src/navigation/types';
+import { ColorsTheme } from '../theme/colors';
 
 export default function GameScreen() {
   const navigation = useNavigation<TabNavigationType>();
@@ -84,7 +85,7 @@ export default function GameScreen() {
           </View>
 
           <TouchableOpacity style={styles.startButton} onPress={startGame}>
-            <Play size={24} color="#FFFFFF" />
+            <Play size={24} color={ColorsTheme.white} />
             <Text style={styles.startButtonText}>Iniciar Jogo</Text>
           </TouchableOpacity>
         </View>
@@ -121,12 +122,12 @@ export default function GameScreen() {
 
             <View style={styles.gameOverButtons}>
               <TouchableOpacity style={styles.playAgainButton} onPress={handleNewGame}>
-                <RotateCcw size={20} color="#FFFFFF" />
+                <RotateCcw size={20} color={ColorsTheme.white} />
                 <Text style={styles.playAgainText}>Tentar novamente</Text>
               </TouchableOpacity>
               
               <TouchableOpacity style={styles.homeButton} onPress={handleGoHome}>
-                <Home size={20} color="#3B82F6" />
+                <Home size={20} color={ColorsTheme.blue200} />
                 <Text style={styles.homeButtonText}>Início</Text>
               </TouchableOpacity>
             </View>
@@ -140,7 +141,7 @@ export default function GameScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F0F9FF',
+    backgroundColor: ColorsTheme.blue100,
   },
   welcomeContainer: {
     flex: 1,
@@ -151,12 +152,12 @@ const styles = StyleSheet.create({
   welcomeTitle: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: ColorsTheme.blue500,
     marginBottom: 8,
   },
   welcomeSubtitle: {
     fontSize: 18,
-    color: '#6B7280',
+    color: ColorsTheme.grey300,
     marginBottom: 40,
   },
   instructionsContainer: {
@@ -166,18 +167,18 @@ const styles = StyleSheet.create({
   },
   instructionText: {
     fontSize: 16,
-    color: '#374151',
+    color: ColorsTheme.blue400,
     textAlign: 'center',
   },
   startButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#3B82F6',
+    backgroundColor: ColorsTheme.blue200,
     paddingVertical: 16,
     paddingHorizontal: 32,
     borderRadius: 12,
     gap: 8,
-    shadowColor: '#3B82F6',
+    shadowColor: ColorsTheme.blue200,
     shadowOffset: {
       width: 0,
       height: 4,
@@ -189,7 +190,7 @@ const styles = StyleSheet.create({
   startButtonText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: ColorsTheme.white,
   },
   gameArea: {
     flex: 1,
@@ -206,12 +207,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   gameOverModal: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: ColorsTheme.white,
     padding: 32,
     borderRadius: 16,
     alignItems: 'center',
     marginHorizontal: 20,
-    shadowColor: '#000',
+    shadowColor: ColorsTheme.black,
     shadowOffset: {
       width: 0,
       height: 8,
@@ -223,18 +224,18 @@ const styles = StyleSheet.create({
   gameOverTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: ColorsTheme.blue500,
     marginBottom: 16,
   },
   finalScore: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#3B82F6',
+    color: ColorsTheme.blue200,
     marginBottom: 8,
   },
   levelReached: {
     fontSize: 16,
-    color: '#6B7280',
+    color: ColorsTheme.grey300,
     marginBottom: 32,
   },
   gameOverButtons: {
@@ -245,7 +246,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#3B82F6',
+    backgroundColor: ColorsTheme.blue200,
     paddingVertical: 14,
     paddingHorizontal: 24,
     borderRadius: 10,
@@ -254,15 +255,15 @@ const styles = StyleSheet.create({
   playAgainText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: ColorsTheme.white,
   },
   homeButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: ColorsTheme.white,
     borderWidth: 2,
-    borderColor: '#3B82F6',
+    borderColor: ColorsTheme.blue200,
     paddingVertical: 14,
     paddingHorizontal: 24,
     borderRadius: 10,
@@ -271,6 +272,6 @@ const styles = StyleSheet.create({
   homeButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#3B82F6',
+    color: ColorsTheme.blue200,
   },
 });
