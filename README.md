@@ -14,7 +14,7 @@ Em **Splat**, os jogadores são desafiados a tocar em frutas que caem na tela pa
 
 <br>
 
-![Gameplay do Splat](./assets/splatdemo.gif)
+<img src="./assets/splatdemo.gif" alt="Gameplay do Splat" width="300"/>
 
 ---
 
@@ -90,8 +90,11 @@ Siga as instruções abaixo para configurar e executar o projeto em seu ambiente
 
 Uma das maneiras de gerar um arquivo de instalação `.apk` para Android:
 
-1.  **Build Local:** Compila o aplicativo diretamente no seu computador. Requer o [ambiente de desenvolvimento Android](https://reactnative.dev/docs/environment-setup) totalmente configurado.
+1.  **Build Local:** Compila o aplicativo diretamente no seu computador. Requer o [ambiente de desenvolvimento Android](https://medium.com/geekculture/react-native-generate-apk-debug-and-release-apk-4e9981a2ea51) totalmente configurado.
    ```bash
+   # Execute o comando prebuild com a flag --clean
+   npx expo prebuild --clean
+
    # Navegue até a pasta android
    cd android
 
