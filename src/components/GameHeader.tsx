@@ -1,15 +1,19 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Heart } from 'lucide-react-native';
-import { ColorsTheme } from '@/src/theme/colors';
+import React from 'react'
+import { View, Text, StyleSheet } from 'react-native'
+import { Heart } from 'lucide-react-native'
+import { ColorsTheme } from '@/src/theme/colors'
 
 interface GameHeaderProps {
-  score: number;
-  level: number;
-  lives: number;
+  score: number
+  level: number
+  lives: number
 }
 
-export const GameHeader: React.FC<GameHeaderProps> = ({ score, level, lives }) => {
+export const GameHeader: React.FC<GameHeaderProps> = ({ 
+  score, 
+  level, 
+  lives 
+}) => {
   return (
     <View style={styles.container}>
       <View style={styles.leftSection}>
@@ -31,8 +35,8 @@ export const GameHeader: React.FC<GameHeaderProps> = ({ score, level, lives }) =
         </View>
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -79,4 +83,4 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 4,
   },
-});
+})

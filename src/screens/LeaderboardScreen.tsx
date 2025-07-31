@@ -1,66 +1,67 @@
-import React, { useState, useCallback } from 'react';
-import { View, Text, FlatList, StyleSheet, RefreshControl } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Trophy, Medal, Award } from 'lucide-react-native';
-import { LocalStorageService } from '@/src/services/localStorage';
-import { LeaderboardEntry } from '@/src/types/game';
-import { useFocusEffect } from '@react-navigation/native';
-import { ColorsTheme } from '../theme/colors';
+import React, { useState, useCallback } from 'react'
+import { View, Text, FlatList, StyleSheet, RefreshControl } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { useFocusEffect } from '@react-navigation/native'
+
+import { Trophy, Medal, Award } from 'lucide-react-native'
+import { LocalStorageService } from '@/src/services/localStorage'
+import { LeaderboardEntry } from '@/src/types/game'
+import { ColorsTheme } from '@/src/theme/colors'
 
 export default function LeaderboardScreen() {
-  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
 
   const loadLeaderboard = async () => {
     try {
-      const topScores = await LocalStorageService.getTopScores(20);
-      setLeaderboard(topScores);
+      const topScores = await LocalStorageService.getTopScores(20)
+      setLeaderboard(topScores)
     } catch (error) {
-      console.error('Error loading leaderboard:', error);
+      console.error('Error loading leaderboard:', error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   useFocusEffect(
     useCallback(() => {
-      loadLeaderboard();
+      loadLeaderboard()
     }, [loadLeaderboard])
-  );
+  )
 
   const onRefresh = async () => {
-    setRefreshing(true);
-    await loadLeaderboard();
-    setRefreshing(false);
-  };
+    setRefreshing(true)
+    await loadLeaderboard()
+    setRefreshing(false)
+  }
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
-        return <Trophy size={24} color={ColorsTheme.yellow100} />;
+        return <Trophy size={24} color={ColorsTheme.yellow100} />
       case 2:
-        return <Medal size={24} color={ColorsTheme.grey250} />;
+        return <Medal size={24} color={ColorsTheme.grey250} />
       case 3:
-        return <Award size={24} color={ColorsTheme.brown100} />;
+        return <Award size={24} color={ColorsTheme.brown100} />
       default:
         return (
           <View style={styles.rankNumber}>
             <Text style={styles.rankNumberText}>{rank}</Text>
           </View>
-        );
+        )
     }
-  };
+  }
 
   const renderLeaderboardItem = ({ item, index }: { item: LeaderboardEntry; index: number }) => {
-    const rank = index + 1;
-    const date = new Date(item.timestamp);
+    const rank = index + 1
+    const date = new Date(item.timestamp)
     
-    const borderColor = 
-        rank === 1 ? ColorsTheme.yellow100 :
-        rank === 2 ? ColorsTheme.grey250 :
-        rank === 3 ? ColorsTheme.brown100 :
-        'transparent';
+    const borderColor =
+      rank === 1 ? ColorsTheme.yellow100 :
+      rank === 2 ? ColorsTheme.grey250 :
+      rank === 3 ? ColorsTheme.brown100 :
+      'transparent'
 
     return (
       <View style={[
@@ -85,8 +86,8 @@ export default function LeaderboardScreen() {
           </Text>
         </View>
       </View>
-    );
-  };
+    )
+  }
 
   if (isLoading) {
     return (
@@ -98,7 +99,7 @@ export default function LeaderboardScreen() {
           <Text style={styles.loadingText}>Carregando pontuações...</Text>
         </View>
       </SafeAreaView>
-    );
+    )
   }
 
   return (
@@ -126,7 +127,7 @@ export default function LeaderboardScreen() {
         />
       )}
     </SafeAreaView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -236,4 +237,4 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: ColorsTheme.blue400,
   },
-});
+})

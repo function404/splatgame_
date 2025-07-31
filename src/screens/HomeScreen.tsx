@@ -1,56 +1,56 @@
-import React, { useState, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, TextInput } from 'react-native';
-import { Play, Settings, Trophy, RotateCcw, Save } from 'lucide-react-native';
-import { LocalStorageService } from '@/src/services/localStorage';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { TabNavigationType } from '@/src/navigation/types';
-import { User } from '@/src/types/game';
+import React, { useState, useCallback } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet, Alert, TextInput } from 'react-native'
+import { Play, Settings, Trophy, RotateCcw, Save } from 'lucide-react-native'
+import { LocalStorageService } from '@/src/services/localStorage'
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
+import { MainTabsNavigationProp } from '@/src/navigation/types'
+import { User } from '@/src/types/game'
 import { ColorsTheme } from '@/src/theme/colors'
 
 export default function HomeScreen() {
-  const navigation = useNavigation<TabNavigationType>();
-  const [user, setUser] = useState<User | null>(null);
-  const [usernameInput, setUsernameInput] = useState('');
+  const navigation = useNavigation<MainTabsNavigationProp>()
+  const [user, setUser] = useState<User | null>(null)
+  const [usernameInput, setUsernameInput] = useState('')
 
- const loadUserStats = useCallback(async () => {
-  try {
-    const mockUserId = 'user_123';
-    const userData = await LocalStorageService.getUser(mockUserId);
-    setUser(userData);
-    if (userData) {
-      setUsernameInput(userData.username);
-    } else {
-      setUsernameInput('');
+  const loadUserStats = useCallback(async () => {
+    try {
+      const mockUserId = 'user_123'
+      const userData = await LocalStorageService.getUser(mockUserId)
+      setUser(userData)
+      if (userData) {
+        setUsernameInput(userData.username)
+      } else {
+        setUsernameInput('')
+      }
+    } catch (error) {
+      console.error('Error loading user stats:', error)
     }
-  } catch (error) {
-    console.error('Error loading user stats:', error);
-  }
-}, []);
+  }, [])
 
   useFocusEffect(
     useCallback(() => {
-      loadUserStats();
+      loadUserStats()
     }, [loadUserStats])
-  );
+  )
 
   const handleSaveUsername = async () => {
     if (!usernameInput.trim()) {
-      Alert.alert('Nome inválido', 'Por favor, digite um nome.');
-      return;
+      Alert.alert('Nome inválido', 'Por favor, digite um nome.')
+      return
     }
 
-    const mockUserId = 'user_123';
+    const mockUserId = 'user_123'
     const newUser: User = {
       userId: mockUserId,
       username: usernameInput.trim(),
       highScore: user?.highScore || 0,
       createdAt: user?.createdAt || new Date(),
-    };
+    }
 
-    await LocalStorageService.createUser(newUser);
-    setUser(newUser);
-    Alert.alert('Sucesso!', 'Seu nome foi salvo.');
-  };
+    await LocalStorageService.createUser(newUser)
+    setUser(newUser)
+    Alert.alert('Sucesso!', 'Seu nome foi salvo.')
+  }
 
   const handleResetData = async () => {
     Alert.alert(
@@ -62,27 +62,27 @@ export default function HomeScreen() {
           text: 'Resetar',
           style: 'destructive',
           onPress: async () => {
-            await LocalStorageService.resetAllData();
-            setUser(null);
-            setUsernameInput('');
-            Alert.alert('Tudo resetado!', 'Comece uma nova jornada.');
+            await LocalStorageService.resetAllData()
+            setUser(null)
+            setUsernameInput('')
+            Alert.alert('Tudo resetado!', 'Comece uma nova jornada.')
           },
         },
       ]
-    );
-  };
+    )
+  }
 
   const handlePlayPress = () => {
     if (!user) {
-      Alert.alert('Defina um nome', 'Por favor, salve um nome de usuário antes de jogar.');
-      return;
+      Alert.alert('Defina um nome', 'Por favor, salve um nome de usuário antes de jogar.')
+      return
     }
-    navigation.navigate('Game');
-  };
+    navigation.navigate('Game')
+  }
 
   const handleLeaderboardPress = () => {
-    navigation.navigate('Leaderboard');
-  };
+    navigation.navigate('Leaderboard')
+  }
 
   return (
     <View style={styles.container}>
@@ -139,7 +139,7 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -252,4 +252,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: ColorsTheme.red300,
   },
-});
+})

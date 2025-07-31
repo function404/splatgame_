@@ -1,19 +1,21 @@
 import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { Home, Gamepad2, Trophy } from 'lucide-react-native';
-import { RootTabParamList } from './src/navigation/types';
+import { House, Gamepad2, Trophy } from 'lucide-react-native';
+import { RootTabParamList, RootStackParamList } from './src/navigation/types';
 
 import HomeScreen from '@/src/screens/HomeScreen';
 import GameScreen from '@/src/screens/GameScreen';
 import LeaderboardScreen from '@/src/screens/LeaderboardScreen';
 import { ColorsTheme } from './src/theme/colors';
 
+const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
-function MyTabs() {
+const MyTabs = () => {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -35,7 +37,7 @@ function MyTabs() {
         component={HomeScreen}
         options={{
           title: 'Início',
-          tabBarIcon: ({ size, color }) => <Home size={size} color={color} />,
+          tabBarIcon: ({ size, color }) => <House size={size} color={color} />,
         }}
       />
       <Tab.Screen
@@ -61,10 +63,16 @@ function MyTabs() {
 export default function App() {
   return (
     <SafeAreaProvider style={{ flex: 1 }}>
-        <NavigationContainer>
-          <MyTabs />
-        </NavigationContainer>
-        <StatusBar style="auto" />
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="MainTabs"
+            component={MyTabs}
+            options={{ headerShown: false }}
+          />  
+        </Stack.Navigator>
+      </NavigationContainer>
+      <StatusBar style="auto" />
     </SafeAreaProvider>
   );
 }

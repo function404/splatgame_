@@ -1,5 +1,5 @@
 
-const ColorsTheme = {
+export const ColorsTheme = {
    black: '#000000',
    white: '#FFFFFF',
    blue100: '#F0F9FF',
@@ -18,5 +18,3 @@ const ColorsTheme = {
    red300: '#EF4444',
    yellow100: '#FFD700',
 }
-
-export { ColorsTheme };

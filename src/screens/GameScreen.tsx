@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useGameEngine } from '@/src/hooks/useGameEngine';
-import { GameHeader } from '@/src/components/GameHeader';
-import { FallingObject } from '@/src/components/FallingObject';
-import { DangerLine } from '@/src/components/DangerLine';
-import { LocalStorageService } from '@/src/services/localStorage';
-import { TouchableOpacity, Text } from 'react-native';
-import { Play, RotateCcw, Chrome as Home } from 'lucide-react-native';
-import { useNavigation } from '@react-navigation/native';
-import { TabNavigationType } from '@/src/navigation/types';
-import { ColorsTheme } from '../theme/colors';
+import React, { useState, useEffect } from 'react'
+import { View, StyleSheet } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { useGameEngine } from '@/src/hooks/useGameEngine'
+import { GameHeader } from '@/src/components/GameHeader'
+import { FallingObject } from '@/src/components/FallingObject'
+import { DangerLine } from '@/src/components/DangerLine'
+import { LocalStorageService } from '@/src/services/localStorage'
+import { TouchableOpacity, Text } from 'react-native'
+import { Play, RotateCcw, House } from 'lucide-react-native'
+import { useNavigation } from '@react-navigation/native'
+import { MainTabsNavigationProp } from '@/src/navigation/types'
+import { ColorsTheme } from '@/src/theme/colors'
 
 export default function GameScreen() {
-  const navigation = useNavigation<TabNavigationType>();
+  const navigation = useNavigation<MainTabsNavigationProp>()
   const { 
     gameState, 
     startGame, 
@@ -21,31 +21,31 @@ export default function GameScreen() {
     tapObject, 
     DANGER_LINE_Y, 
     SCREEN_WIDTH, 
-  } = useGameEngine();
-  const [showGameOverModal, setShowGameOverModal] = useState(false);
+  } = useGameEngine()
+  const [showGameOverModal, setShowGameOverModal] = useState(false)
 
   useEffect(() => {
     if (gameState.isGameOver && !showGameOverModal) {
-      setShowGameOverModal(true);
-      handleGameOver();
+      setShowGameOverModal(true)
+      handleGameOver()
     }
-  }, [gameState.isGameOver]);
+  }, [gameState.isGameOver])
 
   const handleGameOver = async () => {
     try {
-      const mockUserId = 'user_123';
-      const user = await LocalStorageService.getUser(mockUserId);
+      const mockUserId = 'user_123'
+      const user = await LocalStorageService.getUser(mockUserId)
 
-      const username = user ? user.username : 'Player';
+      const username = user ? user.username : 'Player'
 
-      await LocalStorageService.updateHighScore(mockUserId, gameState.score);
+      await LocalStorageService.updateHighScore(mockUserId, gameState.score)
 
       await LocalStorageService.addLeaderboardEntry({
         userId: mockUserId,
         username: username,
         score: gameState.score,
         timestamp: new Date()
-      });
+      })
 
       if (!user) {
         await LocalStorageService.createUser({
@@ -53,23 +53,23 @@ export default function GameScreen() {
           username: username,
           highScore: gameState.score,
           createdAt: new Date()
-        });
+        })
       }
     } catch (error) {
-      console.error('Error saving game data:', error);
+      console.error('Error saving game data:', error)
     }
-  };
+  }
 
   const handleNewGame = () => {
-    setShowGameOverModal(false);
-    startGame();
-  };
+    setShowGameOverModal(false)
+    startGame()
+  }
 
   const handleGoHome = () => {
-    setShowGameOverModal(false);
-    resetGame();
-    navigation.navigate('Game');
-  };
+    setShowGameOverModal(false)
+    resetGame()
+    navigation.navigate('Game')
+  }
 
   if (!gameState.isPlaying && !gameState.isGameOver) {
     return (
@@ -90,7 +90,7 @@ export default function GameScreen() {
           </TouchableOpacity>
         </View>
       </SafeAreaView>
-    );
+    )
   }
 
   return (
@@ -127,7 +127,7 @@ export default function GameScreen() {
               </TouchableOpacity>
               
               <TouchableOpacity style={styles.homeButton} onPress={handleGoHome}>
-                <Home size={20} color={ColorsTheme.blue200} />
+                <House size={20} color={ColorsTheme.blue200} />
                 <Text style={styles.homeButtonText}>Início</Text>
               </TouchableOpacity>
             </View>
@@ -135,7 +135,7 @@ export default function GameScreen() {
         </View>
       )}
     </SafeAreaView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -274,4 +274,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: ColorsTheme.blue200,
   },
-});
+})
