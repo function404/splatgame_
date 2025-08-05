@@ -1,3 +1,4 @@
+// src/components/FallingObject.tsx
 import React from 'react'
 import { TouchableOpacity, Text, StyleSheet } from 'react-native'
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated'
@@ -11,10 +12,7 @@ interface FallingObjectProps {
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity)
 
-export const FallingObject: React.FC<FallingObjectProps> = ({ 
-  object, 
-  onTap 
-}) => {
+export const FallingObject: React.FC<FallingObjectProps> = ({ object, onTap }) => {
   const scale = useSharedValue(1)
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -28,6 +26,15 @@ export const FallingObject: React.FC<FallingObjectProps> = ({
     onTap(object.id)
   }
 
+  // Extrai o componente SVG do objeto
+  const SvgComponent = object.svg
+
+  if (!SvgComponent || typeof SvgComponent === 'number') {
+    // Renderiza um placeholder ou nada se o SVG não for um componente válido
+    // Isso previne o crash e ajuda a identificar o problema
+    return null; 
+  }
+
   return (
     <AnimatedTouchableOpacity
       style={[
@@ -35,22 +42,25 @@ export const FallingObject: React.FC<FallingObjectProps> = ({
         {
           left: object.x,
           top: object.y,
-          backgroundColor: 
-            object.type === 'bomb' ? ColorsTheme.red100 : ColorsTheme.green100
+          backgroundColor:
+            object.type === 'bomb' ? ColorsTheme.red100 : ColorsTheme.green100,
         },
-        animatedStyle
+        animatedStyle,
       ]}
       onPress={handlePress}
       activeOpacity={0.8}
     >
-      <Text style={styles.emoji}>{object.emoji}</Text>
-      {(object.type === 'fruit' || object.type === 'golden') && (
+      {/* Renderiza o componente SVG */}
+      <SvgComponent width={30} height={30} />
+
+      {(object.type === 'normal' || object.type === 'golden') && (
         <Text style={styles.points}>+{object.points}</Text>
       )}
     </AnimatedTouchableOpacity>
   )
 }
 
+// Os estilos permanecem os mesmos, mas o 'emoji' style não será mais usado.
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
@@ -70,10 +80,11 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  emoji: {
-    fontSize: 24,
-    textAlign: 'center',
-  },
+  // Este estilo não é mais necessário
+  // emoji: {
+  //   fontSize: 24,
+  //   textAlign: 'center',
+  // },
   points: {
     position: 'absolute',
     top: -7,
