@@ -1,5 +1,5 @@
 import React from 'react'
-import { TouchableOpacity, Text, StyleSheet } from 'react-native'
+import { TouchableOpacity, Text, StyleSheet, View } from 'react-native'
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated'
 import { GameObject } from '@/src/types/game'
 import { ColorsTheme } from '@/src/theme/colors'
@@ -11,10 +11,7 @@ interface FallingObjectProps {
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity)
 
-export const FallingObject: React.FC<FallingObjectProps> = ({ 
-  object, 
-  onTap 
-}) => {
+export const FallingObject: React.FC<FallingObjectProps> = ({ object, onTap }) => {
   const scale = useSharedValue(1)
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -28,6 +25,12 @@ export const FallingObject: React.FC<FallingObjectProps> = ({
     onTap(object.id)
   }
 
+  const SvgComponent = object.svg
+
+  if (!SvgComponent || typeof SvgComponent === 'number') {
+    return null
+  }
+
   return (
     <AnimatedTouchableOpacity
       style={[
@@ -35,17 +38,19 @@ export const FallingObject: React.FC<FallingObjectProps> = ({
         {
           left: object.x,
           top: object.y,
-          backgroundColor: 
-            object.type === 'bomb' ? ColorsTheme.red100 : ColorsTheme.green100
         },
-        animatedStyle
+        animatedStyle,
       ]}
       onPress={handlePress}
       activeOpacity={0.8}
     >
-      <Text style={styles.emoji}>{object.emoji}</Text>
-      {(object.type === 'fruit' || object.type === 'golden') && (
-        <Text style={styles.points}>+{object.points}</Text>
+    
+      <SvgComponent width={50} height={50} />
+
+      {(object.type === 'normal' || object.type === 'golden') ? (
+        <Text style={styles.morePoints}>+{object.points}</Text>
+      ) : (
+        <Text style={styles.fewerPoints}>{object.points}</Text>
       )}
     </AnimatedTouchableOpacity>
   )
@@ -59,27 +64,22 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: ColorsTheme.grey200,
-    shadowColor: ColorsTheme.black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
-  emoji: {
-    fontSize: 24,
-    textAlign: 'center',
-  },
-  points: {
+  morePoints: {
     position: 'absolute',
-    top: -7,
-    right: -15,
-    fontSize: 12,
+    top: 0,
+    right: -5,
+    fontSize: 14,
     fontWeight: 'bold',
-    color: ColorsTheme.green200,
+    color: ColorsTheme.green300,
+    zIndex: 1,
+  },
+  fewerPoints: {
+    position: 'absolute',
+    top: 0,
+    right: -5,
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: ColorsTheme.red,
   },
 })

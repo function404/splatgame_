@@ -1,18 +1,17 @@
-import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { NavigatorScreenParams } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { ComponentType } from 'react'
 
-export type RootTabParamList = {
-  Home: undefined;
-  Game: undefined;
-  Leaderboard: undefined;
-};
+export type TRoutesStack = {
+  Home: undefined
+  Game: undefined
+  Leaderboard: undefined
+}
 
-export type RootStackParamList = {
-  MainTabs: NavigatorScreenParams<RootTabParamList>;
-};
+export interface IRoute {
+  name: keyof TRoutesStack
+  component: ComponentType<any>
+  options?: any
+}
 
-export type RootStackNavigationProp = 
-  NativeStackNavigationProp<RootStackParamList>;
-  
-export type MainTabsNavigationProp = BottomTabNavigationProp<RootTabParamList>;
+export type TNavigationProp = NativeStackNavigationProp<TRoutesStack, 'Home' | 'Game' | 'Leaderboard'>
+

@@ -1,19 +1,27 @@
-import React, { useState, useEffect } from 'react'
-import { View, StyleSheet } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { useGameEngine } from '@/src/hooks/useGameEngine'
+import React, { useState, useEffect, useCallback } from 'react'
+import { View, StyleSheet, ImageBackground, TouchableOpacity, Text } from 'react-native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { RotateCcw, House } from 'lucide-react-native'
+
 import { GameHeader } from '@/src/components/GameHeader'
 import { FallingObject } from '@/src/components/FallingObject'
 import { DangerLine } from '@/src/components/DangerLine'
+import { StageSelector } from '@/src/components/StageSelector'
+
+import { STAGES } from '@/src/config/stages'
+
+import { useGameEngine } from '@/src/hooks/useGameEngine'
+
+import { TNavigationProp } from '@/src/navigation/types'
+
 import { LocalStorageService } from '@/src/services/localStorage'
-import { TouchableOpacity, Text } from 'react-native'
-import { Play, RotateCcw, House } from 'lucide-react-native'
-import { useNavigation } from '@react-navigation/native'
-import { MainTabsNavigationProp } from '@/src/navigation/types'
+
 import { ColorsTheme } from '@/src/theme/colors'
 
+import { User } from '@/src/types/game'
+
 export default function GameScreen() {
-  const navigation = useNavigation<MainTabsNavigationProp>()
+  const navigation = useNavigation<TNavigationProp>()
   const { 
     gameState, 
     startGame, 
@@ -22,110 +30,183 @@ export default function GameScreen() {
     DANGER_LINE_Y, 
     SCREEN_WIDTH, 
   } = useGameEngine()
+  
   const [showGameOverModal, setShowGameOverModal] = useState(false)
+  const [unlockedStages, setUnlockedStages] = useState<number[]>([1])
+  const [newlyUnlockedStage, setNewlyUnlockedStage] = useState<number | null>(null)
+
+  const loadUserProgress = useCallback(async () => {
+    const mockUserId = 'user_123'
+    const user: User | null = await LocalStorageService.getUser(mockUserId)
+    let unlocked: number[] = [1]
+    if (user) {
+      const unlockedFromScore = STAGES
+        .filter(stage => user.highScore >= stage.scoreThreshold)
+        .map(stage => stage.level)
+      
+      const allUnlocked = new Set([1, ...unlockedFromScore])
+      unlocked = Array.from(allUnlocked)
+    }
+    setUnlockedStages(unlocked)
+    return unlocked
+  }, [])
+
+  useFocusEffect(
+    useCallback(() => {
+      loadUserProgress()
+    }, [loadUserProgress])
+  )
+
+  const saveProgress = useCallback(async (score: number) => {
+    try {
+      const mockUserId = 'user_123'
+      const user = await LocalStorageService.getUser(mockUserId)
+      
+      if (!user) {
+        console.error("Tentativa de salvar progresso sem um usuário logado.")
+        return
+      }
+      
+      await LocalStorageService.updateHighScore(mockUserId, score)
+      await LocalStorageService.addLeaderboardEntry({
+        userId: mockUserId,
+        username: user.username,
+        score: score,
+      })
+    } catch (error) {
+      console.error('Error saving game data:', error)
+    }
+  }, [])
 
   useEffect(() => {
     if (gameState.isGameOver && !showGameOverModal) {
       setShowGameOverModal(true)
-      handleGameOver()
+      saveProgress(gameState.score)
     }
-  }, [gameState.isGameOver])
+  }, [gameState.isGameOver, gameState.score, saveProgress, showGameOverModal])
 
-  const handleGameOver = async () => {
-    try {
-      const mockUserId = 'user_123'
-      const user = await LocalStorageService.getUser(mockUserId)
+  useEffect(() => {
+    if (gameState.isStageComplete && !gameState.isGameOver) {
+      const handleStageCompletion = async () => {
+        const previouslyUnlocked = unlockedStages
+        
+        await saveProgress(gameState.score)
+        
+        const newlyUnlockedList = await loadUserProgress()
+        
+        const newStageLevel = newlyUnlockedList.find(level => 
+          !previouslyUnlocked.includes(level))
 
-      const username = user ? user.username : 'Player'
-
-      await LocalStorageService.updateHighScore(mockUserId, gameState.score)
-
-      await LocalStorageService.addLeaderboardEntry({
-        userId: mockUserId,
-        username: username,
-        score: gameState.score,
-        timestamp: new Date()
-      })
-
-      if (!user) {
-        await LocalStorageService.createUser({
-          userId: mockUserId,
-          username: username,
-          highScore: gameState.score,
-          createdAt: new Date()
-        })
+        if (newStageLevel) {
+          setNewlyUnlockedStage(newStageLevel)
+        }
       }
-    } catch (error) {
-      console.error('Error saving game data:', error)
+      handleStageCompletion()
     }
+  }, [
+    gameState.isStageComplete, 
+    gameState.isGameOver, 
+    gameState.score, 
+    saveProgress, 
+    loadUserProgress
+  ])
+
+  const handleStartGame = (stageLevel: number) => {
+    setNewlyUnlockedStage(null)
+    startGame(stageLevel)
   }
 
-  const handleNewGame = () => {
+  const handleNewGameFromModal = () => {
     setShowGameOverModal(false)
-    startGame()
+    startGame(gameState.currentStage)
   }
 
   const handleGoHome = () => {
     setShowGameOverModal(false)
     resetGame()
-    navigation.navigate('Game')
+    navigation.navigate('Home')
   }
 
-  if (!gameState.isPlaying && !gameState.isGameOver) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.welcomeContainer}>
-          <Text style={styles.welcomeTitle}>Splat 💥</Text>
-          <Text style={styles.welcomeSubtitle}>Pronto para jogar</Text>
-          
-          <View style={styles.instructionsContainer}>
-            <Text style={styles.instructionText}>🍎 Toque nas frutas para marcar pontos</Text>
-            <Text style={styles.instructionText}>💣 Evite tocar nas bombas</Text>
-            <Text style={styles.instructionText}>❤️ Não deixe as frutas chegarem à zona de perigo</Text>
-          </View>
+  const handleBackToMenu = () => {
+    resetGame()
+  }
 
-          <TouchableOpacity style={styles.startButton} onPress={startGame}>
-            <Play size={24} color={ColorsTheme.white} />
-            <Text style={styles.startButtonText}>Iniciar Jogo</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
+  const currentStageConfig = STAGES.find(s => s.level === gameState.currentStage) || STAGES[0]
+
+  if (!gameState.isPlaying && !gameState.isGameOver && !gameState.isStageComplete) {
+    return (
+      <StageSelector
+        unlockedStages={unlockedStages}
+        newlyUnlockedStage={newlyUnlockedStage}
+        onStartGame={handleStartGame}
+        onGoBack={() => navigation.goBack()}
+      />
     )
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ImageBackground 
+      source={currentStageConfig.backgroundImage} 
+      style={styles.gameArea}
+      resizeMode="cover"
+    >
       <GameHeader 
         score={gameState.score} 
         level={gameState.level} 
         lives={gameState.lives} 
       />
-      
-      <View style={styles.gameArea}>
-        <DangerLine y={DANGER_LINE_Y} width={SCREEN_WIDTH} />
-        
-        {gameState.objects.map(object => (
-          <FallingObject
-            key={object.id}
-            object={object}
-            onTap={tapObject}
-          />
-        ))}
-      </View>
 
+      {gameState.objects.map(object => (
+        <FallingObject key={object.id} object={object} onTap={tapObject} />
+      ))}
+
+      <DangerLine y={DANGER_LINE_Y} width={SCREEN_WIDTH} />
+
+      {/* Modal de Fase Completa */}
+      {gameState.isStageComplete && !gameState.isGameComplete && (
+        <View style={styles.overlay}>
+          <View style={styles.modal}>
+            <Text style={styles.modalTitle}>Fase Concluída!</Text>
+            <Text style={styles.finalScore}>Você completou a fase "{currentStageConfig.name}"</Text>
+            <Text style={styles.levelReached}>Pontuação: {gameState.score}</Text>
+
+            <TouchableOpacity style={styles.playAgainButton} onPress={handleBackToMenu}>
+              <Text style={styles.playAgainText}>Continuar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
+      {/* Modal de Jogo Completo */}
+      {gameState.isGameComplete && (
+        <View style={styles.overlay}>
+          <View style={styles.modal}>
+            <Text style={styles.modalTitle}>Parabéns!</Text>
+            <Text style={styles.finalScore}>Você concluiu todos os desafios!</Text>
+            <Text style={styles.levelReached}>Pontuação Final: {gameState.score}</Text>
+
+            <TouchableOpacity style={styles.homeButton} onPress={handleGoHome}>
+              <House size={20} color={ColorsTheme.blue200} />
+              <Text style={styles.homeButtonText}>Voltar ao Início</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
+      {/* Modal de Fim de Jogo */}
       {showGameOverModal && (
-        <View style={styles.gameOverOverlay}>
-          <View style={styles.gameOverModal}>
-            <Text style={styles.gameOverTitle}>Fim de jogo!</Text>
+        <View style={styles.overlay}>
+          <View style={styles.modal}>
+            <Text style={styles.modalTitle}>Fim de jogo!</Text>
             <Text style={styles.finalScore}>Pontuação final: {gameState.score}</Text>
-            <Text style={styles.levelReached}>Level alcançado: {gameState.level}</Text>
-
-            <View style={styles.gameOverButtons}>
-              <TouchableOpacity style={styles.playAgainButton} onPress={handleNewGame}>
+            <Text style={styles.levelReached}>Fase alcançada: {gameState.currentStage}</Text>
+            
+            <View style={styles.modalButtons}>
+              <TouchableOpacity style={styles.playAgainButton} onPress={handleNewGameFromModal}>
                 <RotateCcw size={20} color={ColorsTheme.white} />
                 <Text style={styles.playAgainText}>Tentar novamente</Text>
               </TouchableOpacity>
-              
+
               <TouchableOpacity style={styles.homeButton} onPress={handleGoHome}>
                 <House size={20} color={ColorsTheme.blue200} />
                 <Text style={styles.homeButtonText}>Início</Text>
@@ -134,111 +215,54 @@ export default function GameScreen() {
           </View>
         </View>
       )}
-    </SafeAreaView>
+    </ImageBackground>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: ColorsTheme.blue100,
-  },
-  welcomeContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-  },
-  welcomeTitle: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    color: ColorsTheme.blue500,
-    marginBottom: 8,
-  },
-  welcomeSubtitle: {
-    fontSize: 18,
-    color: ColorsTheme.grey300,
-    marginBottom: 40,
-  },
-  instructionsContainer: {
-    alignItems: 'center',
-    marginBottom: 40,
-    gap: 12,
-  },
-  instructionText: {
-    fontSize: 16,
-    color: ColorsTheme.blue400,
-    textAlign: 'center',
-  },
-  startButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: ColorsTheme.blue200,
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 12,
-    gap: 8,
-    shadowColor: ColorsTheme.blue200,
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 8,
-  },
-  startButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: ColorsTheme.white,
-  },
   gameArea: {
     flex: 1,
     position: 'relative',
   },
-  gameOverOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  gameOverModal: {
+  modal: {
     backgroundColor: ColorsTheme.white,
     padding: 32,
     borderRadius: 16,
     alignItems: 'center',
     marginHorizontal: 20,
+    width: '90%',
     shadowColor: ColorsTheme.black,
-    shadowOffset: {
-      width: 0,
-      height: 8,
-    },
+    shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.25,
     shadowRadius: 10,
     elevation: 15,
   },
-  gameOverTitle: {
+  modalTitle: {
     fontSize: 28,
     fontWeight: 'bold',
     color: ColorsTheme.blue500,
     marginBottom: 16,
+    marginTop: 8,
   },
   finalScore: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '600',
     color: ColorsTheme.blue200,
     marginBottom: 8,
+    textAlign: 'center',
   },
   levelReached: {
     fontSize: 16,
     color: ColorsTheme.grey300,
     marginBottom: 32,
   },
-  gameOverButtons: {
+  modalButtons: {
     gap: 12,
     width: '100%',
   },

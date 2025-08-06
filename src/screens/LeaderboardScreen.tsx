@@ -1,14 +1,18 @@
 import React, { useState, useCallback } from 'react'
-import { View, Text, FlatList, StyleSheet, RefreshControl } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { useFocusEffect } from '@react-navigation/native'
+import { View, Text, FlatList, StyleSheet, RefreshControl, TouchableOpacity } from 'react-native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { Trophy, Medal, Award, Undo2 } from 'lucide-react-native'
 
-import { Trophy, Medal, Award } from 'lucide-react-native'
+import { TNavigationProp } from '@/src/navigation/types'
+
 import { LocalStorageService } from '@/src/services/localStorage'
+
 import { LeaderboardEntry } from '@/src/types/game'
+
 import { ColorsTheme } from '@/src/theme/colors'
 
 export default function LeaderboardScreen() {
+  const navigation = useNavigation<TNavigationProp>()
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
@@ -91,19 +95,26 @@ export default function LeaderboardScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Classificação</Text>
         </View>
         <View style={styles.loadingContainer}>
           <Text style={styles.loadingText}>Carregando pontuações...</Text>
         </View>
-      </SafeAreaView>
+      </View>
     )
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={styles.buttonGoBack}
+      >
+        <Undo2 size={24} color={ColorsTheme.white} />
+      </TouchableOpacity>
+
       <View style={styles.header}>
         <Text style={styles.title}>Classificação</Text>
         <Text style={styles.subtitle}>Melhores jogadores</Text>
@@ -126,7 +137,7 @@ export default function LeaderboardScreen() {
           }
         />
       )}
-    </SafeAreaView>
+    </View>
   )
 }
 
@@ -135,6 +146,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: ColorsTheme.blue100,
     paddingTop: 60,
+  },
+  buttonGoBack: {
+    width: 60,
+    height: 60,
+    borderRadius: 15,
+    backgroundColor: ColorsTheme.blue200,
+    position: 'absolute',
+    top: 5,
+    left: 5,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   header: {
     alignItems: 'center',
