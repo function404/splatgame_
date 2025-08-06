@@ -28,7 +28,7 @@ export const FallingObject: React.FC<FallingObjectProps> = ({ object, onTap }) =
   const SvgComponent = object.svg
 
   if (!SvgComponent || typeof SvgComponent === 'number') {
-    return null; 
+    return null
   }
 
   return (
@@ -68,15 +68,16 @@ const styles = StyleSheet.create({
   morePoints: {
     position: 'absolute',
     top: 0,
-    right: -20,
+    right: -5,
     fontSize: 14,
     fontWeight: 'bold',
     color: ColorsTheme.green300,
+    zIndex: 1,
   },
   fewerPoints: {
     position: 'absolute',
     top: 0,
-    right: -20,
+    right: -5,
     fontSize: 14,
     fontWeight: 'bold',
     color: ColorsTheme.red,

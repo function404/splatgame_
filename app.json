@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "splatgame_",
+    "name": "Splat Game",
     "slug": "splatgame_",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -13,14 +13,16 @@
       "backgroundColor": "#F0F9FF"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.zfunction404.splatgame-"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/senac-icon.png",
         "backgroundColor": "#F0F9FF"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.zfunction404.splatgame_"
     },
     "web": {
       "favicon": "./assets/images/senac-icon.png"

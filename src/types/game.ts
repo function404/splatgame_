@@ -15,7 +15,8 @@ export interface GameState {
   lives: number
   isPlaying: boolean
   isGameOver: boolean
-  isStageComplete: boolean;
+  isStageComplete: boolean
+  isGameComplete: boolean
   objects: GameObject[]
   currentStage: number
 }

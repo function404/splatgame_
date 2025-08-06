@@ -29,8 +29,9 @@ export const LocalStorageService = {
     return await getStoredData<User>(USER_KEY)
   },
 
-  async createUser(user: User): Promise<void> {
+  async createUser(user: User): Promise<User> {
     await setStoredData(USER_KEY, user)
+    return user
   },
 
   async updateHighScore(userId: string, newScore: number): Promise<void> {
@@ -39,26 +40,39 @@ export const LocalStorageService = {
     if (user && newScore > user.highScore) {
       const updatedUser = { ...user, highScore: newScore }
       await setStoredData(USER_KEY, updatedUser)
+    } else if (!user) {
+      await this.createUser({
+        userId: userId,
+        username: 'Player',
+        highScore: newScore,
+        createdAt: new Date(),
+      })
     }
   },
 
-  async addLeaderboardEntry(entry: Omit<LeaderboardEntry, 'id'>): Promise<void> {
+  async addLeaderboardEntry(entry: Omit<LeaderboardEntry, 'id' | 'timestamp'>): Promise<void> {
     const leaderboard = (await this.getTopScores(100)) || []
-    
-    const newEntry: LeaderboardEntry = {
-      ...entry,
-      id: Math.random().toString(36).substr(2, 9),
-      timestamp: new Date()
-    }
+    const existingEntryIndex = leaderboard.findIndex(e => e.userId === entry.userId)
 
-    leaderboard.push(newEntry)
+    if (existingEntryIndex !== -1) {
+      if (entry.score > leaderboard[existingEntryIndex].score) {
+        leaderboard[existingEntryIndex].score = entry.score
+        leaderboard[existingEntryIndex].timestamp = new Date()
+      }
+    } else {
+      const newEntry: LeaderboardEntry = {
+        ...entry,
+        id: Math.random().toString(36).substr(2, 9),
+        timestamp: new Date(),
+      }
+      leaderboard.push(newEntry)
+    }
     
     leaderboard.sort((a, b) => b.score - a.score)
     const updatedLeaderboard = leaderboard.slice(0, 50)
 
     await setStoredData(LEADERBOARD_KEY, updatedLeaderboard)
   },
-
 
   async getTopScores(limitCount: number = 10): Promise<LeaderboardEntry[]> {
     const leaderboard = await getStoredData<LeaderboardEntry[]>(LEADERBOARD_KEY)
@@ -72,7 +86,7 @@ export const LocalStorageService = {
     const leaderboard = await this.getTopScores(100)
     if (!leaderboard) return 1
 
-    const rank = leaderboard.findIndex(entry => user.highScore >= entry.score)
+    const rank = leaderboard.findIndex(entry => entry.userId === userId)
 
     return rank === -1 ? leaderboard.length + 1 : rank + 1
   },

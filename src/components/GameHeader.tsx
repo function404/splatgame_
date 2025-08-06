@@ -49,7 +49,6 @@ const textShadow = {
   textShadowRadius: 3
 }
 
-
 const styles = StyleSheet.create({
   container: {
     zIndex: 100,
@@ -58,6 +57,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
+    marginTop: -10,
   },
   leftSection: {
     marginTop: -25,

@@ -1,3 +1,5 @@
+import { TransitionPresets } from '@react-navigation/stack'
+
 import { IRoute } from '@/src/navigation/types'
 
 import HomeScreen from '@/src/screens/HomeScreen'
@@ -10,6 +12,7 @@ export const ROUTES: IRoute[] = [
       component: HomeScreen,
       options: {
          title: 'Início',
+         ...TransitionPresets.FadeFromBottomAndroid,
       },
    },
    {
@@ -17,6 +20,7 @@ export const ROUTES: IRoute[] = [
       component: GameScreen,
       options: {
          title: 'Jogo',
+         ...TransitionPresets.ScaleFromCenterAndroid,
       },
    },
    {

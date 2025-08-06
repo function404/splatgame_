@@ -1,16 +1,17 @@
-import { NativeStackNavigationOptions, NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { ComponentType } from 'react'
 
-export type RootStackParamList = {
+export type TRoutesStack = {
   Home: undefined
   Game: undefined
   Leaderboard: undefined
 }
 
 export interface IRoute {
-  name: keyof RootStackParamList
+  name: keyof TRoutesStack
   component: ComponentType<any>
-  options?: NativeStackNavigationOptions
+  options?: any
 }
 
-export type RootStackNavigationProp = NativeStackNavigationProp<RootStackParamList>
+export type TNavigationProp = NativeStackNavigationProp<TRoutesStack, 'Home' | 'Game' | 'Leaderboard'>
+

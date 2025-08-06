@@ -17,6 +17,7 @@ export const useGameEngine = () => {
         isPlaying: false,
         isGameOver: false,
         isStageComplete: false,
+        isGameComplete: false,
         objects: [],
         currentStage: 1,
     })
@@ -103,12 +104,21 @@ export const useGameEngine = () => {
             }
 
             const newScore = Math.max(0, prev.score + tappedObject.points)
-            const newLevel = Math.floor(newScore / 500) + 1
+            const currentStageConfig = STAGES.find(s => s.level === prev.currentStage) || STAGES[0]
             
-            const currentStage = STAGES.find(s => s.level === prev.currentStage) || STAGES[0]
-            const nextStage = STAGES.find(s => s.level === prev.currentStage + 1)
+            if (currentStageConfig.completionScore && newScore >= currentStageConfig.completionScore) {
+                 return {
+                    ...prev,
+                    score: newScore,
+                    isPlaying: false,
+                    isGameComplete: true,
+                    isStageComplete: true,
+                    objects: [],
+                }
+            }
 
-            if (nextStage && newScore >= nextStage.scoreThreshold) {
+            const nextStageConfig = STAGES.find(s => s.level === prev.currentStage + 1)
+            if (nextStageConfig && newScore >= nextStageConfig.scoreThreshold) {
                 return {
                     ...prev,
                     score: newScore,
@@ -129,50 +139,56 @@ export const useGameEngine = () => {
                 ...prev,
                 objects: prev.objects.filter(obj => obj.id !== objectId),
                 score: newScore,
-                level: newLevel,
                 lives: Math.max(0, newLives),
                 isGameOver,
                 isPlaying: !isGameOver,
-                currentStage: currentStage.level,
             }
         })
     }, [])
 
     const startGame = useCallback((stageToStart: number = 1) => {
-        const stageConfig = STAGES.find(s => s.level === stageToStart) || STAGES[0]
-        const initialScore = stageConfig.scoreThreshold
-        const initialLevel = Math.floor(initialScore / 500) + 1
-
-        setGameState({
-            score: initialScore,
-            level: initialLevel,
+        setGameState(prev => ({
+            ...prev,
+            score: prev.currentStage > 1 ? prev.score : 0,
+            level: stageToStart,
             lives: 3,
             isPlaying: true,
             isGameOver: false,
             isStageComplete: false,
+            isGameComplete: false,
             objects: [],
             currentStage: stageToStart,
-        })
+        }))
     }, [])
 
     const startNextStage = useCallback(() => {
         const nextStageLevel = gameState.currentStage + 1
         if (nextStageLevel <= STAGES.length) {
-        startGame(nextStageLevel)
+            setGameState(prev => ({
+                ...prev,
+                level: nextStageLevel,
+                currentStage: nextStageLevel,
+                isPlaying: true,
+                isStageComplete: false,
+                objects: [],
+                lives: prev.lives,
+                score: prev.score,
+            }))
         }
-    }, [gameState.currentStage, startGame])
+    }, [gameState.currentStage])
 
     const resetGame = useCallback(() => {
-        setGameState(prev => ({
-            ...prev,
+        setGameState({
+            score: 0,
+            level: 1,
+            lives: 3,
             isPlaying: false,
             isGameOver: false,
             isStageComplete: false,
+            isGameComplete: false,
             objects: [],
-            score: 0,
-            level: 1,
             currentStage: 1,
-        }))
+        })
     }, [])
 
     useEffect(() => {

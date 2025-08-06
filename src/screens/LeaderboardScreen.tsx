@@ -1,10 +1,9 @@
 import React, { useState, useCallback } from 'react'
 import { View, Text, FlatList, StyleSheet, RefreshControl, TouchableOpacity } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { Trophy, Medal, Award, Undo2 } from 'lucide-react-native'
 
-import { RootStackNavigationProp } from '@/src/navigation/types'
+import { TNavigationProp } from '@/src/navigation/types'
 
 import { LocalStorageService } from '@/src/services/localStorage'
 
@@ -13,7 +12,7 @@ import { LeaderboardEntry } from '@/src/types/game'
 import { ColorsTheme } from '@/src/theme/colors'
 
 export default function LeaderboardScreen() {
-  const navigation = useNavigation<RootStackNavigationProp>()
+  const navigation = useNavigation<TNavigationProp>()
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
@@ -96,19 +95,19 @@ export default function LeaderboardScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Classificação</Text>
         </View>
         <View style={styles.loadingContainer}>
           <Text style={styles.loadingText}>Carregando pontuações...</Text>
         </View>
-      </SafeAreaView>
+      </View>
     )
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         style={styles.buttonGoBack}
@@ -138,7 +137,7 @@ export default function LeaderboardScreen() {
           }
         />
       )}
-    </SafeAreaView>
+    </View>
   )
 }
 

@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Alert, TextInput, ImageBackgr
 import { Play, Bolt, Trophy, RotateCcw, Save } from 'lucide-react-native'
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
 
-import { RootStackNavigationProp } from '@/src/navigation/types'
+import { TNavigationProp } from '@/src/navigation/types'
 
 import { LocalStorageService } from '@/src/services/localStorage'
 
@@ -12,7 +12,7 @@ import { User } from '@/src/types/game'
 import { ColorsTheme } from '@/src/theme/colors'
 
 export default function HomeScreen() {
-  const navigation = useNavigation<RootStackNavigationProp>()
+  const navigation = useNavigation<TNavigationProp>()
   const [user, setUser] = useState<User | null>(null)
   const [usernameInput, setUsernameInput] = useState('')
 
@@ -123,6 +123,7 @@ export default function HomeScreen() {
           value={usernameInput}
           onChangeText={setUsernameInput}
           placeholderTextColor={ColorsTheme.grey300}
+          maxLength={22}
         />
         <TouchableOpacity style={styles.saveButton} onPress={handleSaveUsername}>
           <Save size={20} color={ColorsTheme.white} />
@@ -206,12 +207,17 @@ const styles = StyleSheet.create({
     ...textShadow
   },
   titleGame: {
+    alignItems: 'center',
+    textAlign: 'center',
     color: ColorsTheme.orange100,
   },
   subtitle: {
+    alignItems: 'center',
+    textAlign: 'center',
     fontSize: 26,
     color: ColorsTheme.orange100,
     fontFamily: 'PixelifySans-Bold',
+    paddingHorizontal: 16,
     ...textShadow
   },
   subtitleUser: {
@@ -282,7 +288,7 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 25,
-    backgroundColor: ColorsTheme.blue300,
+    backgroundColor: ColorsTheme.blue200,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: ColorsTheme.black,
