@@ -1,6 +1,5 @@
-// src/components/FallingObject.tsx
 import React from 'react'
-import { TouchableOpacity, Text, StyleSheet } from 'react-native'
+import { TouchableOpacity, Text, StyleSheet, View } from 'react-native'
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated'
 import { GameObject } from '@/src/types/game'
 import { ColorsTheme } from '@/src/theme/colors'
@@ -26,12 +25,9 @@ export const FallingObject: React.FC<FallingObjectProps> = ({ object, onTap }) =
     onTap(object.id)
   }
 
-  // Extrai o componente SVG do objeto
   const SvgComponent = object.svg
 
   if (!SvgComponent || typeof SvgComponent === 'number') {
-    // Renderiza um placeholder ou nada se o SVG não for um componente válido
-    // Isso previne o crash e ajuda a identificar o problema
     return null; 
   }
 
@@ -42,25 +38,24 @@ export const FallingObject: React.FC<FallingObjectProps> = ({ object, onTap }) =
         {
           left: object.x,
           top: object.y,
-          backgroundColor:
-            object.type === 'bomb' ? ColorsTheme.red100 : ColorsTheme.green100,
         },
         animatedStyle,
       ]}
       onPress={handlePress}
       activeOpacity={0.8}
     >
-      {/* Renderiza o componente SVG */}
-      <SvgComponent width={30} height={30} />
+    
+      <SvgComponent width={50} height={50} />
 
-      {(object.type === 'normal' || object.type === 'golden') && (
-        <Text style={styles.points}>+{object.points}</Text>
+      {(object.type === 'normal' || object.type === 'golden') ? (
+        <Text style={styles.morePoints}>+{object.points}</Text>
+      ) : (
+        <Text style={styles.fewerPoints}>{object.points}</Text>
       )}
     </AnimatedTouchableOpacity>
   )
 }
 
-// Os estilos permanecem os mesmos, mas o 'emoji' style não será mais usado.
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
@@ -69,28 +64,21 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: ColorsTheme.grey200,
-    shadowColor: ColorsTheme.black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
-  // Este estilo não é mais necessário
-  // emoji: {
-  //   fontSize: 24,
-  //   textAlign: 'center',
-  // },
-  points: {
+  morePoints: {
     position: 'absolute',
-    top: -7,
-    right: -15,
-    fontSize: 12,
+    top: 0,
+    right: -20,
+    fontSize: 14,
     fontWeight: 'bold',
-    color: ColorsTheme.green200,
+    color: ColorsTheme.green300,
+  },
+  fewerPoints: {
+    position: 'absolute',
+    top: 0,
+    right: -20,
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: ColorsTheme.red,
   },
 })

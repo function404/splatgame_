@@ -1,4 +1,3 @@
-// src/types/game.ts
 import { SvgProps } from 'react-native-svg'
 
 export interface GameObject {
@@ -7,7 +6,6 @@ export interface GameObject {
   y: number
   type: 'normal' | 'bomb' | 'golden'
   points: number
-  // Trocamos 'emoji' por 'svg'
   svg: React.FC<SvgProps> 
 }
 
@@ -17,12 +15,11 @@ export interface GameState {
   lives: number
   isPlaying: boolean
   isGameOver: boolean
-  isStageComplete: boolean; // <-- ADICIONADO: Controla o modal de fase concluída
+  isStageComplete: boolean;
   objects: GameObject[]
-  currentStage: number // Adicionamos o estado da fase atual
+  currentStage: number
 }
 
-// ... User e LeaderboardEntry permanecem os mesmos
 export interface User {
   userId: string
   username: string

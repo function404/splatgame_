@@ -4,11 +4,11 @@
     "slug": "splatgame_",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets//images/icon.png",
+    "icon": "./assets/images/senac-icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/splash-icon.png",
+      "image": "./assets/images/senac-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#F0F9FF"
     },
@@ -17,13 +17,16 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/senac-icon.png",
         "backgroundColor": "#F0F9FF"
       },
       "edgeToEdgeEnabled": true
     },
     "web": {
-      "favicon": "./assets/images/favicon.png"
-    }
+      "favicon": "./assets/images/senac-icon.png"
+    },
+    "plugins": [
+      "expo-font"
+    ]
   }
 }

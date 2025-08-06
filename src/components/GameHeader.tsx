@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, SafeAreaView } from 'react-native'
 import { Heart } from 'lucide-react-native'
 import { ColorsTheme } from '@/src/theme/colors'
 
@@ -15,69 +15,83 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
   lives 
 }) => {
   return (
-    <View style={styles.container}>
+    <ImageBackground 
+      source={require('@/assets/images/nuvem-header.png')}
+      style={styles.container}
+      resizeMode='contain'
+    >
       <View style={styles.leftSection}>
         <Text style={styles.scoreText}>Pontuação: {score}</Text>
         <Text style={styles.levelText}>Nível {level}</Text>
       </View>
-      
+
       <View style={styles.rightSection}>
-        <Text style={styles.livesLabel}>Vidas:</Text>
+        <Text style={styles.livesLabel}>Vidas</Text>
+
         <View style={styles.heartsContainer}>
           {Array.from({ length: 3 }, (_, index) => (
             <Heart
               key={index}
               size={20}
-              color={index < lives ? ColorsTheme.red300 : ColorsTheme.grey200}
+              color={index < lives ? ColorsTheme.red300 : ColorsTheme.white}
               fill={index < lives ? ColorsTheme.red300 : 'transparent'}
             />
           ))}
         </View>
       </View>
-    </View>
+    </ImageBackground>
   )
 }
 
+const textShadow = {
+  textShadowColor: ColorsTheme.black,
+  textShadowOffset: {width: -1, height: 1},
+  textShadowRadius: 3
+}
+
+
 const styles = StyleSheet.create({
   container: {
+    zIndex: 100,
+    height: 120,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 15,
-    backgroundColor: ColorsTheme.white,
-    borderBottomWidth: 2,
-    borderBottomColor: ColorsTheme.grey200,
-    shadowColor: ColorsTheme.black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
   leftSection: {
+    marginTop: -25,
     alignItems: 'flex-start',
   },
   rightSection: {
-    flexDirection: 'row',
+    marginTop: -25,
     alignItems: 'center',
   },
   scoreText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: ColorsTheme.blue500,
+    fontSize: 24,
+    fontFamily: 'PixelifySans-Bold',
+    color: ColorsTheme.white,
+    ...textShadow
+  },
+  scoreValue: {
+    fontSize: 24,
+    fontFamily: 'Tiny5-Regular',
+    color: ColorsTheme.white,
+    marginTop: -6,
+    ...textShadow
   },
   levelText: {
-    fontSize: 14,
-    color: ColorsTheme.grey300,
+    fontSize: 16,
+    fontFamily: 'PixelifySans-Bold',
+    color: ColorsTheme.white,
     marginTop: 2,
+    ...textShadow
   },
   livesLabel: {
-    fontSize: 14,
-    color: ColorsTheme.grey300,
-    marginRight: 8,
+    fontSize: 18,
+    fontFamily: 'PixelifySans-Bold',
+    color: ColorsTheme.white,
+    ...textShadow
   },
   heartsContainer: {
     flexDirection: 'row',

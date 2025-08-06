@@ -2,20 +2,25 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { View, StyleSheet, ImageBackground, TouchableOpacity, Text, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
-import { Play, RotateCcw, House, Lock, Star } from 'lucide-react-native'
+import { Play, RotateCcw, House, Lock, Star, Undo2 } from 'lucide-react-native'
 
-import { useGameEngine } from '@/src/hooks/useGameEngine'
 import { GameHeader } from '@/src/components/GameHeader'
 import { FallingObject } from '@/src/components/FallingObject'
 import { DangerLine } from '@/src/components/DangerLine'
-import { LocalStorageService } from '@/src/services/localStorage'
-import { MainTabsNavigationProp } from '@/src/navigation/types'
-import { ColorsTheme } from '@/src/theme/colors'
+
 import { STAGES } from '@/src/config/stages'
+
+import { useGameEngine } from '@/src/hooks/useGameEngine'
+
+import { RootStackNavigationProp } from '@/src/navigation/types'
+
+import { LocalStorageService } from '@/src/services/localStorage'
+
+import { ColorsTheme } from '@/src/theme/colors'
 import { User } from '@/src/types/game'
 
 export default function GameScreen() {
-  const navigation = useNavigation<MainTabsNavigationProp>()
+  const navigation = useNavigation<RootStackNavigationProp>()
   const { 
     gameState, 
     startGame, 
@@ -29,7 +34,6 @@ export default function GameScreen() {
   const [showGameOverModal, setShowGameOverModal] = useState(false)
   const [unlockedStages, setUnlockedStages] = useState<number[]>([1]) // Nível 1 sempre desbloqueado
 
-  // Carrega o progresso do usuário para desbloquear as fases
   useFocusEffect(
     useCallback(() => {
       const loadUserProgress = async () => {
@@ -37,7 +41,7 @@ export default function GameScreen() {
         const user: User | null = await LocalStorageService.getUser(mockUserId)
         if (user) {
           const unlocked = STAGES.filter(stage => user.highScore >= stage.scoreThreshold).map(stage => stage.level)
-          // Garante que pelo menos a fase 1 esteja sempre disponível
+
           setUnlockedStages(unlocked.length > 0 ? unlocked : [1])
         }
       }
@@ -83,13 +87,13 @@ export default function GameScreen() {
 
   const handleNewGameFromModal = () => {
     setShowGameOverModal(false)
-    startGame(gameState.currentStage) // Reinicia na mesma fase
+    startGame(gameState.currentStage)
   }
 
   const handleGoHome = () => {
     setShowGameOverModal(false)
     resetGame()
-    navigation.navigate('Home') // Navega para a Home, não para a própria tela
+    navigation.navigate('Home')
   }
 
   const handleContinue = () => {
@@ -100,12 +104,23 @@ export default function GameScreen() {
     resetGame()
   }
 
+  const handleGoBack = () => {
+    resetGame()
+    navigation.goBack()
+  }
+
   const currentStageConfig = STAGES.find(s => s.level === gameState.currentStage) || STAGES[0]
 
-  // TELA DE SELEÇÃO DE FASE
   if (!gameState.isPlaying && !gameState.isGameOver && !gameState.isStageComplete) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <TouchableOpacity
+          onPress={handleGoBack}
+          style={styles.buttonGoBack}
+        >
+          <Undo2 size={24} color={ColorsTheme.white} />
+        </TouchableOpacity>
+
         <View style={styles.welcomeContainer}>
           <Text style={styles.welcomeTitle}>Splat 💥</Text>
           <Text style={styles.welcomeSubtitle}>Selecione uma fase</Text>
@@ -137,32 +152,28 @@ export default function GameScreen() {
     )
   }
 
-  // JOGO EM ANDAMENTO
   return (
-    <SafeAreaView style={styles.container}>
+    <ImageBackground 
+      source={currentStageConfig.backgroundImage} 
+      style={styles.gameArea}
+      resizeMode="cover"
+    >
       <GameHeader 
         score={gameState.score} 
         level={gameState.level} 
         lives={gameState.lives} 
       />
-      
-      <ImageBackground 
-        source={currentStageConfig.backgroundImage} 
-        style={styles.gameArea}
-        resizeMode="cover"
-      >
-        <DangerLine y={DANGER_LINE_Y} width={SCREEN_WIDTH} />
-        
-        {gameState.objects.map(object => (
-          <FallingObject
-            key={object.id}
-            object={object}
-            onTap={tapObject}
-          />
-        ))}
-      </ImageBackground>
 
-      {/* MODAL DE FASE CONCLUÍDA */}
+      <DangerLine y={DANGER_LINE_Y} width={SCREEN_WIDTH} />
+        
+      {gameState.objects.map(object => (
+        <FallingObject
+          key={object.id}
+          object={object}
+          onTap={tapObject}
+        />
+      ))}
+
       {gameState.isStageComplete && (
         <View style={styles.overlay}>
           <View style={styles.modal}>
@@ -184,7 +195,6 @@ export default function GameScreen() {
         </View>
       )}
 
-      {/* MODAL DE FIM DE JOGO */}
       {showGameOverModal && (
         <View style={styles.overlay}>
           <View style={styles.modal}>
@@ -206,15 +216,22 @@ export default function GameScreen() {
           </View>
         </View>
       )}
-    </SafeAreaView>
+    </ImageBackground>
   )
 }
 
-// Renomeei alguns estilos para serem mais genéricos (modal, overlay)
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: ColorsTheme.blue100,
+
+  buttonGoBack: {
+    width: 60,
+    height: 60,
+    borderRadius: 15,
+    backgroundColor: ColorsTheme.blue200,
+    position: 'absolute',
+    top: 5,
+    left: 5,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   welcomeContainer: {
     flex: 1,
@@ -282,7 +299,6 @@ const styles = StyleSheet.create({
     flex: 1,
     position: 'relative',
   },
-  // Estilos genéricos para os modais
   overlay: {
     position: 'absolute',
     top: 0, left: 0, right: 0, bottom: 0,

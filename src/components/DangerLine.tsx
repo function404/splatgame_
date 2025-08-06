@@ -49,13 +49,13 @@ const styles = StyleSheet.create({
   line: {
     width: '100%',
     height: 3,
-    backgroundColor: ColorsTheme.red300,
+    backgroundColor: ColorsTheme.red,
     marginBottom: 5,
   },
   text: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: ColorsTheme.red300,
+    color: ColorsTheme.red,
     letterSpacing: 1,
   },
 })

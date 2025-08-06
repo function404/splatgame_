@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
+
 import { User, LeaderboardEntry } from '@/src/types/game'
 
 const USER_KEY = 'user_data'
