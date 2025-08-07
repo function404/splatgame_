@@ -4,11 +4,11 @@
     "slug": "splatgame_",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/senac-icon.png",
+    "icon": "./assets/images/homeBackground.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/senac-icon.png",
+      "image": "./assets/images/homeBackground.png",
       "resizeMode": "contain",
       "backgroundColor": "#F0F9FF"
     },
@@ -18,14 +18,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/senac-icon.png",
+        "foregroundImage": "./assets/images/homeBackground.png",
         "backgroundColor": "#F0F9FF"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.zfunction404.splatgame_"
     },
     "web": {
-      "favicon": "./assets/images/senac-icon.png"
+      "favicon": "./assets/images/homeBackground.png"
     },
     "plugins": [
       "expo-font"

@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Animated, Image, ImageBackground, StatusBar, StyleSheet, Text, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import * as Font from 'expo-font'
 import { Asset } from 'expo-asset'
 
 import { IAppLoaderProps } from '@/src/containers/AppLoaderComponent.types'
 
 import { ColorsTheme } from '@/src/theme/colors'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
 type LoadingStage = 'companySplash' | 'assetLoading' | 'ready'
 
@@ -25,6 +25,8 @@ export const AppLoader: React.FC<IAppLoaderProps> = ({ children }) => {
       require('@/assets/images/fase1.png'),
       require('@/assets/images/fase2-menu.png'),
       require('@/assets/images/fase2.png'),
+      require('@/assets/images/fase3-menu.png'),
+      require('@/assets/images/fase3.png'),
       require('@/assets/images/homeBackground.png'),
       require('@/assets/images/nuvem-header.png'),
       require('@/assets/images/senac-icon.png'),
@@ -113,7 +115,7 @@ export const AppLoader: React.FC<IAppLoaderProps> = ({ children }) => {
    if (loadingStage === 'companySplash') {
       return (
          <View style={styles.splashContainer}>
-            <StatusBar backgroundColor={ColorsTheme.black} />
+            <StatusBar backgroundColor={ColorsTheme.black} barStyle="light-content" />
             
             <Animated.View style={[styles.logoContainer, { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }]}>
                <Image source={companyLogo} style={styles.logo} resizeMode="contain" />
@@ -124,12 +126,13 @@ export const AppLoader: React.FC<IAppLoaderProps> = ({ children }) => {
 
    if (loadingStage === 'assetLoading') {
       return (
-         <SafeAreaView style={{ flex: 1, backgroundColor: ColorsTheme.brown100 }}>
+         <SafeAreaView style={{ flex: 1, backgroundColor: ColorsTheme.orange100 }}>
             <ImageBackground 
                source={require('@/assets/images/homeBackground.png')}
                style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
                resizeMode='cover'
             >
+               <StatusBar backgroundColor={ColorsTheme.orange100} barStyle='dark-content' />
                <View style={styles.container}>
                   <View style={styles.content}>
                      <Text style={styles.textLoading}>
@@ -140,7 +143,7 @@ export const AppLoader: React.FC<IAppLoaderProps> = ({ children }) => {
                         style={{
                            width: interpolatedWidth,
                            height: '100%',
-                           backgroundColor: ColorsTheme.blue200,
+                           backgroundColor: ColorsTheme.blue300,
                            position: 'absolute',
                            left: 0,
                            top: 0,
@@ -184,10 +187,10 @@ const styles = StyleSheet.create({
    content: {
       width: '100%',
       height: 40,
-      backgroundColor: ColorsTheme.blue100,
+      backgroundColor: ColorsTheme.blue200,
       borderTopWidth: 4,
       borderBottomWidth: 4,
-      borderColor: ColorsTheme.brown100,
+      borderColor: ColorsTheme.orange100,
       overflow: 'hidden',
       display: 'flex',
       justifyContent: 'center',
@@ -195,11 +198,11 @@ const styles = StyleSheet.create({
    },
    textLoading: {
       fontSize: 24,
-      color: ColorsTheme.blue400,
+      color: ColorsTheme.white,
       fontWeight: '600',
       fontFamily: 'PixelifySans-Bold',
       textAlign: 'center',
-      textShadowColor: ColorsTheme.orange100,
+      textShadowColor: ColorsTheme.black,
       textShadowOffset: { width: 1, height: 2 },
       textShadowRadius: 5,
       zIndex: 2,

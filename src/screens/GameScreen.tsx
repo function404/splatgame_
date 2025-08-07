@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { View, StyleSheet, ImageBackground, TouchableOpacity, Text } from 'react-native'
+import { View, StyleSheet, ImageBackground, TouchableOpacity, Text, StatusBar } from 'react-native'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { RotateCcw, House } from 'lucide-react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { GameHeader } from '@/src/components/GameHeader'
 import { FallingObject } from '@/src/components/FallingObject'
@@ -9,15 +10,10 @@ import { DangerLine } from '@/src/components/DangerLine'
 import { StageSelector } from '@/src/components/StageSelector'
 
 import { STAGES } from '@/src/config/stages'
-
 import { useGameEngine } from '@/src/hooks/useGameEngine'
-
 import { TNavigationProp } from '@/src/navigation/types'
-
 import { LocalStorageService } from '@/src/services/localStorage'
-
 import { ColorsTheme } from '@/src/theme/colors'
-
 import { User } from '@/src/types/game'
 
 export default function GameScreen() {
@@ -34,6 +30,8 @@ export default function GameScreen() {
   const [showGameOverModal, setShowGameOverModal] = useState(false)
   const [unlockedStages, setUnlockedStages] = useState<number[]>([1])
   const [newlyUnlockedStage, setNewlyUnlockedStage] = useState<number | null>(null)
+
+  // O useFocusEffect para a StatusBar foi removido daqui pois vamos renderizá-la diretamente
 
   const loadUserProgress = useCallback(async () => {
     const mockUserId = 'user_123'
@@ -135,87 +133,87 @@ export default function GameScreen() {
 
   if (!gameState.isPlaying && !gameState.isGameOver && !gameState.isStageComplete) {
     return (
-      <StageSelector
-        unlockedStages={unlockedStages}
-        newlyUnlockedStage={newlyUnlockedStage}
-        onStartGame={handleStartGame}
-        onGoBack={() => navigation.goBack()}
-      />
+      <SafeAreaView style={{ flex: 1, backgroundColor: ColorsTheme.blue300 }}>
+        <StatusBar backgroundColor={ColorsTheme.blue300} barStyle="light-content" />
+        <StageSelector
+          unlockedStages={unlockedStages}
+          newlyUnlockedStage={newlyUnlockedStage}
+          onStartGame={handleStartGame}
+          onGoBack={() => navigation.goBack()}
+        />
+      </SafeAreaView>
     )
   }
 
   return (
-    <ImageBackground 
-      source={currentStageConfig.backgroundImage} 
-      style={styles.gameArea}
-      resizeMode="cover"
-    >
-      <GameHeader 
-        score={gameState.score} 
-        level={gameState.level} 
-        lives={gameState.lives} 
-      />
+    <SafeAreaView style={{ flex: 1, backgroundColor: ColorsTheme.blue300 }}>
+      <StatusBar backgroundColor={ColorsTheme.blue300} barStyle="light-content" />
+      <ImageBackground 
+        source={currentStageConfig.backgroundImage} 
+        style={styles.gameArea}
+        resizeMode="cover"
+      >
+        <GameHeader 
+          score={gameState.score} 
+          level={gameState.level} 
+          lives={gameState.lives} 
+        />
 
-      {gameState.objects.map(object => (
-        <FallingObject key={object.id} object={object} onTap={tapObject} />
-      ))}
+        {gameState.objects.map(object => (
+          <FallingObject key={object.id} object={object} onTap={tapObject} />
+        ))}
 
-      <DangerLine y={DANGER_LINE_Y} width={SCREEN_WIDTH} />
+        <DangerLine y={DANGER_LINE_Y} width={SCREEN_WIDTH} />
 
-      {/* Modal de Fase Completa */}
-      {gameState.isStageComplete && !gameState.isGameComplete && (
-        <View style={styles.overlay}>
-          <View style={styles.modal}>
-            <Text style={styles.modalTitle}>Fase Concluída!</Text>
-            <Text style={styles.finalScore}>Você completou a fase "{currentStageConfig.name}"</Text>
-            <Text style={styles.levelReached}>Pontuação: {gameState.score}</Text>
-
-            <TouchableOpacity style={styles.playAgainButton} onPress={handleBackToMenu}>
-              <Text style={styles.playAgainText}>Continuar</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
-
-      {/* Modal de Jogo Completo */}
-      {gameState.isGameComplete && (
-        <View style={styles.overlay}>
-          <View style={styles.modal}>
-            <Text style={styles.modalTitle}>Parabéns!</Text>
-            <Text style={styles.finalScore}>Você concluiu todos os desafios!</Text>
-            <Text style={styles.levelReached}>Pontuação Final: {gameState.score}</Text>
-
-            <TouchableOpacity style={styles.homeButton} onPress={handleGoHome}>
-              <House size={20} color={ColorsTheme.blue200} />
-              <Text style={styles.homeButtonText}>Voltar ao Início</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
-
-      {/* Modal de Fim de Jogo */}
-      {showGameOverModal && (
-        <View style={styles.overlay}>
-          <View style={styles.modal}>
-            <Text style={styles.modalTitle}>Fim de jogo!</Text>
-            <Text style={styles.finalScore}>Pontuação final: {gameState.score}</Text>
-            <Text style={styles.levelReached}>Fase alcançada: {gameState.currentStage}</Text>
-            
-            <View style={styles.modalButtons}>
-              <TouchableOpacity style={styles.playAgainButton} onPress={handleNewGameFromModal}>
-                <RotateCcw size={20} color={ColorsTheme.white} />
-                <Text style={styles.playAgainText}>Tentar novamente</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.homeButton} onPress={handleGoHome}>
-                <House size={20} color={ColorsTheme.blue200} />
-                <Text style={styles.homeButtonText}>Início</Text>
+        {/* Modais */}
+        {gameState.isStageComplete && !gameState.isGameComplete && (
+          <View style={styles.overlay}>
+            <View style={styles.modal}>
+              <Text style={styles.modalTitle}>Fase Concluída!</Text>
+              <Text style={styles.finalScore}>Você completou a fase "{currentStageConfig.name}"</Text>
+              <Text style={styles.levelReached}>Pontuação: {gameState.score}</Text>
+              <TouchableOpacity style={styles.playAgainButton} onPress={handleBackToMenu}>
+                <Text style={styles.playAgainText}>Continuar</Text>
               </TouchableOpacity>
             </View>
           </View>
-        </View>
-      )}
-    </ImageBackground>
+        )}
+
+        {gameState.isGameComplete && (
+          <View style={styles.overlay}>
+            <View style={styles.modal}>
+              <Text style={styles.modalTitle}>Parabéns!</Text>
+              <Text style={styles.finalScore}>Você concluiu todos os desafios!</Text>
+              <Text style={styles.levelReached}>Pontuação Final: {gameState.score}</Text>
+              <TouchableOpacity style={styles.homeButton} onPress={handleGoHome}>
+                <House size={20} color={ColorsTheme.blue200} />
+                <Text style={styles.homeButtonText}>Voltar ao Início</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+
+        {showGameOverModal && (
+          <View style={styles.overlay}>
+            <View style={styles.modal}>
+              <Text style={styles.modalTitle}>Fim de jogo!</Text>
+              <Text style={styles.finalScore}>Pontuação final: {gameState.score}</Text>
+              <Text style={styles.levelReached}>Fase alcançada: {gameState.currentStage}</Text>
+              <View style={styles.modalButtons}>
+                <TouchableOpacity style={styles.playAgainButton} onPress={handleNewGameFromModal}>
+                  <RotateCcw size={20} color={ColorsTheme.white} />
+                  <Text style={styles.playAgainText}>Tentar novamente</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.homeButton} onPress={handleGoHome}>
+                  <House size={20} color={ColorsTheme.blue200} />
+                  <Text style={styles.homeButtonText}>Início</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        )}
+      </ImageBackground>
+    </SafeAreaView>
   )
 }
 
@@ -229,6 +227,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 10,
   },
   modal: {
     backgroundColor: ColorsTheme.white,
