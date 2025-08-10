@@ -27,6 +27,8 @@ export const AppLoader: React.FC<IAppLoaderProps> = ({ children }) => {
       require('@/assets/images/fase2.png'),
       require('@/assets/images/fase3-menu.png'),
       require('@/assets/images/fase3.png'),
+      require('@/assets/images/fase4-menu.png'),
+      require('@/assets/images/fase4.png'),
       require('@/assets/images/homeBackground.png'),
       require('@/assets/images/nuvem-header.png'),
       require('@/assets/images/senac-icon.png'),

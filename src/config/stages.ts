@@ -27,6 +27,16 @@ import SkeletonSvg from '@/assets/images/fase3svgs/esqueleto.svg'
 import HospitalSvg from '@/assets/images/fase3svgs/hospital.svg'
 import RemedySvg from '@/assets/images/fase3svgs/remedio.svg'
 import VirusSvg from '@/assets/images/fase3svgs/virus.svg'
+
+// stage 4
+import CSvg from '@/assets/images/fase4svgs/c.svg'
+import CssSvg from '@/assets/images/fase4svgs/css.svg'
+import HtmlSvg from '@/assets/images/fase4svgs/html.svg'
+import JavaSvg from '@/assets/images/fase4svgs/java.svg'
+import ReactSvg from '@/assets/images/fase4svgs/react.svg'
+import RubySvg from '@/assets/images/fase4svgs/ruby.svg'
+import BugSvg from '@/assets/images/fase4svgs/bug.svg'
+
 export interface StageObject {
    svg: React.FC<SvgProps>
    points: number
@@ -66,7 +76,7 @@ export const STAGES: StageConfig[] = [
             { svg: EggSvg, points: 10, type: 'normal' },
             { svg: BreadSvg, points: 5, type: 'normal' },
          ],
-         golden: { svg: HamburgerSvg, points: 80, type: 'golden' },
+         golden: { svg: HamburgerSvg, points: 1000, type: 'golden' },
          bomb: { svg: RottenFoodSvg, points: -50, type: 'bomb' },
       },
    },
@@ -86,7 +96,7 @@ export const STAGES: StageConfig[] = [
             { svg: ClipboardSvg, points: 15, type: 'normal' },
             { svg: BookSvg, points: 10, type: 'normal' },
          ],
-         golden: { svg: IdeaSvg, points: 100, type: 'golden' },
+         golden: { svg: IdeaSvg, points: 1000, type: 'golden' },
          bomb: { svg: NegativeGraphSvg, points: -60, type: 'bomb' }, 
       },
    },
@@ -106,7 +116,7 @@ export const STAGES: StageConfig[] = [
             { svg: RedCrossSvg, points: 20, type: 'normal' },
             { svg: BloodBagSvg, points: 15, type: 'normal' },
          ],
-         golden: { svg: RemedySvg, points: 120, type: 'golden' },
+         golden: { svg: RemedySvg, points: 1000, type: 'golden' },
          bomb: { svg: VirusSvg, points: -75, type: 'bomb' },
       },
    },
@@ -114,17 +124,20 @@ export const STAGES: StageConfig[] = [
       level: 4,
       name: 'Análise e Des. de Sistemas',
       scoreThreshold: 3500,
-      backgroundImage: require('@/assets/images/homeBackground.png'), // fase4
-      backgroundStageImage:require('@/assets/images/fase2-menu.png'), // 4
+      backgroundImage: require('@/assets/images/fase4.png'),
+      backgroundStageImage:require('@/assets/images/fase4-menu.png'),
       speedModifier: 1.35,
       spawnRateModifier: 1.14,
       objects: {
          normal: [
-            { svg: HamburgerSvg, points: 40, type: 'normal' },
-            { svg: HamburgerSvg, points: 35, type: 'normal' },
+            { svg: CSvg, points: 35, type: 'normal' },
+            { svg: CssSvg, points: 30, type: 'normal' },
+            { svg: HtmlSvg, points: 25, type: 'normal' },
+            { svg: JavaSvg, points: 25, type: 'normal' },
+            { svg: RubySvg, points: 20, type: 'normal' },
          ],
-         golden: { svg: HamburgerSvg, points: 150, type: 'golden' },
-         bomb: { svg: RottenFoodSvg, points: -90, type: 'bomb' },
+         golden: { svg: ReactSvg, points: 150, type: 'golden' },
+         bomb: { svg: BugSvg, points: -90, type: 'bomb' },
       },
    },
    {
