@@ -1,7 +1,8 @@
 import React, { useState, useCallback } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Alert, TextInput, ImageBackground } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Alert, TextInput, ImageBackground, StatusBar } from 'react-native'
 import { Play, Bolt, Trophy, RotateCcw, Save } from 'lucide-react-native'
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { TNavigationProp } from '@/src/navigation/types'
 
@@ -89,101 +90,104 @@ export default function HomeScreen() {
   }
 
   return (
-    <ImageBackground 
-      source={require('@/assets/images/homeBackground.png')}
-      resizeMode='cover'
-      style={{ flex: 1 }} 
-    >
-      <View style={styles.header}>
-        <Text style={styles.title}>
-          Splat
+    <SafeAreaView style={{ flex: 1, backgroundColor: ColorsTheme.orange100 }}>
+      <StatusBar backgroundColor={ColorsTheme.orange100} barStyle="light-content" />
+      <ImageBackground 
+        source={require('@/assets/images/homeBackground.png')}
+        resizeMode='cover'
+        style={{ flex: 1 }} 
+      >
+        <View style={styles.header}>
+          <Text style={styles.title}>
+            Splat
 
-          <Text style={styles.titleGame}>
-            {` Game`}
-          </Text>
-        </Text>
-
-        {user ? (
-          <Text style={styles.subtitle}>
-            Tente a sorte,
-
-            <Text style={styles.subtitleUser}>
-              {` ${user.username}!`}
+            <Text style={styles.titleGame}>
+              {` Game`}
             </Text>
           </Text>
-        ) : (
-          <Text style={styles.subtitle}>Defina seu nome para começar</Text>
-        )}
-      </View>
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Digite seu nome de jogador"
-          value={usernameInput}
-          onChangeText={setUsernameInput}
-          placeholderTextColor={ColorsTheme.grey300}
-          maxLength={22}
-        />
-        <TouchableOpacity style={styles.saveButton} onPress={handleSaveUsername}>
-          <Save size={20} color={ColorsTheme.white} />
-        </TouchableOpacity>
-      </View>
+          {user ? (
+            <Text style={styles.subtitle}>
+              Tente a sorte,
 
-      {user && (
-        <View style={styles.statsContainer}>
-          <View style={styles.statBox}>
-            <Text style={styles.statLabel}>Recorde</Text>
-            <Text style={styles.statValue}>{user.highScore}</Text>
-          </View>
+              <Text style={styles.subtitleUser}>
+                {` ${user.username}!`}
+              </Text>
+            </Text>
+          ) : (
+            <Text style={styles.subtitle}>Defina seu nome para começar</Text>
+          )}
         </View>
-      )}
 
-      <TouchableOpacity 
-        onPress={handleResetData}
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          paddingVertical: 16,
-          borderRadius: 12,
-          gap: 8,
-          marginHorizontal: 16,
-          backgroundColor: ColorsTheme.red100,
-          borderWidth: 2,
-          borderColor: ColorsTheme.red200,      
-        }} 
-        activeOpacity={0.8}
-      >
-        <RotateCcw size={20} color={ColorsTheme.red300} />
-        <Text style={styles.resetButtonText}>Resetar Jogo</Text>
-      </TouchableOpacity>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Digite seu nome de jogador"
+            value={usernameInput}
+            onChangeText={setUsernameInput}
+            placeholderTextColor={ColorsTheme.grey300}
+            maxLength={22}
+          />
+          <TouchableOpacity style={styles.saveButton} onPress={handleSaveUsername}>
+            <Save size={20} color={ColorsTheme.white} />
+          </TouchableOpacity>
+        </View>
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity 
-          onPress={() => Alert.alert('Settings', 'Configurações em breve!')}
-          style={styles.buttonSide}
-          activeOpacity={0.8} 
-        >
-          <Bolt size={24} color={ColorsTheme.white}/>
-        </TouchableOpacity>
-
-        <TouchableOpacity activeOpacity={0.8} onPress={handlePlayPress}
-          style={styles.buttonCenter}
-        >
-          <Play size={42} color={ColorsTheme.white}/>
-          <Text style={styles.playButtonText}>Jogar</Text>
-        </TouchableOpacity>
+        {user && (
+          <View style={styles.statsContainer}>
+            <View style={styles.statBox}>
+              <Text style={styles.statLabel}>Recorde</Text>
+              <Text style={styles.statValue}>{user.highScore}</Text>
+            </View>
+          </View>
+        )}
 
         <TouchableOpacity 
-          onPress={handleLeaderboardPress}
-          style={styles.buttonSide}
-          activeOpacity={0.8} 
+          onPress={handleResetData}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingVertical: 16,
+            borderRadius: 12,
+            gap: 8,
+            marginHorizontal: 16,
+            backgroundColor: ColorsTheme.red100,
+            borderWidth: 2,
+            borderColor: ColorsTheme.red200,      
+          }} 
+          activeOpacity={0.8}
         >
-          <Trophy size={24} color={ColorsTheme.white} />
+          <RotateCcw size={20} color={ColorsTheme.red300} />
+          <Text style={styles.resetButtonText}>Resetar Jogo</Text>
         </TouchableOpacity>
-      </View>
-    </ImageBackground>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity 
+            onPress={() => Alert.alert('Settings', 'Configurações em breve!')}
+            style={styles.buttonSide}
+            activeOpacity={0.8} 
+          >
+            <Bolt size={24} color={ColorsTheme.white}/>
+          </TouchableOpacity>
+
+          <TouchableOpacity activeOpacity={0.8} onPress={handlePlayPress}
+            style={styles.buttonCenter}
+          >
+            <Play size={42} color={ColorsTheme.white}/>
+            <Text style={styles.playButtonText}>Jogar</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            onPress={handleLeaderboardPress}
+            style={styles.buttonSide}
+            activeOpacity={0.8} 
+          >
+            <Trophy size={24} color={ColorsTheme.white} />
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
+    </SafeAreaView>
 
   )
 }

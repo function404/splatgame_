@@ -52,12 +52,12 @@ const textShadow = {
 const styles = StyleSheet.create({
   container: {
     zIndex: 100,
-    height: 120,
+    height: 115,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    marginTop: -10,
+    marginTop: -2,
   },
   leftSection: {
     marginTop: -25,
