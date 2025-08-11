@@ -1,78 +1,91 @@
-import React, { useState, useCallback } from 'react'
-import { View, Text, FlatList, StyleSheet, RefreshControl, TouchableOpacity, StatusBar, ImageBackground } from 'react-native'
-import { useFocusEffect, useNavigation } from '@react-navigation/native'
-import { Trophy, Medal, Award, Undo2 } from 'lucide-react-native'
+import React, { useState, useCallback } from 'react';
+import { View, Text, FlatList, StyleSheet, RefreshControl, TouchableOpacity, StatusBar, ImageBackground, ActivityIndicator, Alert } from 'react-native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { Trophy, Medal, Award, Undo2 } from 'lucide-react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { TNavigationProp } from '@/src/navigation/types'
+import { db } from '@/src/firebase/config';
+import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 
-import { LocalStorageService } from '@/src/services/localStorage'
+import { TNavigationProp } from '@/src/navigation/types';
+import { User } from '@/src/types/game';
+import { ColorsTheme } from '@/src/theme/colors';
 
-import { LeaderboardEntry } from '@/src/types/game'
-
-import { ColorsTheme } from '@/src/theme/colors'
-import { SafeAreaView } from 'react-native-safe-area-context'
+type LeaderboardEntry = Pick<User, 'userId' | 'username' | 'highScore'>;
 
 export default function LeaderboardScreen() {
-  const navigation = useNavigation<TNavigationProp>()
-  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [refreshing, setRefreshing] = useState(false)
+  const navigation = useNavigation<TNavigationProp>();
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const loadLeaderboard = async () => {
+  const loadLeaderboard = useCallback(async () => {
     try {
-      const topScores = await LocalStorageService.getTopScores(20)
-      setLeaderboard(topScores)
+      const usersCollectionRef = collection(db, 'users');
+
+      const q = query(usersCollectionRef, orderBy('highScore', 'desc'), limit(20));
+
+      const querySnapshot = await getDocs(q);
+
+      const topScores = querySnapshot.docs.map(doc => ({
+        userId: doc.id,
+        ...doc.data(),
+      })) as LeaderboardEntry[];
+
+      setLeaderboard(topScores);
+
     } catch (error) {
-      console.error('Error loading leaderboard:', error)
+      console.error('Erro ao carregar o placar:', error);
+      Alert.alert("Erro", "Não foi possível carregar a classificação.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
-      loadLeaderboard()
+      setIsLoading(true);
+      loadLeaderboard();
     }, [loadLeaderboard])
-  )
+  );
 
   const onRefresh = async () => {
-    setRefreshing(true)
-    await loadLeaderboard()
-    setRefreshing(false)
-  }
+    setRefreshing(true);
+    await loadLeaderboard();
+    setRefreshing(false);
+  };
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
-        return <Trophy size={28} color={ColorsTheme.yellow100} />
+        return <Trophy size={28} color={ColorsTheme.yellow100} />;
       case 2:
-        return <Medal size={28} color={ColorsTheme.grey250} />
+        return <Medal size={28} color={ColorsTheme.grey250} />;
       case 3:
-        return <Award size={28} color={ColorsTheme.brown100} />
+        return <Award size={28} color={ColorsTheme.brown100} />;
       default:
         return (
           <View style={styles.rankNumber}>
             <Text style={styles.rankNumberText}>{rank}</Text>
           </View>
-        )
+        );
     }
-  }
+  };
 
   const renderLeaderboardItem = ({ item, index }: { item: LeaderboardEntry; index: number }) => {
-    const rank = index + 1
-    const date = new Date(item.timestamp)
-    
+    const rank = index + 1;
+
     const borderColor =
       rank === 1 ? ColorsTheme.yellow100 :
-      rank === 2 ? ColorsTheme.grey250 :
-      rank === 3 ? ColorsTheme.brown100 :
-      ColorsTheme.orange100
+        rank === 2 ? ColorsTheme.grey250 :
+          rank === 3 ? ColorsTheme.brown100 :
+            ColorsTheme.orange100;
 
     return (
       <View style={[
-        styles.leaderboardItem, 
-        { 
-          borderLeftWidth: rank <= 3 ? 5 : 2, 
+        styles.leaderboardItem,
+        {
+          borderLeftWidth: rank <= 3 ? 5 : 2,
           borderLeftColor: borderColor,
           borderBottomWidth: rank <= 3 ? 5 : 2,
           borderBottomColor: borderColor
@@ -81,38 +94,19 @@ export default function LeaderboardScreen() {
         <View style={styles.rankContainer}>
           {getRankIcon(rank)}
         </View>
-        
+
         <View style={styles.playerInfo}>
           <Text style={styles.playerName}>{item.username}</Text>
-          <Text style={styles.scoreText}>{item.score.toLocaleString()} pts</Text>
-        </View>
-        
-        <View style={styles.dateContainer}>
-          <Text style={styles.dateText}>
-            {!isNaN(date.getTime()) ? date.toLocaleDateString() : 'Data inválida'}
-          </Text>
+          <Text style={styles.scoreText}>{item.highScore.toLocaleString()} pts</Text>
         </View>
       </View>
-    )
-  }
-
-  if (isLoading) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Classificação</Text>
-        </View>
-        <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>Carregando pontuações...</Text>
-        </View>
-      </View>
-    )
-  }
+    );
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: ColorsTheme.orange100 }}>
       <StatusBar backgroundColor={ColorsTheme.orange100} barStyle="light-content" />
-      <ImageBackground 
+      <ImageBackground
         source={require('@/assets/images/homeBackground.png')}
         style={styles.container}
         resizeMode='cover'
@@ -129,7 +123,12 @@ export default function LeaderboardScreen() {
           <Text style={styles.subtitle}>Melhores jogadores</Text>
         </View>
 
-        {leaderboard.length === 0 ? (
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={ColorsTheme.white} />
+            <Text style={styles.loadingText}>Carregando pontuações...</Text>
+          </View>
+        ) : leaderboard.length === 0 ? (
           <View style={styles.emptyContainer}>
             <Trophy size={48} color={ColorsTheme.yellow100} />
             <Text style={styles.emptyTitle}>Sem pontuações ainda</Text>
@@ -139,23 +138,27 @@ export default function LeaderboardScreen() {
           <FlatList
             data={leaderboard}
             renderItem={renderLeaderboardItem}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.userId}
             contentContainerStyle={styles.listContainer}
             refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                tintColor={ColorsTheme.white}
+              />
             }
           />
         )}
-      </ImageBackground> 
+      </ImageBackground>
     </SafeAreaView>
-  )
+  );
 }
 
 const textShadow = {
   textShadowColor: 'rgba(0, 0, 0, 0.75)',
-  textShadowOffset: {width: -1, height: 1},
+  textShadowOffset: { width: -1, height: 1 },
   textShadowRadius: 3
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -168,10 +171,11 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     backgroundColor: ColorsTheme.blue200,
     position: 'absolute',
-    top: 5,
-    left: 5,
+    top: 30, // Ajustado para SafeAreaView
+    left: 10,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    zIndex: 10,
   },
   header: {
     alignItems: 'center',
@@ -200,8 +204,10 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 16,
-    color: ColorsTheme.grey300,
+    color: ColorsTheme.white,
     fontFamily: 'PixelifySans-Regular',
+    marginTop: 10,
+    ...textShadow
   },
   emptyContainer: {
     justifyContent: 'center',
@@ -225,17 +231,16 @@ const styles = StyleSheet.create({
     ...textShadow
   },
   listContainer: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingBottom: 20,
   },
   leaderboardItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: ColorsTheme.white,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
     padding: 16,
     marginBottom: 12,
-    // borderWidth: 2,
-    // borderColor: ColorsTheme.orange100,
-    // borderBottomWidth: 5,
+    borderRadius: 5,
   },
   rankContainer: {
     width: 40,
@@ -250,6 +255,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 2,
     borderColor: ColorsTheme.blue200,
+    borderRadius: 14,
   },
   rankNumberText: {
     fontSize: 14,
@@ -271,12 +277,4 @@ const styles = StyleSheet.create({
     color: ColorsTheme.blue200,
     marginTop: 2,
   },
-  dateContainer: {
-    alignItems: 'flex-end',
-  },
-  dateText: {
-    fontSize: 12,
-    fontFamily: 'PixelifySans-Regular',
-    color: ColorsTheme.blue400,
-  },
-})
+});

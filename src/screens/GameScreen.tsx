@@ -1,136 +1,152 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { View, StyleSheet, ImageBackground, TouchableOpacity, Text, StatusBar } from 'react-native'
-import { useFocusEffect, useNavigation } from '@react-navigation/native'
-import { RotateCcw, House } from 'lucide-react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, StyleSheet, ImageBackground, TouchableOpacity, Text, StatusBar, Alert } from 'react-native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { RotateCcw, House } from 'lucide-react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { GameHeader } from '@/src/components/GameHeader'
-import { FallingObject } from '@/src/components/FallingObject'
-import { DangerLine } from '@/src/components/DangerLine'
-import { StageSelector } from '@/src/components/StageSelector'
+import { auth, db } from '@/src/firebase/config';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
-import { STAGES } from '@/src/config/stages'
-import { useGameEngine } from '@/src/hooks/useGameEngine'
-import { TNavigationProp } from '@/src/navigation/types'
-import { LocalStorageService } from '@/src/services/localStorage'
-import { ColorsTheme } from '@/src/theme/colors'
-import { User } from '@/src/types/game'
+import { GameHeader } from '@/src/components/GameHeader';
+import { FallingObject } from '@/src/components/FallingObject';
+import { DangerLine } from '@/src/components/DangerLine';
+import { StageSelector } from '@/src/components/StageSelector';
+
+import { STAGES } from '@/src/config/stages';
+import { useGameEngine } from '@/src/hooks/useGameEngine';
+import { TNavigationProp } from '@/src/navigation/types';
+import { ColorsTheme } from '@/src/theme/colors';
+import { User } from '@/src/types/game';
 
 export default function GameScreen() {
-  const navigation = useNavigation<TNavigationProp>()
-  const { 
-    gameState, 
-    startGame, 
-    resetGame, 
-    tapObject, 
-    DANGER_LINE_Y, 
-    SCREEN_WIDTH, 
-  } = useGameEngine()
-  
-  const [showGameOverModal, setShowGameOverModal] = useState(false)
-  const [unlockedStages, setUnlockedStages] = useState<number[]>([1])
-  const [newlyUnlockedStage, setNewlyUnlockedStage] = useState<number | null>(null)
+  const navigation = useNavigation<TNavigationProp>();
+  const {
+    gameState,
+    startGame,
+    resetGame,
+    tapObject,
+    DANGER_LINE_Y,
+    SCREEN_WIDTH,
+  } = useGameEngine();
 
-  // O useFocusEffect para a StatusBar foi removido daqui pois vamos renderizá-la diretamente
+  const [showGameOverModal, setShowGameOverModal] = useState(false);
+  const [unlockedStages, setUnlockedStages] = useState<number[]>([1]);
+  const [newlyUnlockedStage, setNewlyUnlockedStage] = useState<number | null>(null);
 
   const loadUserProgress = useCallback(async () => {
-    const mockUserId = 'user_123'
-    const user: User | null = await LocalStorageService.getUser(mockUserId)
-    let unlocked: number[] = [1]
-    if (user) {
-      const unlockedFromScore = STAGES
-        .filter(stage => user.highScore >= stage.scoreThreshold)
-        .map(stage => stage.level)
-      
-      const allUnlocked = new Set([1, ...unlockedFromScore])
-      unlocked = Array.from(allUnlocked)
+    const firebaseUser = auth.currentUser;
+    if (!firebaseUser) return [1];
+
+    try {
+      const userDocRef = doc(db, "users", firebaseUser.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      let unlocked: number[] = [1];
+      if (userDoc.exists()) {
+        const userData = userDoc.data() as User;
+        const unlockedFromScore = STAGES
+          .filter(stage => userData.highScore >= stage.scoreThreshold)
+          .map(stage => stage.level);
+
+        const allUnlocked = new Set([1, ...unlockedFromScore]);
+        unlocked = Array.from(allUnlocked);
+      }
+      setUnlockedStages(unlocked);
+      return unlocked;
+    } catch (error) {
+      console.error("Erro ao carregar progresso do usuário:", error);
+      return [1];
     }
-    setUnlockedStages(unlocked)
-    return unlocked
-  }, [])
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
-      loadUserProgress()
+      loadUserProgress();
     }, [loadUserProgress])
-  )
+  );
 
   const saveProgress = useCallback(async (score: number) => {
-    try {
-      const mockUserId = 'user_123'
-      const user = await LocalStorageService.getUser(mockUserId)
-      
-      if (!user) {
-        console.error("Tentativa de salvar progresso sem um usuário logado.")
-        return
-      }
-      
-      await LocalStorageService.updateHighScore(mockUserId, score)
-      await LocalStorageService.addLeaderboardEntry({
-        userId: mockUserId,
-        username: user.username,
-        score: score,
-      })
-    } catch (error) {
-      console.error('Error saving game data:', error)
+    const firebaseUser = auth.currentUser;
+    if (!firebaseUser) {
+      console.error("Tentativa de salvar progresso sem um usuário logado.");
+      return;
     }
-  }, [])
+
+    try {
+      const userDocRef = doc(db, "users", firebaseUser.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (userDoc.exists()) {
+        const currentHighScore = userDoc.data().highScore || 0;
+        if (score > currentHighScore) {
+          await updateDoc(userDocRef, {
+            highScore: score
+          });
+          console.log(`Novo recorde salvo: ${score}`);
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao salvar dados do jogo:', error);
+      Alert.alert("Erro", "Não foi possível salvar seu progresso.");
+    }
+  }, []);
 
   useEffect(() => {
     if (gameState.isGameOver && !showGameOverModal) {
-      setShowGameOverModal(true)
-      saveProgress(gameState.score)
+      setShowGameOverModal(true);
+      saveProgress(gameState.score);
     }
-  }, [gameState.isGameOver, gameState.score, saveProgress, showGameOverModal])
+  }, [gameState.isGameOver, gameState.score, saveProgress, showGameOverModal]);
 
   useEffect(() => {
     if (gameState.isStageComplete && !gameState.isGameOver) {
       const handleStageCompletion = async () => {
-        const previouslyUnlocked = unlockedStages
-        
-        await saveProgress(gameState.score)
-        
-        const newlyUnlockedList = await loadUserProgress()
-        
-        const newStageLevel = newlyUnlockedList.find(level => 
-          !previouslyUnlocked.includes(level))
+        const previouslyUnlocked = unlockedStages;
+        await saveProgress(gameState.score);
+        const newlyUnlockedList = await loadUserProgress();
+
+        const newStageLevel = newlyUnlockedList.find(level =>
+          !previouslyUnlocked.includes(level));
 
         if (newStageLevel) {
-          setNewlyUnlockedStage(newStageLevel)
+          setNewlyUnlockedStage(newStageLevel);
         }
-      }
-      handleStageCompletion()
+      };
+      handleStageCompletion();
     }
   }, [
-    gameState.isStageComplete, 
-    gameState.isGameOver, 
-    gameState.score, 
-    saveProgress, 
-    loadUserProgress
-  ])
+    gameState.isStageComplete,
+    gameState.isGameOver,
+    gameState.score,
+    saveProgress,
+    loadUserProgress,
+    unlockedStages
+  ]);
 
   const handleStartGame = (stageLevel: number) => {
-    setNewlyUnlockedStage(null)
-    startGame(stageLevel)
-  }
+    setNewlyUnlockedStage(null);
+    startGame(stageLevel);
+  };
 
   const handleNewGameFromModal = () => {
-    setShowGameOverModal(false)
-    startGame(gameState.currentStage)
-  }
+    setShowGameOverModal(false);
+    startGame(gameState.currentStage);
+  };
 
   const handleGoHome = () => {
-    setShowGameOverModal(false)
-    resetGame()
-    navigation.navigate('Home')
-  }
+    setShowGameOverModal(false);
+    resetGame();
+    navigation.navigate('Home');
+  };
 
   const handleBackToMenu = () => {
-    resetGame()
-  }
+    resetGame();
+  };
 
-  const currentStageConfig = STAGES.find(s => s.level === gameState.currentStage) || STAGES[0]
 
+  const currentStageConfig = STAGES.find(s => s.level === gameState.currentStage) || STAGES[0];
+
+  // Tela de seleção de fase
   if (!gameState.isPlaying && !gameState.isGameOver && !gameState.isStageComplete) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: ColorsTheme.blue300 }}>
@@ -142,30 +158,33 @@ export default function GameScreen() {
           onGoBack={() => navigation.goBack()}
         />
       </SafeAreaView>
-    )
+    );
   }
 
+  // Tela principal do jogo
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: ColorsTheme.blue300 }}>
       <StatusBar backgroundColor={ColorsTheme.blue300} barStyle="light-content" />
-      <ImageBackground 
-        source={currentStageConfig.backgroundImage} 
+      <ImageBackground
+        source={currentStageConfig.backgroundImage}
         style={styles.gameArea}
         resizeMode="cover"
       >
-        <GameHeader 
-          score={gameState.score} 
-          level={gameState.level} 
-          lives={gameState.lives} 
-        />
+        <View style={{ zIndex: 2 }}>
+          <GameHeader
+            score={gameState.score}
+            level={gameState.level}
+            lives={gameState.lives}
+          />
+        </View>
 
-        {gameState.objects.map(object => (
-          <FallingObject key={object.id} object={object} onTap={tapObject} />
-        ))}
-
+        <View style={{ zIndex: 1 }}>
+          {gameState.objects.map(object => (
+            <FallingObject key={object.id} object={{...object, y: object.y - 70}} onTap={tapObject} />
+          ))}
+        </View>
         <DangerLine y={DANGER_LINE_Y} width={SCREEN_WIDTH} />
 
-        {/* Modais */}
         {gameState.isStageComplete && !gameState.isGameComplete && (
           <View style={styles.overlay}>
             <View style={styles.modal}>
@@ -214,7 +233,7 @@ export default function GameScreen() {
         )}
       </ImageBackground>
     </SafeAreaView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -297,4 +316,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: ColorsTheme.blue200,
   },
-})
+});
