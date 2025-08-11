@@ -1,50 +1,51 @@
-import React, { useState, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, ImageBackground, StatusBar, ActivityIndicator } from 'react-native';
-import { Play, Bolt, Trophy, LogOut } from 'lucide-react-native';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState, useCallback } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet, Alert, ImageBackground, StatusBar, ActivityIndicator, Modal, Pressable } from 'react-native'
+import { Play, Bolt, Trophy, LogOut, X, UserIcon, Mail } from 'lucide-react-native'
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
-import { auth, db } from '@/src/firebase/config';
-import { doc, getDoc } from 'firebase/firestore';
-import { signOut } from 'firebase/auth';
+import { auth, db } from '@/src/firebase/config'
+import { doc, getDoc } from 'firebase/firestore'
+import { signOut } from 'firebase/auth'
 
-import { TNavigationProp } from '@/src/navigation/types';
-import { User } from '@/src/types/game';
-import { ColorsTheme } from '@/src/theme/colors';
+import { TNavigationProp } from '@/src/navigation/types'
+import { User } from '@/src/types/game'
+import { ColorsTheme } from '@/src/theme/colors'
 
 export default function HomeScreen() {
-  const navigation = useNavigation<TNavigationProp>();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const navigation = useNavigation<TNavigationProp>()
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [isSettingsModalVisible, setSettingsModalVisible] = useState(false)
 
   const loadUserStats = useCallback(async () => {
-    setLoading(true);
-    const firebaseUser = auth.currentUser;
+    setLoading(true)
+    const firebaseUser = auth.currentUser
 
     if (firebaseUser) {
       try {
-        const userDocRef = doc(db, "users", firebaseUser.uid);
-        const userDoc = await getDoc(userDocRef);
+        const userDocRef = doc(db, "users", firebaseUser.uid)
+        const userDoc = await getDoc(userDocRef)
 
         if (userDoc.exists()) {
-          setUser(userDoc.data() as User);
+          setUser(userDoc.data() as User)
         } else {
-          console.log("Documento do usuário não encontrado no Firestore.");
-          await signOut(auth);
+          console.log("Documento do usuário não encontrado no Firestore.")
+          await signOut(auth)
         }
       } catch (error) {
-        console.error('Erro ao carregar dados do usuário:', error);
-        Alert.alert('Erro', 'Não foi possível carregar seus dados.');
+        console.error('Erro ao carregar dados do usuário:', error)
+        Alert.alert('Erro', 'Não foi possível carregar seus dados.')
       }
     }
-    setLoading(false);
-  }, []);
+    setLoading(false)
+  }, [])
 
   useFocusEffect(
     useCallback(() => {
-      loadUserStats();
+      loadUserStats()
     }, [loadUserStats])
-  );
+  )
 
   const handleLogout = () => {
     Alert.alert(
@@ -57,38 +58,91 @@ export default function HomeScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              await signOut(auth);
-              navigation.navigate('Login'); // Redireciona para a tela de login
+              await signOut(auth)
+              setSettingsModalVisible(false)
+              navigation.navigate('Login')
             } catch (error) {
-              console.error('Erro ao fazer logout:', error);
-              Alert.alert('Erro', 'Não foi possível sair da sua conta.');
+              console.error('Erro ao fazer logout:', error)
+              Alert.alert('Erro', 'Não foi possível sair da sua conta.')
             }
           },
         },
       ]
-    );
-  };
+    )
+  }
 
   const handlePlayPress = () => {
     if (!user) {
-      Alert.alert('Aguarde', 'Carregando dados do usuário...');
-      return;
+      Alert.alert('Aguarde', 'Carregando dados do usuário...')
+      return
     }
-    navigation.navigate('Game');
-  };
-
-  // Mostra um indicador de carregamento enquanto busca os dados
-  if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: ColorsTheme.orange100 }}>
-        <ActivityIndicator size="large" color={ColorsTheme.white} />
-      </View>
-    );
+    navigation.navigate('Game')
   }
 
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: ColorsTheme.orange50 }}>
+        <ActivityIndicator size="large" color={ColorsTheme.white} />
+      </View>
+    )
+  }
+
+  const renderSettingsModal = () => (
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={isSettingsModalVisible}
+      onRequestClose={() => setSettingsModalVisible(false)}
+    >
+      <Pressable 
+        style={styles.modalOverlay} 
+        onPress={() => setSettingsModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Configurações</Text>
+            <TouchableOpacity onPress={() => setSettingsModalVisible(false)}>
+              <X size={24} color={ColorsTheme.blue500} />
+            </TouchableOpacity>
+          </View>
+
+          {user && (
+            <View style={styles.modalContent}>
+              <View style={styles.userInfoContainer}>
+                <UserIcon size={20} color={ColorsTheme.blue500} />
+                <Text style={styles.userInfoText}>{user.username}</Text>
+              </View>
+              <View style={styles.userInfoContainer}>
+                <Mail size={20} color={ColorsTheme.blue500} />
+                <Text style={styles.userInfoText}>{user.email}</Text>
+              </View>
+
+              <View style={styles.statBoxModal}>
+                <Text style={styles.statLabel}>Seu Recorde</Text>
+                <Text style={styles.statValue}>{user.highScore}</Text>
+              </View>
+
+              <TouchableOpacity
+                onPress={handleLogout}
+                style={styles.logoutButton}
+                activeOpacity={0.8}
+              >
+                <LogOut size={20} color={ColorsTheme.red300} />
+                <Text style={styles.logoutButtonText}>Sair da Conta</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+      </Pressable>
+    </Modal>
+  )
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: ColorsTheme.orange100 }}>
-      <StatusBar backgroundColor={ColorsTheme.orange100} barStyle="light-content" />
+    <SafeAreaView style={{ flex: 1, backgroundColor: ColorsTheme.orange50 }}>
+      <StatusBar backgroundColor={ColorsTheme.orange100} barStyle="dark-content" />
+      
+      {renderSettingsModal()}
+
       <ImageBackground
         source={require('@/assets/images/homeBackground.png')}
         resizeMode='cover'
@@ -109,27 +163,9 @@ export default function HomeScreen() {
           )}
         </View>
 
-        {user && (
-          <View style={styles.statsContainer}>
-            <View style={styles.statBox}>
-              <Text style={styles.statLabel}>Recorde</Text>
-              <Text style={styles.statValue}>{user.highScore}</Text>
-            </View>
-          </View>
-        )}
-
-        <TouchableOpacity
-          onPress={handleLogout}
-          style={styles.logoutButton}
-          activeOpacity={0.8}
-        >
-          <LogOut size={20} color={ColorsTheme.red300} />
-          <Text style={styles.logoutButtonText}>Sair da Conta</Text>
-        </TouchableOpacity>
-
         <View style={styles.buttonContainer}>
           <TouchableOpacity
-            onPress={() => Alert.alert('Settings', 'Configurações em breve!')}
+            onPress={() => setSettingsModalVisible(true)}
             style={styles.buttonSide}
             activeOpacity={0.8}
           >
@@ -153,20 +189,20 @@ export default function HomeScreen() {
         </View>
       </ImageBackground>
     </SafeAreaView>
-  );
+  )
 }
 
 const textShadow = {
   textShadowColor: 'rgba(0, 0, 0, 0.75)',
   textShadowOffset: { width: -1, height: 1 },
   textShadowRadius: 3
-};
+}
 
 const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     marginBottom: 20,
-    marginTop: 40,
+    marginTop: 10,
   },
   title: {
     fontSize: 58,
@@ -179,7 +215,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     textAlign: 'center',
-    fontSize: 26,
+    fontSize: 24,
     color: ColorsTheme.orange100,
     fontFamily: 'PixelifySans-Bold',
     paddingHorizontal: 16,
@@ -193,27 +229,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginVertical: 40,
   },
-  statBox: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    padding: 20,
-    borderRadius: 12,
-    alignItems: 'center',
-    minWidth: 140,
-    shadowColor: ColorsTheme.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
+  // statBox: {
+  //   backgroundColor: ColorsTheme.orange50,
+  //   padding: 20,
+  //   borderRadius: 12,
+  //   alignItems: 'center',
+  //   minWidth: 140,
+  //   shadowColor: ColorsTheme.black,
+  //   shadowOffset: { width: 0, height: 2 },
+  //   shadowOpacity: 0.1,
+  //   shadowRadius: 3.84,
+  //   elevation: 5,
+  // },
   statLabel: {
     fontSize: 14,
     color: ColorsTheme.grey300,
     marginBottom: 4,
+    fontFamily: 'PixelifySans-Medium',
   },
   statValue: {
     fontSize: 24,
-    fontWeight: 'bold',
     color: ColorsTheme.blue500,
+    fontFamily: 'PixelifySans-Regular',
   },
   buttonContainer: {
     position: 'absolute',
@@ -248,14 +285,70 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'PixelifySans-Medium',
   },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  },
+  modalContainer: {
+    width: '85%',
+    backgroundColor: ColorsTheme.orange60,
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    shadowColor: ColorsTheme.black,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalHeader: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontFamily: 'PixelifySans-Bold',
+    color: ColorsTheme.blue500,
+  },
+  modalContent: {
+    width: '100%',
+  },
+  userInfoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+    backgroundColor: ColorsTheme.grey100,
+    padding: 10,
+    borderRadius: 8,
+  },
+  userInfoText: {
+    fontSize: 16,
+    fontFamily: 'PixelifySans-Medium',
+    color: ColorsTheme.blue500,
+    marginLeft: 10,
+  },
+  statBoxModal: {
+    backgroundColor: ColorsTheme.grey100,
+    padding: 15,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginVertical: 15,
+  },
   logoutButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 16,
+    paddingVertical: 14,
     borderRadius: 12,
-    gap: 8,
-    marginHorizontal: 24,
+    gap: 10,
     backgroundColor: ColorsTheme.red100,
     borderWidth: 2,
     borderColor: ColorsTheme.red200,
@@ -263,7 +356,7 @@ const styles = StyleSheet.create({
   },
   logoutButtonText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'PixelifySans-Bold',
     color: ColorsTheme.red300,
   },
-});
+})

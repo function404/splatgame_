@@ -1,30 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
-import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
+import React, { useState, useEffect } from 'react'
+import { createStackNavigator } from '@react-navigation/stack'
+import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth'
 
-import { auth } from '@/src/firebase/config';
-import { TRoutesStack } from '@/src/navigation/types';
-import { ROUTES } from '@/src/navigation/routes';
+import { auth } from '@/src/firebase/config'
+import { TRoutesStack } from '@/src/navigation/types'
+import { ROUTES } from '@/src/navigation/routes'
 
-const Stack = createStackNavigator<TRoutesStack>();
+const Stack = createStackNavigator<TRoutesStack>()
 
 /**
  * AppNavigator
  * O componente principal de navegação do aplicativo.
  */
 export const AppNavigator = () => {
-   const [user, setUser] = useState<FirebaseUser | null>(null);
-   const [loading, setLoading] = useState(true);
+   const [user, setUser] = useState<FirebaseUser | null>(null)
+   const [loading, setLoading] = useState(true)
 
    useEffect(() => {
       const unsubscribe = onAuthStateChanged(auth, (authenticatedUser) => {
-         setUser(authenticatedUser);
-         setLoading(false);
-      });
-      return unsubscribe;
-   }, []);
+         setUser(authenticatedUser)
+         setLoading(false)
+      })
 
-   if (loading) return null;
+      return unsubscribe
+   }, [])
+
+   if (loading) return null
 
    return (
       <Stack.Navigator
@@ -40,5 +41,5 @@ export const AppNavigator = () => {
             />
          ))}
       </Stack.Navigator>
-   );
-};
+   )
+}

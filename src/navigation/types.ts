@@ -2,11 +2,11 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { ComponentType } from 'react'
 
 export type TRoutesStack = {
+  Game: undefined
+  Home: undefined
+  Leaderboard: undefined
   Login: undefined
   Register: undefined
-  Home: undefined
-  Game: undefined
-  Leaderboard: undefined
 }
 
 export interface IRoute {

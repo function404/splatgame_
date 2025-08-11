@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Alert, TextInput, ImageBackground, StatusBar, ActivityIndicator } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Alert, TextInput, ImageBackground, StatusBar, ActivityIndicator, Keyboard } from 'react-native'
 import { Mail, Lock, LogIn } from 'lucide-react-native'
 import { useNavigation } from '@react-navigation/native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -18,6 +18,8 @@ export default function LoginScreen() {
     const [loading, setLoading] = useState(false)
 
     const handleLogin = async () => {
+        Keyboard.dismiss()
+
         if (!email.trim() || !password.trim()) {
             Alert.alert('Campos vazios', 'Por favor, preencha o e-mail e a senha.')
             return
@@ -49,23 +51,24 @@ export default function LoginScreen() {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: ColorsTheme.orange100 }}>
+        <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={ColorsTheme.orange100} barStyle="light-content" />
+            
+            <View style={styles.header}>
+                <Text style={styles.title}>
+                    Splat
+                    <Text style={styles.titleGame}>
+                        {` Game`}
+                    </Text>
+                </Text>
+                <Text style={styles.subtitle}>Faça login para continuar</Text>
+            </View>
+
             <ImageBackground
                 source={require('@/assets/images/homeBackground.png')}
                 resizeMode='cover'
                 style={{ flex: 1, justifyContent: 'center' }}
             >
-                <View style={styles.header}>
-                    <Text style={styles.title}>
-                        Splat
-                        <Text style={styles.titleGame}>
-                            {` Game`}
-                        </Text>
-                    </Text>
-                    <Text style={styles.subtitle}>Faça login para continuar</Text>
-                </View>
-
                 <View style={styles.inputContainer}>
                     <Mail color={ColorsTheme.grey300} size={20} style={styles.icon} />
                     <TextInput
@@ -109,7 +112,7 @@ export default function LoginScreen() {
 
                 <TouchableOpacity onPress={navigateToRegister} style={styles.registerButton}>
                     <Text style={styles.registerButtonText}>
-                        Não tem uma conta? <Text style={{ fontWeight: 'bold' }}>Registre-se</Text>
+                        Não tem uma conta? <Text style={{ fontFamily: 'PixelifySans-Bold' }}>Registre-se</Text>
                     </Text>
                 </TouchableOpacity>
 
@@ -125,10 +128,17 @@ const textShadow = {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1, 
+        backgroundColor: ColorsTheme.orange100 
+    },
     header: {
+        position: 'absolute',
+        top: 30,
+        left: 16,
+        right: 16,
+        zIndex: 999,
         alignItems: 'center',
-        marginBottom: 30,
-        paddingHorizontal: 16,
     },
     title: {
         fontSize: 58,
@@ -144,7 +154,6 @@ const styles = StyleSheet.create({
         color: ColorsTheme.white,
         fontFamily: 'PixelifySans-Medium',
         ...textShadow,
-        marginTop: 8,
     },
     inputContainer: {
         flexDirection: 'row',
@@ -165,6 +174,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         fontSize: 16,
         color: ColorsTheme.blue500,
+        fontFamily: 'PixelifySans-bold',
     },
     loginButton: {
         flexDirection: 'row',
@@ -185,7 +195,8 @@ const styles = StyleSheet.create({
     loginButtonText: {
         color: ColorsTheme.white,
         fontSize: 18,
-        fontWeight: 'bold',
+        fontFamily: 'PixelifySans-Bold',
+        ...textShadow
     },
     registerButton: {
         marginTop: 24,
@@ -194,6 +205,7 @@ const styles = StyleSheet.create({
     registerButtonText: {
         fontSize: 16,
         color: ColorsTheme.white,
+        fontFamily: 'PixelifySans-Regular',
         ...textShadow
     },
 })

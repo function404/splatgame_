@@ -1,46 +1,47 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, TextInput, ImageBackground, StatusBar, ActivityIndicator, ScrollView } from 'react-native';
-import { User, Mail, Lock, CheckCircle, Phone } from 'lucide-react-native';
-import { useNavigation } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet, Alert, TextInput, ImageBackground, StatusBar, ActivityIndicator, Platform, Keyboard } from 'react-native'
+import { User, Mail, Lock, CheckCircle, Phone } from 'lucide-react-native'
+import { useNavigation } from '@react-navigation/native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-import { auth, db } from '@/src/firebase/config';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { auth, db } from '@/src/firebase/config'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { doc, setDoc } from 'firebase/firestore'
 
-import { TNavigationProp } from '@/src/navigation/types';
-import { ColorsTheme } from '@/src/theme/colors';
+import { TNavigationProp } from '@/src/navigation/types'
+import { ColorsTheme } from '@/src/theme/colors'
 
 export default function RegisterScreen() {
-    const navigation = useNavigation<TNavigationProp>();
+    const navigation = useNavigation<TNavigationProp>()
 
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [username, setUsername] = useState('')
+    const [email, setEmail] = useState('')
+    const [phone, setPhone] = useState('')
+    const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
+    const [loading, setLoading] = useState(false)
 
     const handleRegister = async () => {
+        Keyboard.dismiss()
+
         if (!username.trim() || !email.trim() || !phone.trim() || !password.trim() || !confirmPassword.trim()) {
-            Alert.alert('Campos incompletos', 'Por favor, preencha todos os campos.');
-            return;
+            Alert.alert('Campos incompletos', 'Por favor, preencha todos os campos.')
+            return
         }
         if (password !== confirmPassword) {
-            Alert.alert('Senhas não conferem', 'As senhas digitadas não são iguais.');
-            return;
+            Alert.alert('Senhas não conferem', 'As senhas digitadas não são iguais.')
+            return
         }
         if (password.length < 6) {
-            Alert.alert('Senha fraca', 'A senha precisa ter no mínimo 6 caracteres.');
-            return;
+            Alert.alert('Senha fraca', 'A senha precisa ter no mínimo 6 caracteres.')
+            return
         }
 
-        setLoading(true);
+        setLoading(true)
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-
-            console.log('Usuário criado no Auth:', user.uid);
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+            const user = userCredential.user
 
             await setDoc(doc(db, "users", user.uid), {
                 userId: user.uid,
@@ -49,51 +50,61 @@ export default function RegisterScreen() {
                 phone: phone.trim(),
                 highScore: 0,
                 createdAt: new Date(),
-            });
+            })
 
             await setDoc(doc(db, "usernames", username.trim().toLowerCase()), {
                 userId: user.uid
-            });
+            })
 
-            console.log('Dados do usuário e nome de usuário salvos no Firestore!');
-            navigation.navigate('Login');
+            navigation.navigate('Login')
 
         } catch (error: any) {
-            let errorMessage = 'Ocorreu um erro ao tentar criar a conta.';
+            let errorMessage = 'Ocorreu um erro ao tentar criar a conta.'
             if (error.code === 'auth/email-already-in-use') {
-                errorMessage = 'Este e-mail já está em uso por outra conta.';
+                errorMessage = 'Este e-mail já está em uso por outra conta.'
             } else if (error.code === 'auth/invalid-email') {
-                errorMessage = 'O formato do e-mail é inválido.';
+                errorMessage = 'O formato do e-mail é inválido.'
             } else if (error.code === 'auth/weak-password') {
-                errorMessage = 'A senha é muito fraca.';
+                errorMessage = 'A senha é muito fraca.'
             }
-            Alert.alert('Erro no Registro', errorMessage);
+            Alert.alert('Erro no Registro', errorMessage)
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
+    }
 
     const navigateToLogin = () => {
-        navigation.navigate('Login');
-    };
+        navigation.navigate('Login')
+    }
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: ColorsTheme.orange100 }}>
+        <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={ColorsTheme.orange100} barStyle="light-content" />
             <ImageBackground
                 source={require('@/assets/images/homeBackground.png')}
                 resizeMode='cover'
-                style={{ flex: 1 }}
+                style={{ flex: 1, justifyContent: 'center' }}
             >
-                <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
-                    <View style={styles.header}>
-                        <Text style={styles.title}>
-                            Splat
-                            <Text style={styles.titleGame}>{` Game`}</Text>
-                        </Text>
-                        <Text style={styles.subtitle}>Crie sua conta para jogar</Text>
-                    </View>
+                <View style={styles.header}>
+                    <Text style={styles.title}>
+                        Splat
+                        <Text style={styles.titleGame}>{` Game`}</Text>
+                    </Text>
+                    <Text style={styles.subtitle}>Crie sua conta para jogar</Text>
+                </View>
 
+                <KeyboardAwareScrollView
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                    enableOnAndroid
+                    extraScrollHeight={Platform.OS === 'ios' ? 20 : 70}
+                    keyboardOpeningTime={0}
+                    contentContainerStyle={{ 
+                        flexGrow: 1, 
+                        justifyContent: 'center', 
+                        paddingTop: 150
+                    }}
+                >
                     <View style={styles.inputContainer}>
                         <User color={ColorsTheme.grey300} size={20} style={styles.icon} />
                         <TextInput
@@ -173,25 +184,32 @@ export default function RegisterScreen() {
 
                     <TouchableOpacity onPress={navigateToLogin} style={styles.loginLink}>
                         <Text style={styles.loginLinkText}>
-                            Já tem uma conta? <Text style={{ fontWeight: 'bold' }}>Faça login</Text>
+                            Já tem uma conta? <Text style={{ fontFamily: 'PixelifySans-Bold' }}>Faça login</Text>
                         </Text>
                     </TouchableOpacity>
-                </ScrollView>
+                </KeyboardAwareScrollView>
             </ImageBackground>
         </SafeAreaView>
-    );
+    )
 }
 
 const textShadow = {
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
     textShadowOffset: { width: -1, height: 1 },
     textShadowRadius: 3
-};
+}
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: ColorsTheme.orange100
+    },
     header: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
         alignItems: 'center',
-        marginBottom: 30,
         paddingHorizontal: 16,
     },
     title: {
@@ -229,6 +247,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         fontSize: 16,
         color: ColorsTheme.blue500,
+        fontFamily: 'PixelifySans-Bold',
+        
     },
     registerButton: {
         flexDirection: 'row',
@@ -249,7 +269,7 @@ const styles = StyleSheet.create({
     registerButtonTextAction: {
         color: ColorsTheme.white,
         fontSize: 18,
-        fontWeight: 'bold',
+        fontFamily: 'PixelifySans-Bold',
     },
     loginLink: {
         marginTop: 24,
@@ -259,6 +279,7 @@ const styles = StyleSheet.create({
     loginLinkText: {
         fontSize: 16,
         color: ColorsTheme.white,
+        fontFamily: 'PixelifySans-',
         ...textShadow
     },
-});
+})

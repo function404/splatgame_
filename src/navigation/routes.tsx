@@ -12,7 +12,7 @@ export const ROUTES: IRoute[] = [
    {
       name: 'Login',
       component: LoginScreen,
-      isPrivate: false, // Tela pública
+      isPrivate: false,
       options: {
          title: 'Login',
          ...TransitionPresets.FadeFromBottomAndroid,
@@ -21,7 +21,7 @@ export const ROUTES: IRoute[] = [
    {
       name: 'Register',
       component: RegisterScreen,
-      isPrivate: false, // Tela pública
+      isPrivate: false,
       options: {
          title: 'Registro',
          ...TransitionPresets.FadeFromBottomAndroid,
@@ -30,7 +30,7 @@ export const ROUTES: IRoute[] = [
    {
       name: 'Home',
       component: HomeScreen,
-      isPrivate: true, // Tela privada
+      isPrivate: true,
       options: {
          title: 'Início',
          ...TransitionPresets.FadeFromBottomAndroid,
@@ -39,7 +39,7 @@ export const ROUTES: IRoute[] = [
    {
       name: 'Game',
       component: GameScreen,
-      isPrivate: true, // Tela privada
+      isPrivate: true,
       options: {
          title: 'Jogo',
          ...TransitionPresets.ScaleFromCenterAndroid,
@@ -48,7 +48,7 @@ export const ROUTES: IRoute[] = [
    {
       name: 'Leaderboard',
       component: LeaderboardScreen,
-      isPrivate: true, // Tela privada
+      isPrivate: true,
       options: {
          title: 'Classificação',
       },
