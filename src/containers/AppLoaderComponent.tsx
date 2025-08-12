@@ -128,13 +128,14 @@ export const AppLoader: React.FC<IAppLoaderProps> = ({ children }) => {
 
    if (loadingStage === 'assetLoading') {
       return (
-         <SafeAreaView style={{ flex: 1, backgroundColor: ColorsTheme.orange100 }}>
+         <SafeAreaView style={{ flex: 1, backgroundColor: ColorsTheme.orange50 }}>
             <ImageBackground 
                source={require('@/assets/images/homeBackground.png')}
                style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
                resizeMode='cover'
             >
                <StatusBar backgroundColor={ColorsTheme.orange100} barStyle='dark-content' />
+               
                <View style={styles.container}>
                   <View style={styles.content}>
                      <Text style={styles.textLoading}>
@@ -192,7 +193,7 @@ const styles = StyleSheet.create({
       backgroundColor: ColorsTheme.blue200,
       borderTopWidth: 4,
       borderBottomWidth: 4,
-      borderColor: ColorsTheme.orange100,
+      borderColor: ColorsTheme.orange50,
       overflow: 'hidden',
       display: 'flex',
       justifyContent: 'center',
