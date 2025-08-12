@@ -162,7 +162,7 @@ export default function GameScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: ColorsTheme.orange50 }}>
-      <StatusBar backgroundColor={ColorsTheme.orange50} barStyle="light-content" />
+      <StatusBar backgroundColor={ColorsTheme.orange50} barStyle="dark-content" />
 
       <ImageBackground
         source={currentStageConfig.backgroundImage}

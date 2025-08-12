@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Alert, TextInput, ImageBackground, StatusBar, ActivityIndicator, Keyboard } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Alert, TextInput, ImageBackground, StatusBar, ActivityIndicator, Keyboard, Platform } from 'react-native'
 import { Mail, Lock, LogIn } from 'lucide-react-native'
 import { useNavigation } from '@react-navigation/native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { auth } from '@/src/firebase/config'
 import { signInWithEmailAndPassword } from 'firebase/auth'
@@ -51,71 +52,82 @@ export default function LoginScreen() {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
-            <StatusBar backgroundColor={ColorsTheme.orange100} barStyle="light-content" />
-            
-            <View style={styles.header}>
-                <Text style={styles.title}>
-                    Splat
-                    <Text style={styles.titleGame}>
-                        {` Game`}
-                    </Text>
-                </Text>
-                <Text style={styles.subtitle}>Faça login para continuar</Text>
-            </View>
+        <SafeAreaView style={{  flex: 1, backgroundColor: ColorsTheme.orange50 }}>
+            <StatusBar backgroundColor={ColorsTheme.orange50} barStyle="dark-content" />
 
             <ImageBackground
                 source={require('@/assets/images/homeBackground.png')}
                 resizeMode='cover'
                 style={{ flex: 1, justifyContent: 'center' }}
             >
-                <View style={styles.inputContainer}>
-                    <Mail color={ColorsTheme.grey300} size={20} style={styles.icon} />
-                    <TextInput
-                        style={styles.textInput}
-                        placeholder="E-mail"
-                        value={email}
-                        onChangeText={setEmail}
-                        placeholderTextColor={ColorsTheme.grey300}
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                    />
-                </View>
-
-                <View style={styles.inputContainer}>
-                    <Lock color={ColorsTheme.grey300} size={20} style={styles.icon} />
-                    <TextInput
-                        style={styles.textInput}
-                        placeholder="Senha"
-                        value={password}
-                        onChangeText={setPassword}
-                        placeholderTextColor={ColorsTheme.grey300}
-                        secureTextEntry
-                    />
-                </View>
-
-                <TouchableOpacity
-                    onPress={handleLogin}
-                    style={styles.loginButton}
-                    activeOpacity={0.8}
-                    disabled={loading}
-                >
-                    {loading ? (
-                        <ActivityIndicator size="small" color={ColorsTheme.white} />
-                    ) : (
-                        <>
-                            <LogIn size={20} color={ColorsTheme.white} />
-                            <Text style={styles.loginButtonText}>Entrar</Text>
-                        </>
-                    )}
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={navigateToRegister} style={styles.registerButton}>
-                    <Text style={styles.registerButtonText}>
-                        Não tem uma conta? <Text style={{ fontFamily: 'PixelifySans-Bold' }}>Registre-se</Text>
+                <View style={styles.header}>
+                    <Text style={styles.title}>
+                        Splat
+                        <Text style={styles.titleGame}>
+                            {` Game`}
+                        </Text>
                     </Text>
-                </TouchableOpacity>
+                    <Text style={styles.subtitle}>Faça login para continuar</Text>
+                </View>
+                <KeyboardAwareScrollView
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                    enableOnAndroid
+                    extraScrollHeight={Platform.OS === 'ios' ? 20 : 70}
+                    keyboardOpeningTime={0}
+                    contentContainerStyle={{ 
+                        flexGrow: 1, 
+                        justifyContent: 'center',
+                        paddingBottom: 150
+                    }}
+                >
+                    <View style={styles.inputContainer}>
+                        <Mail color={ColorsTheme.grey300} size={20} style={styles.icon} />
+                        <TextInput
+                            style={styles.textInput}
+                            placeholder="E-mail"
+                            value={email}
+                            onChangeText={setEmail}
+                            placeholderTextColor={ColorsTheme.grey300}
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                        />
+                    </View>
 
+                    <View style={styles.inputContainer}>
+                        <Lock color={ColorsTheme.grey300} size={20} style={styles.icon} />
+                        <TextInput
+                            style={styles.textInput}
+                            placeholder="Senha"
+                            value={password}
+                            onChangeText={setPassword}
+                            placeholderTextColor={ColorsTheme.grey300}
+                            secureTextEntry
+                        />
+                    </View>
+
+                    <TouchableOpacity
+                        onPress={handleLogin}
+                        style={styles.loginButton}
+                        activeOpacity={0.8}
+                        disabled={loading}
+                    >
+                        {loading ? (
+                            <ActivityIndicator size="small" color={ColorsTheme.white} />
+                        ) : (
+                            <>
+                                <LogIn size={20} color={ColorsTheme.white} />
+                                <Text style={styles.loginButtonText}>Entrar</Text>
+                            </>
+                        )}
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={navigateToRegister} style={styles.registerButton}>
+                        <Text style={styles.registerButtonText}>
+                            Não tem uma conta? <Text style={{ fontFamily: 'PixelifySans-Bold' }}>Registre-se</Text>
+                        </Text>
+                    </TouchableOpacity>
+                </KeyboardAwareScrollView>
             </ImageBackground>
         </SafeAreaView>
     )
@@ -128,17 +140,10 @@ const textShadow = {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1, 
-        backgroundColor: ColorsTheme.orange100 
-    },
     header: {
-        position: 'absolute',
-        top: 30,
-        left: 16,
-        right: 16,
-        zIndex: 999,
         alignItems: 'center',
+        marginBottom: 30,
+        paddingHorizontal: 16,
     },
     title: {
         fontSize: 58,

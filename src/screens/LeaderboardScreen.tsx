@@ -85,9 +85,9 @@ export default function LeaderboardScreen() {
       <View style={[
         styles.leaderboardItem,
         {
-          borderLeftWidth: rank <= 3 ? 5 : 2,
+          borderLeftWidth: 5,
           borderLeftColor: borderColor,
-          borderBottomWidth: rank <= 3 ? 5 : 2,
+          borderBottomWidth: 5,
           borderBottomColor: borderColor
         }
       ]}>

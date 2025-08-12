@@ -78,8 +78,9 @@ export default function RegisterScreen() {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
-            <StatusBar backgroundColor={ColorsTheme.orange100} barStyle="light-content" />
+        <SafeAreaView style={{ flex: 1, backgroundColor: ColorsTheme.orange50 }}>
+            <StatusBar backgroundColor={ColorsTheme.orange50} barStyle="dark-content" />
+            
             <ImageBackground
                 source={require('@/assets/images/homeBackground.png')}
                 resizeMode='cover'
@@ -102,7 +103,6 @@ export default function RegisterScreen() {
                     contentContainerStyle={{ 
                         flexGrow: 1, 
                         justifyContent: 'center', 
-                        paddingTop: 150
                     }}
                 >
                     <View style={styles.inputContainer}>
@@ -200,16 +200,9 @@ const textShadow = {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: ColorsTheme.orange100
-    },
     header: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
         alignItems: 'center',
+        marginBottom: 30,
         paddingHorizontal: 16,
     },
     title: {
@@ -279,7 +272,7 @@ const styles = StyleSheet.create({
     loginLinkText: {
         fontSize: 16,
         color: ColorsTheme.white,
-        fontFamily: 'PixelifySans-',
+        fontFamily: 'PixelifySans-Bold',
         ...textShadow
     },
 })

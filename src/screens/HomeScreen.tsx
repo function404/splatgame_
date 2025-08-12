@@ -229,18 +229,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginVertical: 40,
   },
-  // statBox: {
-  //   backgroundColor: ColorsTheme.orange50,
-  //   padding: 20,
-  //   borderRadius: 12,
-  //   alignItems: 'center',
-  //   minWidth: 140,
-  //   shadowColor: ColorsTheme.black,
-  //   shadowOffset: { width: 0, height: 2 },
-  //   shadowOpacity: 0.1,
-  //   shadowRadius: 3.84,
-  //   elevation: 5,
-  // },
   statLabel: {
     fontSize: 14,
     color: ColorsTheme.grey300,
