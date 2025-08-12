@@ -149,7 +149,7 @@ export const useGameEngine = () => {
     const startGame = useCallback((stageToStart: number = 1) => {
         setGameState(prev => ({
             ...prev,
-            score: prev.currentStage > 1 ? prev.score : 0,
+            score: 0, // score: prev.currentStage > 1 ? prev.score : 0
             level: stageToStart,
             lives: 3,
             isPlaying: true,

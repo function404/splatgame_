@@ -24,6 +24,7 @@ export interface GameState {
 export interface User {
   userId: string
   username: string
+  email: string
   highScore: number
   createdAt: Date
 }

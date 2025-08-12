@@ -37,6 +37,15 @@ import ReactSvg from '@/assets/images/fase4svgs/react.svg'
 import RubySvg from '@/assets/images/fase4svgs/ruby.svg'
 import BugSvg from '@/assets/images/fase4svgs/bug.svg'
 
+// stage 5
+import BrainSvg from '@/assets/images/fase5svgs/cerebro.svg'
+import ChipSvg from '@/assets/images/fase5svgs/chip.svg'
+import HackerSvg from '@/assets/images/fase5svgs/hacker.svg'
+import HologramSvg from '@/assets/images/fase5svgs/holograma.svg'
+import MicrophoneSvg from '@/assets/images/fase5svgs/microfone.svg'
+import BuildingSvg from '@/assets/images/fase5svgs/predio.svg'
+import RobotSvg from '@/assets/images/fase5svgs/robo.svg'
+
 export interface StageObject {
    svg: React.FC<SvgProps>
    points: number
@@ -76,7 +85,7 @@ export const STAGES: StageConfig[] = [
             { svg: EggSvg, points: 10, type: 'normal' },
             { svg: BreadSvg, points: 5, type: 'normal' },
          ],
-         golden: { svg: HamburgerSvg, points: 1000, type: 'golden' },
+         golden: { svg: HamburgerSvg, points: 80, type: 'golden' },
          bomb: { svg: RottenFoodSvg, points: -50, type: 'bomb' },
       },
    },
@@ -96,7 +105,7 @@ export const STAGES: StageConfig[] = [
             { svg: ClipboardSvg, points: 15, type: 'normal' },
             { svg: BookSvg, points: 10, type: 'normal' },
          ],
-         golden: { svg: IdeaSvg, points: 1000, type: 'golden' },
+         golden: { svg: IdeaSvg, points: 100, type: 'golden' },
          bomb: { svg: NegativeGraphSvg, points: -60, type: 'bomb' }, 
       },
    },
@@ -116,7 +125,7 @@ export const STAGES: StageConfig[] = [
             { svg: RedCrossSvg, points: 20, type: 'normal' },
             { svg: BloodBagSvg, points: 15, type: 'normal' },
          ],
-         golden: { svg: RemedySvg, points: 1000, type: 'golden' },
+         golden: { svg: RemedySvg, points: 120, type: 'golden' },
          bomb: { svg: VirusSvg, points: -75, type: 'bomb' },
       },
    },
@@ -136,7 +145,7 @@ export const STAGES: StageConfig[] = [
             { svg: JavaSvg, points: 25, type: 'normal' },
             { svg: RubySvg, points: 20, type: 'normal' },
          ],
-         golden: { svg: ReactSvg, points: 150, type: 'golden' },
+         golden: { svg: ReactSvg, points: 15, type: 'golden' },
          bomb: { svg: BugSvg, points: -90, type: 'bomb' },
       },
    },
@@ -145,17 +154,20 @@ export const STAGES: StageConfig[] = [
       name: 'Senac Hub Tech',
       scoreThreshold: 5500,
       completionScore: 8000,
-      backgroundImage: require('@/assets/images/homeBackground.png'), // fase 5
-      backgroundStageImage:require('@/assets/images/fase1-menu.png'), // 5
+      backgroundImage: require('@/assets/images/fase5.png'),
+      backgroundStageImage:require('@/assets/images/fase5-menu.png'),
       speedModifier: 1.45,
       spawnRateModifier: 1.15,
       objects: {
          normal: [
-            { svg: HamburgerSvg, points: 50, type: 'normal' },
-            { svg: HamburgerSvg, points: 45, type: 'normal' },
+            { svg: HologramSvg, points: 45, type: 'normal' },
+            { svg: ChipSvg, points: 40, type: 'normal' },
+            { svg: MicrophoneSvg, points: 35, type: 'normal' },
+            { svg: BrainSvg, points: 35, type: 'normal' },
+            { svg: BuildingSvg, points: 30, type: 'normal' },
          ],
-         golden: { svg: HamburgerSvg, points: 200, type: 'golden' },
-         bomb: { svg: RottenFoodSvg, points: -100, type: 'bomb' },
+         golden: { svg: RobotSvg, points: 200, type: 'golden' },
+         bomb: { svg: HackerSvg, points: -100, type: 'bomb' },
       },
    },
 ]
