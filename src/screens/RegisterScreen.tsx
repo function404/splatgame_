@@ -11,6 +11,7 @@ import { doc, setDoc } from 'firebase/firestore'
 
 import { TNavigationProp } from '@/src/navigation/types'
 import { ColorsTheme } from '@/src/theme/colors'
+import { AppVersion } from '@/src/utils/AppVersion'
 
 export default function RegisterScreen() {
     const navigation = useNavigation<TNavigationProp>()
@@ -55,11 +56,9 @@ export default function RegisterScreen() {
             await setDoc(doc(db, "usernames", username.trim().toLowerCase()), {
                 userId: user.uid
             })
-
-            navigation.navigate('Login')
-
         } catch (error: any) {
             let errorMessage = 'Ocorreu um erro ao tentar criar a conta.'
+            
             if (error.code === 'auth/email-already-in-use') {
                 errorMessage = 'Este e-mail já está em uso por outra conta.'
             } else if (error.code === 'auth/invalid-email') {
@@ -187,6 +186,8 @@ export default function RegisterScreen() {
                             Já tem uma conta? <Text style={{ fontFamily: 'PixelifySans-Bold' }}>Faça login</Text>
                         </Text>
                     </TouchableOpacity>
+
+                    <AppVersion isWhite />
                 </KeyboardAwareScrollView>
             </ImageBackground>
         </SafeAreaView>

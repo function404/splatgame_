@@ -10,6 +10,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth'
 
 import { TNavigationProp } from '@/src/navigation/types'
 import { ColorsTheme } from '@/src/theme/colors'
+import { AppVersion } from '@/src/utils/AppVersion'
 
 export default function LoginScreen() {
     const navigation = useNavigation<TNavigationProp>()
@@ -28,15 +29,15 @@ export default function LoginScreen() {
 
         setLoading(true)
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password)
-            const user = userCredential.user
-
-            console.log('Login bem-sucedido:', user.uid)
-            navigation.navigate('Home')
+            await signInWithEmailAndPassword(auth, email, password);
 
         } catch (error: any) {
             let errorMessage = 'Ocorreu um erro ao tentar fazer o login.'
-            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+            if (
+                error.code === 'auth/user-not-found' || 
+                error.code === 'auth/wrong-password' || 
+                error.code === 'auth/invalid-credential'
+            ) {
                 errorMessage = 'E-mail ou senha inválidos.'
             } else if (error.code === 'auth/invalid-email') {
                 errorMessage = 'O formato do e-mail é inválido.'
@@ -127,6 +128,8 @@ export default function LoginScreen() {
                             Não tem uma conta? <Text style={{ fontFamily: 'PixelifySans-Bold' }}>Registre-se</Text>
                         </Text>
                     </TouchableOpacity>
+
+                    <AppVersion isWhite />
                 </KeyboardAwareScrollView>
             </ImageBackground>
         </SafeAreaView>

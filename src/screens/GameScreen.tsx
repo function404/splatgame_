@@ -187,8 +187,8 @@ export default function GameScreen() {
         {gameState.isStageComplete && !gameState.isGameComplete && (
           <View style={styles.overlay}>
             <View style={styles.modal}>
-              <Text style={styles.modalTitle}>Fase Concluída!</Text>
-              
+              <Text style={[styles.modalTitle, { color: ColorsTheme.green350 }]}>Fase Concluída!</Text>
+
               <Text style={styles.finalScore}>Você completou a fase "{currentStageConfig.name}"</Text>
               
               <Text style={styles.levelReached}>Pontuação: {gameState.score}</Text>
@@ -205,7 +205,7 @@ export default function GameScreen() {
         {gameState.isGameComplete && (
           <View style={styles.overlay}>
             <View style={styles.modal}>
-              <Text style={styles.modalTitle}>Parabéns!</Text>
+              <Text style={[styles.modalTitle, { color: ColorsTheme.green350 }]}>Parabéns!</Text>
               
               <Text style={styles.finalScore}>Você concluiu todos os desafios!</Text>
               
@@ -224,11 +224,11 @@ export default function GameScreen() {
         {showGameOverModal && (
           <View style={styles.overlay}>
             <View style={styles.modal}>
-              <Text style={styles.modalTitle}>Fim de jogo!</Text>
-              
+              <Text style={[styles.modalTitle, { color: ColorsTheme.red300 }]}>Fim de jogo!</Text>
+
               <Text style={styles.finalScore}>Pontuação final: {gameState.score}</Text>
-              
-              <Text style={styles.levelReached}>Fase alcançada: {gameState.currentStage}</Text>
+
+              <Text style={styles.levelReached}>Nivel: {gameState.currentStage}</Text>
               
               <View style={styles.modalButtons}>
                 <TouchableOpacity style={styles.playAgainButton} onPress={handleNewGameFromModal}>
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   modal: {
-    backgroundColor: ColorsTheme.orange60,
+    backgroundColor: ColorsTheme.orange50,
     padding: 32,
     borderRadius: 16,
     alignItems: 'center',
@@ -276,7 +276,6 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 28,
-    color: ColorsTheme.blue500,
     marginBottom: 16,
     marginTop: 8,
     fontFamily: 'PixelifySans-Bold',

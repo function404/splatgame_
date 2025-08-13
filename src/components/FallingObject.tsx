@@ -1,8 +1,9 @@
 import React from 'react'
-import { TouchableOpacity, Text, StyleSheet, View } from 'react-native'
+import { TouchableOpacity, Text, StyleSheet } from 'react-native'
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated'
 import { GameObject } from '@/src/types/game'
 import { ColorsTheme } from '@/src/theme/colors'
+import { SvgMap } from '@/src/components/SvgMap'
 
 interface FallingObjectProps {
   object: GameObject
@@ -16,70 +17,69 @@ export const FallingObject: React.FC<FallingObjectProps> = ({ object, onTap }) =
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
+    position: 'absolute',
+    left: object.x,
+    top: object.y,
   }))
 
   const handlePress = () => {
-    scale.value = withSpring(0.8, { duration: 100 }, () => {
+    scale.value = withSpring(0.8, { damping: 2, stiffness: 200 }, () => {
       scale.value = withSpring(1)
     })
     onTap(object.id)
   }
 
-  const SvgComponent = object.svg
-
-  if (!SvgComponent || typeof SvgComponent === 'number') {
-    return null
-  }
+  const pointTextStyle = object.points > 0 ? styles.morePoints : styles.fewerPoints
 
   return (
     <AnimatedTouchableOpacity
-      style={[
-        styles.container,
-        {
-          left: object.x,
-          top: object.y,
-        },
-        animatedStyle,
-      ]}
+      style={[styles.container, animatedStyle]}
       onPress={handlePress}
       activeOpacity={0.8}
     >
-    
-      <SvgComponent width={50} height={50} />
+      <SvgMap name={object.svg} width={50} height={50} />
 
-      {(object.type === 'normal' || object.type === 'golden') ? (
-        <Text style={styles.morePoints}>+{object.points}</Text>
-      ) : (
-        <Text style={styles.fewerPoints}>{object.points}</Text>
-      )}
+      <Text style={pointTextStyle}>
+        {object.points > 0 ? `+${object.points}` : object.points}
+      </Text>
     </AnimatedTouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
     width: 60,
     height: 60,
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  morePoints: {
+  pointsText: {
     position: 'absolute',
     top: 0,
     right: -5,
     fontSize: 14,
     fontWeight: 'bold',
-    color: ColorsTheme.green300,
     zIndex: 1,
   },
-  fewerPoints: {
+  morePoints: {
+    // ...styles.pointsText, // Desnecessário
     position: 'absolute',
     top: 0,
     right: -5,
     fontSize: 14,
     fontWeight: 'bold',
+    zIndex: 1,
+    color: ColorsTheme.green300,
+  },
+  fewerPoints: {
+    // ...styles.pointsText, // Desnecessário
+    position: 'absolute',
+    top: 0,
+    right: -5,
+    fontSize: 14,
+    fontWeight: 'bold',
+    zIndex: 1,
     color: ColorsTheme.red,
   },
 })
