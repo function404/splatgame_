@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import {
    View,
    Text,
@@ -8,9 +8,9 @@ import {
    TouchableOpacity,
    SafeAreaView,
    Dimensions,
-   Animated,
 } from 'react-native'
 import { ChevronLeft, ChevronRight, Lock, Play, Undo2 } from 'lucide-react-native'
+import Animated, { useSharedValue, withSequence, withTiming, withRepeat, useAnimatedStyle } from 'react-native-reanimated'
 
 import { STAGES, StageConfig } from '@/src/config/stages'
 import { ColorsTheme } from '@/src/theme/colors'
@@ -18,39 +18,47 @@ import { ColorsTheme } from '@/src/theme/colors'
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window')
 
 interface StageSelectorProps {
-   unlockedStages: number[]
-   newlyUnlockedStage: number | null
-   onStartGame: (level: number) => void
-   onGoBack: () => void
+  unlockedStages: number[]
+  newlyUnlockedStage: number | null
+  onStartGame: (level: number) => void
+  onGoBack: () => void
 }
 
 export const StageSelector: React.FC<StageSelectorProps> = ({
-   unlockedStages,
-   newlyUnlockedStage,
-   onStartGame,
-   onGoBack,
+  unlockedStages,
+  newlyUnlockedStage,
+  onStartGame,
+  onGoBack,
 }) => {
    const [currentIndex, setCurrentIndex] = useState(0)
    const flatListRef = useRef<FlatList>(null)
-   const playButtonAnim = useRef(new Animated.Value(1)).current
+   const playButtonScale = useSharedValue(1)
 
    useEffect(() => {
       if (newlyUnlockedStage !== null) {
          const newIndex = STAGES.findIndex(s => s.level === newlyUnlockedStage)
+
          if (newIndex !== -1) {
             setTimeout(() => {
-               flatListRef.current?.scrollToIndex({ animated: true, index: newIndex })
+               flatListRef.current?.scrollToIndex({ 
+                  animated: true, 
+                  index: newIndex 
+               })
                
-               Animated.sequence([
-                  Animated.timing(playButtonAnim, { toValue: 1.2, duration: 300, useNativeDriver: true }),
-                  Animated.timing(playButtonAnim, { toValue: 1, duration: 400, useNativeDriver: true }),
-                  Animated.timing(playButtonAnim, { toValue: 1.2, duration: 300, useNativeDriver: true }),
-                  Animated.timing(playButtonAnim, { toValue: 1, duration: 400, useNativeDriver: true }),
-               ]).start()
+               playButtonScale.value = withSequence(
+                  withTiming(1.2, { duration: 300 }),
+                  withTiming(1, { duration: 400 }),
+                  withTiming(1.2, { duration: 300 }),
+                  withTiming(1, { duration: 400 }),
+               )
             }, 500)
          }
       }
-   }, [newlyUnlockedStage])
+   }, [newlyUnlockedStage, playButtonScale])
+
+   const animatedPlayButtonStyle = useAnimatedStyle(() => ({
+      transform: [{ scale: playButtonScale.value }],
+   }))
 
    const handlePrevStage = () => {
       if (currentIndex > 0) {
@@ -64,7 +72,9 @@ export const StageSelector: React.FC<StageSelectorProps> = ({
       }
    }
 
-   const onViewableItemsChanged = useRef(({ viewableItems }: { viewableItems: Array<{ index: number | null }> }) => {
+   const onViewableItemsChanged = useRef(({ viewableItems }: 
+      { viewableItems: Array<{ index: number | null }> }) => {
+
       if (viewableItems.length > 0 && viewableItems[0].index !== null) {
          setCurrentIndex(viewableItems[0].index)
       }
@@ -72,7 +82,7 @@ export const StageSelector: React.FC<StageSelectorProps> = ({
 
    const viewabilityConfig = useRef({ itemVisiblePercentThreshold: 50 }).current
 
-   const renderCarouselItem = ({ item }: { item: StageConfig }) => {
+   const renderCarouselItem = useCallback(({ item }: { item: StageConfig }) => {
       const isUnlocked = unlockedStages.includes(item.level)
 
       return (
@@ -84,14 +94,20 @@ export const StageSelector: React.FC<StageSelectorProps> = ({
             <View style={styles.carouselOverlay}>
                {!isUnlocked && (
                   <View style={styles.lockedInfo}>
-                     <Lock color={ColorsTheme.white} size={60} />
-                     <Text style={styles.lockedText}>Requer {item.scoreThreshold} pontos</Text>
+                  <Lock color={ColorsTheme.white} size={60} />
+                  <Text style={styles.lockedText}>Requer {item.scoreThreshold} pontos</Text>
                   </View>
                )}
             </View>
          </ImageBackground>
       )
-   }
+   }, [unlockedStages])
+  
+   const getItemLayout = useCallback((_data: any, index: number) => ({
+      length: SCREEN_WIDTH,
+      offset: SCREEN_WIDTH * index,
+      index,
+   }), [])
 
    const currentSelection = STAGES[currentIndex]
    const isCurrentUnlocked = unlockedStages.includes(currentSelection.level)
@@ -108,6 +124,9 @@ export const StageSelector: React.FC<StageSelectorProps> = ({
             showsHorizontalScrollIndicator={false}
             onViewableItemsChanged={onViewableItemsChanged}
             viewabilityConfig={viewabilityConfig}
+            getItemLayout={getItemLayout}
+            initialNumToRender={1}
+            windowSize={3}
          />
 
          <SafeAreaView style={styles.controlsOverlay}>
@@ -124,16 +143,17 @@ export const StageSelector: React.FC<StageSelectorProps> = ({
                   <ChevronLeft size={24} color={ColorsTheme.white} />
                </TouchableOpacity>
 
-               <Animated.View style={{ transform: [{ scale: playButtonAnim }] }}>
+               <Animated.View style={animatedPlayButtonStyle}>
                   <TouchableOpacity
                      style={[styles.buttonCenter, !isCurrentUnlocked && styles.playButtonDisabled]}
                      disabled={!isCurrentUnlocked}
                      onPress={() => onStartGame(currentSelection.level)}
                   >
-                     <Play size={42} color={isCurrentUnlocked ? ColorsTheme.white : ColorsTheme.grey300} />
-                     <Text style={styles.playButtonText}>
-                        {isCurrentUnlocked ? 'Jogar' : 'Bloqueado'}
-                     </Text>
+                  <Play size={42} color={isCurrentUnlocked ? ColorsTheme.white : ColorsTheme.grey300} />
+                  
+                  <Text style={styles.playButtonText}>
+                     {isCurrentUnlocked ? 'Jogar' : 'Bloqueado'}
+                  </Text>
                   </TouchableOpacity>
                </Animated.View>
 

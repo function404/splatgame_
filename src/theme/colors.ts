@@ -11,6 +11,7 @@ export const ColorsTheme = {
    green100: '#F0FDF4',
    green200: '#10B981',
    green300: '#00ff00',
+   green350: '#32CD32',
    green400: '#065F46',
    green500: '#00606e',
    grey100: '#E5E7EB',
@@ -23,7 +24,6 @@ export const ColorsTheme = {
    red300: '#EF4444',
    orange40: '#ffd7b0',
    orange50: '#f8dc94',
-   orange60: '#dec07f',
    orange100: '#F78B1F',
    yellow100: '#FFD700',
 }

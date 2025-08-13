@@ -2,13 +2,13 @@
   "expo": {
     "name": "Splat Game",
     "slug": "splatgame_",
-    "version": "1.0.0",
+    "version": "1.4.21",
     "orientation": "portrait",
-    "icon": "./assets/images/homeBackground.png",
-    "userInterfaceStyle": "light",
+    "icon": "./assets/images/fase4.png",
+    "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/homeBackground.png",
+      "image": "./assets/images/senac-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#F0F9FF"
     },
@@ -18,7 +18,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/homeBackground.png",
+        "foregroundImage": "./assets/images/fase4.png",
         "backgroundColor": "#F0F9FF"
       },
       "edgeToEdgeEnabled": true,

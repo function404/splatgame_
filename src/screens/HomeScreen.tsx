@@ -11,6 +11,8 @@ import { signOut } from 'firebase/auth'
 import { TNavigationProp } from '@/src/navigation/types'
 import { User } from '@/src/types/game'
 import { ColorsTheme } from '@/src/theme/colors'
+import { AppVersion } from '@/src/utils/AppVersion'
+
 
 export default function HomeScreen() {
   const navigation = useNavigation<TNavigationProp>()
@@ -48,27 +50,22 @@ export default function HomeScreen() {
   )
 
   const handleLogout = () => {
-    Alert.alert(
-      'Sair da conta',
-      'Você tem certeza que deseja sair?',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Sair',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await signOut(auth)
-              setSettingsModalVisible(false)
-              navigation.navigate('Login')
-            } catch (error) {
-              console.error('Erro ao fazer logout:', error)
-              Alert.alert('Erro', 'Não foi possível sair da sua conta.')
-            }
-          },
+    Alert.alert('Sair da conta', 'Você tem certeza que deseja sair?', [
+      { text: 'Cancelar', style: 'cancel' },
+      {
+        text: 'Sair',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await signOut(auth)
+            setSettingsModalVisible(false)
+          } catch (error) {
+            console.error('Erro ao fazer logout:', error)
+            Alert.alert('Erro', 'Não foi possível sair da sua conta.')
+          }
         },
-      ]
-    )
+      },
+    ])
   }
 
   const handlePlayPress = () => {
@@ -112,6 +109,7 @@ export default function HomeScreen() {
                 <UserIcon size={20} color={ColorsTheme.blue500} />
                 <Text style={styles.userInfoText}>{user.username}</Text>
               </View>
+
               <View style={styles.userInfoContainer}>
                 <Mail size={20} color={ColorsTheme.blue500} />
                 <Text style={styles.userInfoText}>{user.email}</Text>
@@ -130,6 +128,8 @@ export default function HomeScreen() {
                 <LogOut size={20} color={ColorsTheme.red300} />
                 <Text style={styles.logoutButtonText}>Sair da Conta</Text>
               </TouchableOpacity>
+
+              <AppVersion />
             </View>
           )}
         </View>
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: '85%',
-    backgroundColor: ColorsTheme.orange60,
+    backgroundColor: ColorsTheme.orange50,
     borderRadius: 20,
     padding: 20,
     alignItems: 'center',
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 12,
-    backgroundColor: ColorsTheme.grey100,
+    backgroundColor: ColorsTheme.blue100,
     padding: 10,
     borderRadius: 8,
   },
@@ -324,11 +324,10 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   statBoxModal: {
-    backgroundColor: ColorsTheme.grey100,
+    backgroundColor: ColorsTheme.blue100,
     padding: 15,
     borderRadius: 12,
     alignItems: 'center',
-    marginVertical: 15,
   },
   logoutButton: {
     flexDirection: 'row',
@@ -340,7 +339,7 @@ const styles = StyleSheet.create({
     backgroundColor: ColorsTheme.red100,
     borderWidth: 2,
     borderColor: ColorsTheme.red200,
-    marginTop: 20,
+    marginTop: 12,
   },
   logoutButtonText: {
     fontSize: 16,

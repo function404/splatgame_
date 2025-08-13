@@ -1,34 +1,33 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { Dimensions } from 'react-native'
-
 import { GameObject, GameState } from '@/src/types/game'
-
 import { STAGES, StageObject } from '@/src/config/stages'
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window')
 const GAME_AREA_HEIGHT = SCREEN_HEIGHT * 0.9
 const DANGER_LINE_Y = GAME_AREA_HEIGHT - 50
 
-export const useGameEngine = () => {
-    const [gameState, setGameState] = useState<GameState>({
-        score: 0,
-        level: 1,
-        lives: 3,
-        isPlaying: false,
-        isGameOver: false,
-        isStageComplete: false,
-        isGameComplete: false,
-        objects: [],
-        currentStage: 1,
-    })
+const initialGameState: GameState = {
+    score: 0,
+    level: 1,
+    lives: 3,
+    isPlaying: false,
+    isGameOver: false,
+    isStageComplete: false,
+    isGameComplete: false,
+    objects: [],
+    currentStage: 1,
+}
 
-    const gameLoopRef = useRef<NodeJS.Timeout | null>(null)
-    const spawnTimerRef = useRef<NodeJS.Timeout | null>(null)
+export const useGameEngine = () => {
+  const [gameState, setGameState] = useState<GameState>(initialGameState)
+  const gameLoopRef = useRef<number | null>(null)
+  const spawnTimerRef = useRef<NodeJS.Timeout | null>(null)
 
     const generateRandomObject = useCallback((): GameObject => {
         const stageConfig = STAGES.find(s => s.level === gameState.currentStage) || STAGES[0]
         const { normal, golden, bomb } = stageConfig.objects
-        
+
         const randomNumber = Math.random()
         let objectData: StageObject
 
@@ -51,32 +50,30 @@ export const useGameEngine = () => {
     }, [gameState.currentStage])
 
     const spawnObject = useCallback(() => {
-        if (!gameState.isPlaying) return
-        
         setGameState(prev => ({
             ...prev,
             objects: [...prev.objects, generateRandomObject()],
         }))
-    }, [gameState.isPlaying, generateRandomObject])
+    }, [generateRandomObject])
 
     const moveObjects = useCallback(() => {
-        if (!gameState.isPlaying) return
-
         setGameState(prev => {
-            const stageConfig = STAGES.find(s => s.level === prev.currentStage) || STAGES[0]
-            const speed = (2 + (prev.level * 0.5)) * stageConfig.speedModifier
+            if (!prev.isPlaying) return prev
+
+            const stageConfig =
+                STAGES.find(s => s.level === prev.currentStage) || STAGES[0]
+            const speed = (0.8 + prev.level * 0.2) * stageConfig.speedModifier
 
             let livesLostThisFrame = 0
 
             const updatedObjects = prev.objects
                 .map(obj => ({ ...obj, y: obj.y + speed }))
                 .filter(obj => {
-                    if ((obj.type === 'normal' || obj.type === 'golden') && obj.y > DANGER_LINE_Y) {
-                        livesLostThisFrame++
-                        return false
-                    }
+                    if (obj.y > DANGER_LINE_Y) {
+                            if (obj.type === 'normal' || obj.type === 'golden') {
+                            livesLostThisFrame++
+                        }
 
-                    if (obj.y > SCREEN_HEIGHT) {
                         return false
                     }
 
@@ -94,30 +91,39 @@ export const useGameEngine = () => {
                 isPlaying: !isGameOver,
             }
         })
-    }, [gameState.isPlaying])
+        gameLoopRef.current = requestAnimationFrame(moveObjects)
+    }, [])
 
     const tapObject = useCallback((objectId: string) => {
         setGameState(prev => {
             const tappedObject = prev.objects.find(obj => obj.id === objectId)
+
             if (!tappedObject || tappedObject.y > DANGER_LINE_Y) {
                 return prev
             }
 
             const newScore = Math.max(0, prev.score + tappedObject.points)
-            const currentStageConfig = STAGES.find(s => s.level === prev.currentStage) || STAGES[0]
-            
-            if (currentStageConfig.completionScore && newScore >= currentStageConfig.completionScore) {
-                 return {
-                    ...prev,
-                    score: newScore,
-                    isPlaying: false,
-                    isGameComplete: true,
-                    isStageComplete: true,
-                    objects: [],
+            const currentStageConfig =
+                STAGES.find(s => s.level === prev.currentStage) || STAGES[0]
+
+            if (
+                currentStageConfig.completionScore &&
+                newScore >= currentStageConfig.completionScore
+            ) {
+                return {
+                ...prev,
+                score: newScore,
+                isPlaying: false,
+                isGameComplete: true,
+                isStageComplete: true,
+                objects: [],
                 }
             }
 
-            const nextStageConfig = STAGES.find(s => s.level === prev.currentStage + 1)
+            const nextStageConfig = STAGES.find(
+                s => s.level === prev.currentStage + 1,
+            )
+
             if (nextStageConfig && newScore >= nextStageConfig.scoreThreshold) {
                 return {
                     ...prev,
@@ -148,71 +154,42 @@ export const useGameEngine = () => {
 
     const startGame = useCallback((stageToStart: number = 1) => {
         setGameState(prev => ({
-            ...prev,
-            score: 0, // score: prev.currentStage > 1 ? prev.score : 0
+            ...initialGameState,
+            score: 0,
             level: stageToStart,
-            lives: 3,
             isPlaying: true,
-            isGameOver: false,
-            isStageComplete: false,
-            isGameComplete: false,
-            objects: [],
             currentStage: stageToStart,
         }))
     }, [])
 
-    const startNextStage = useCallback(() => {
-        const nextStageLevel = gameState.currentStage + 1
-        if (nextStageLevel <= STAGES.length) {
-            setGameState(prev => ({
-                ...prev,
-                level: nextStageLevel,
-                currentStage: nextStageLevel,
-                isPlaying: true,
-                isStageComplete: false,
-                objects: [],
-                lives: prev.lives,
-                score: prev.score,
-            }))
-        }
-    }, [gameState.currentStage])
-
     const resetGame = useCallback(() => {
-        setGameState({
-            score: 0,
-            level: 1,
-            lives: 3,
-            isPlaying: false,
-            isGameOver: false,
-            isStageComplete: false,
-            isGameComplete: false,
-            objects: [],
-            currentStage: 1,
-        })
+        setGameState(initialGameState)
     }, [])
 
     useEffect(() => {
         if (gameState.isPlaying) {
-            gameLoopRef.current = setInterval(moveObjects, 50)
-            
-            const stageConfig = STAGES.find(s => s.level === gameState.currentStage) || STAGES[0]
+            gameLoopRef.current = requestAnimationFrame(moveObjects)
+
+            const stageConfig =
+                STAGES.find(s => s.level === gameState.currentStage) || STAGES[0]
             const baseInterval = 800
             const levelReduction = gameState.level * 50
             const scoreReduction = Math.floor(gameState.score / 100) * 20
-            
+
             const spawnInterval = Math.max(
-                (baseInterval - levelReduction - scoreReduction) / stageConfig.spawnRateModifier, 
-                150
+                (baseInterval - levelReduction - scoreReduction) /
+                stageConfig.spawnRateModifier,
+                150,
             )
-            
+
             spawnTimerRef.current = setInterval(spawnObject, spawnInterval)
         } else {
-            if (gameLoopRef.current) clearInterval(gameLoopRef.current)
+            if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current)
             if (spawnTimerRef.current) clearInterval(spawnTimerRef.current)
         }
 
         return () => {
-            if (gameLoopRef.current) clearInterval(gameLoopRef.current)
+            if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current)
             if (spawnTimerRef.current) clearInterval(spawnTimerRef.current)
         }
     }, [
@@ -221,7 +198,7 @@ export const useGameEngine = () => {
         gameState.score,
         gameState.currentStage,
         moveObjects,
-        spawnObject
+        spawnObject,
     ])
 
     return {
@@ -229,7 +206,6 @@ export const useGameEngine = () => {
         startGame,
         resetGame,
         tapObject,
-        startNextStage,
         DANGER_LINE_Y,
         SCREEN_WIDTH,
     }

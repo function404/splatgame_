@@ -1,53 +1,7 @@
 import { ImageSourcePropType } from 'react-native'
-import { SvgProps } from 'react-native-svg'
-
-// stage 1
-import CakeSvg from '@/assets/images/fase1svgs/bolo.svg'
-import MeathSvg from '@/assets/images/fase1svgs/carne.svg'
-import RottenFoodSvg from '@/assets/images/fase1svgs/comida-podre.svg'
-import HamburgerSvg from '@/assets/images/fase1svgs/hamburguer.svg'
-import PastaSvg from '@/assets/images/fase1svgs/macarrao.svg'
-import EggSvg from '@/assets/images/fase1svgs/ovo-frito.svg'
-import BreadSvg from '@/assets/images/fase1svgs/pao.svg'
-
-// stage 2
-import HourglassSvg from '@/assets/images/fase2svgs/ampulheta.svg'
-import NegativeGraphSvg from '@/assets/images/fase2svgs/grafico-negativo.svg'
-import GraphSvg from '@/assets/images/fase2svgs/grafico.svg'
-import IdeaSvg from '@/assets/images/fase2svgs/ideia.svg'
-import BookSvg from '@/assets/images/fase2svgs/livro.svg'
-import SheetSvg from '@/assets/images/fase2svgs/planilha.svg'
-import ClipboardSvg from '@/assets/images/fase2svgs/prancheta.svg'
-   
-// stage 3
-import NeedleSvg from '@/assets/images/fase3svgs/agulha.svg'
-import BloodBagSvg from '@/assets/images/fase3svgs/bolsa-sangue.svg'
-import RedCrossSvg from '@/assets/images/fase3svgs/cruz-vermelha.svg'
-import SkeletonSvg from '@/assets/images/fase3svgs/esqueleto.svg'
-import HospitalSvg from '@/assets/images/fase3svgs/hospital.svg'
-import RemedySvg from '@/assets/images/fase3svgs/remedio.svg'
-import VirusSvg from '@/assets/images/fase3svgs/virus.svg'
-
-// stage 4
-import CSvg from '@/assets/images/fase4svgs/c.svg'
-import CssSvg from '@/assets/images/fase4svgs/css.svg'
-import HtmlSvg from '@/assets/images/fase4svgs/html.svg'
-import JavaSvg from '@/assets/images/fase4svgs/java.svg'
-import ReactSvg from '@/assets/images/fase4svgs/react.svg'
-import RubySvg from '@/assets/images/fase4svgs/ruby.svg'
-import BugSvg from '@/assets/images/fase4svgs/bug.svg'
-
-// stage 5
-import BrainSvg from '@/assets/images/fase5svgs/cerebro.svg'
-import ChipSvg from '@/assets/images/fase5svgs/chip.svg'
-import HackerSvg from '@/assets/images/fase5svgs/hacker.svg'
-import HologramSvg from '@/assets/images/fase5svgs/holograma.svg'
-import MicrophoneSvg from '@/assets/images/fase5svgs/microfone.svg'
-import BuildingSvg from '@/assets/images/fase5svgs/predio.svg'
-import RobotSvg from '@/assets/images/fase5svgs/robo.svg'
 
 export interface StageObject {
-   svg: React.FC<SvgProps>
+   svg: string
    points: number
    type: 'normal' | 'bomb' | 'golden'
 }
@@ -79,14 +33,14 @@ export const STAGES: StageConfig[] = [
       spawnRateModifier: 1.0,
       objects: {
          normal: [
-            { svg: CakeSvg, points: 20, type: 'normal' },
-            { svg: MeathSvg, points: 15, type: 'normal' },
-            { svg: PastaSvg, points: 10, type: 'normal' },
-            { svg: EggSvg, points: 10, type: 'normal' },
-            { svg: BreadSvg, points: 5, type: 'normal' },
+            { svg: 'bolo.svg', points: 20, type: 'normal' },
+            { svg: 'carne.svg', points: 15, type: 'normal' },
+            { svg: 'macarrao.svg', points: 10, type: 'normal' },
+            { svg: 'ovo-frito.svg', points: 10, type: 'normal' },
+            { svg: 'pao.svg', points: 5, type: 'normal' },
          ],
-         golden: { svg: HamburgerSvg, points: 80, type: 'golden' },
-         bomb: { svg: RottenFoodSvg, points: -50, type: 'bomb' },
+         golden: { svg: 'hamburguer.svg', points: 80, type: 'golden' },
+         bomb: { svg: 'comida-podre.svg', points: -50, type: 'bomb' },
       },
    },
    {
@@ -99,14 +53,14 @@ export const STAGES: StageConfig[] = [
       spawnRateModifier: 1.11,
       objects: {
          normal: [
-            { svg: HourglassSvg, points: 25, type: 'normal' },
-            { svg: SheetSvg, points: 20, type: 'normal' },
-            { svg: GraphSvg, points: 15, type: 'normal' },
-            { svg: ClipboardSvg, points: 15, type: 'normal' },
-            { svg: BookSvg, points: 10, type: 'normal' },
+            { svg: 'ampulheta.svg', points: 25, type: 'normal' },
+            { svg: 'planilha.svg', points: 20, type: 'normal' },
+            { svg: 'grafico.svg', points: 15, type: 'normal' },
+            { svg: 'prancheta.svg', points: 15, type: 'normal' },
+            { svg: 'livro.svg', points: 10, type: 'normal' },
          ],
-         golden: { svg: IdeaSvg, points: 100, type: 'golden' },
-         bomb: { svg: NegativeGraphSvg, points: -60, type: 'bomb' }, 
+         golden: { svg: 'ideia.svg', points: 100, type: 'golden' },
+         bomb: { svg: 'grafico-negativo.svg', points: -60, type: 'bomb' },
       },
    },
    {
@@ -119,14 +73,14 @@ export const STAGES: StageConfig[] = [
       spawnRateModifier: 1.13,
       objects: {
          normal: [
-            { svg: NeedleSvg, points: 30, type: 'normal' },
-            { svg: SkeletonSvg, points: 25, type: 'normal' },
-            { svg: HospitalSvg, points: 20, type: 'normal' },
-            { svg: RedCrossSvg, points: 20, type: 'normal' },
-            { svg: BloodBagSvg, points: 15, type: 'normal' },
+            { svg: 'agulha.svg', points: 30, type: 'normal' },
+            { svg: 'esqueleto.svg', points: 25, type: 'normal' },
+            { svg: 'hospital.svg', points: 20, type: 'normal' },
+            { svg: 'cruz-vermelha.svg', points: 20, type: 'normal' },
+            { svg: 'bolsa-sangue.svg', points: 15, type: 'normal' },
          ],
-         golden: { svg: RemedySvg, points: 120, type: 'golden' },
-         bomb: { svg: VirusSvg, points: -75, type: 'bomb' },
+         golden: { svg: 'remedio.svg', points: 120, type: 'golden' },
+         bomb: { svg: 'virus.svg', points: -75, type: 'bomb' },
       },
    },
    {
@@ -139,14 +93,14 @@ export const STAGES: StageConfig[] = [
       spawnRateModifier: 1.14,
       objects: {
          normal: [
-            { svg: CSvg, points: 35, type: 'normal' },
-            { svg: CssSvg, points: 30, type: 'normal' },
-            { svg: HtmlSvg, points: 25, type: 'normal' },
-            { svg: JavaSvg, points: 25, type: 'normal' },
-            { svg: RubySvg, points: 20, type: 'normal' },
+            { svg: 'c.svg', points: 35, type: 'normal' },
+            { svg: 'css.svg', points: 30, type: 'normal' },
+            { svg: 'html.svg', points: 25, type: 'normal' },
+            { svg: 'java.svg', points: 25, type: 'normal' },
+            { svg: 'ruby.svg', points: 20, type: 'normal' },
          ],
-         golden: { svg: ReactSvg, points: 15, type: 'golden' },
-         bomb: { svg: BugSvg, points: -90, type: 'bomb' },
+         golden: { svg: 'react.svg', points: 150, type: 'golden' },
+         bomb: { svg: 'bug.svg', points: -90, type: 'bomb' },
       },
    },
    {
@@ -160,14 +114,14 @@ export const STAGES: StageConfig[] = [
       spawnRateModifier: 1.15,
       objects: {
          normal: [
-            { svg: HologramSvg, points: 45, type: 'normal' },
-            { svg: ChipSvg, points: 40, type: 'normal' },
-            { svg: MicrophoneSvg, points: 35, type: 'normal' },
-            { svg: BrainSvg, points: 35, type: 'normal' },
-            { svg: BuildingSvg, points: 30, type: 'normal' },
+            { svg: 'holograma.svg', points: 45, type: 'normal' },
+            { svg: 'chip.svg', points: 40, type: 'normal' },
+            { svg: 'microfone.svg', points: 35, type: 'normal' },
+            { svg: 'cerebro.svg', points: 35, type: 'normal' },
+            { svg: 'predio.svg', points: 30, type: 'normal' },
          ],
-         golden: { svg: RobotSvg, points: 200, type: 'golden' },
-         bomb: { svg: HackerSvg, points: -100, type: 'bomb' },
+         golden: { svg: 'robo.svg', points: 200, type: 'golden' },
+         bomb: { svg: 'hacker.svg', points: -100, type: 'bomb' },
       },
    },
 ]

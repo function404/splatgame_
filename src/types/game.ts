@@ -6,7 +6,7 @@ export interface GameObject {
   y: number
   type: 'normal' | 'bomb' | 'golden'
   points: number
-  svg: React.FC<SvgProps> 
+  svg: string
 }
 
 export interface GameState {
