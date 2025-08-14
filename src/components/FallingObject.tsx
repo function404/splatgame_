@@ -63,7 +63,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   morePoints: {
-    // ...styles.pointsText, // Desnecessário
     position: 'absolute',
     top: 0,
     right: -5,
@@ -73,7 +72,6 @@ const styles = StyleSheet.create({
     color: ColorsTheme.green300,
   },
   fewerPoints: {
-    // ...styles.pointsText, // Desnecessário
     position: 'absolute',
     top: 0,
     right: -5,

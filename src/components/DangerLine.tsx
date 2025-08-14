@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming } from 'react-native-reanimated'
 import { ColorsTheme } from '@/src/theme/colors'
@@ -11,7 +11,7 @@ interface DangerLineProps {
 export const DangerLine: React.FC<DangerLineProps> = ({ y, width }) => {
   const opacity = useSharedValue(1)
 
-  React.useEffect(() => {
+  useEffect(() => {
     opacity.value = withRepeat(
       withTiming(0.3, { duration: 1000 }),
       -1,

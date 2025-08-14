@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { View, StyleSheet, ImageBackground, TouchableOpacity, Text, StatusBar, Alert } from 'react-native'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
-import { RotateCcw, House } from 'lucide-react-native'
+import { RotateCcw, House, Pause } from 'lucide-react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { auth, db } from '@/src/firebase/config'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
 
-import { GameHeader } from '@/src/components/GameHeader'
 import { FallingObject } from '@/src/components/FallingObject'
 import { DangerLine } from '@/src/components/DangerLine'
+import { GameHeader } from '@/src/components/GameHeader'
+import { PauseModal } from '@/src/components/PauseModal'
+import { References } from '@/src/components/References'
 import { StageSelector } from '@/src/components/StageSelector'
 
 import { STAGES } from '@/src/config/stages'
@@ -25,11 +27,14 @@ export default function GameScreen() {
     startGame,
     resetGame,
     tapObject,
+    pauseGame,
+    resumeGame,
     DANGER_LINE_Y,
     SCREEN_WIDTH,
   } = useGameEngine()
 
   const [showGameOverModal, setShowGameOverModal] = useState(false)
+  const [isPauseModalVisible, setPauseModalVisible] = useState(false)
   const [unlockedStages, setUnlockedStages] = useState<number[]>([1])
   const [newlyUnlockedStage, setNewlyUnlockedStage] = useState<number | null>(null)
 
@@ -135,6 +140,7 @@ export default function GameScreen() {
 
   const handleGoHome = () => {
     setShowGameOverModal(false)
+    setPauseModalVisible(false)
     resetGame()
     navigation.navigate('Home')
   }
@@ -143,9 +149,25 @@ export default function GameScreen() {
     resetGame()
   }
 
+  const handlePause = () => {
+    pauseGame()
+    setPauseModalVisible(true)
+  }
+
+  const handleResume = () => {
+    setPauseModalVisible(false)
+    resumeGame()
+  }
+
+  const handleStageSelect = () => {
+    setPauseModalVisible(false)
+    resetGame()
+  }
+
+
   const currentStageConfig = STAGES.find(s => s.level === gameState.currentStage) || STAGES[0]
 
-  if (!gameState.isPlaying && !gameState.isGameOver && !gameState.isStageComplete) {
+  if (!gameState.isPlaying && !gameState.isGameOver && !gameState.isStageComplete && !gameState.isPaused) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: ColorsTheme.green500 }}>
         <StatusBar backgroundColor={ColorsTheme.green500} barStyle="light-content" />
@@ -174,6 +196,14 @@ export default function GameScreen() {
             score={gameState.score}
             level={gameState.level}
             lives={gameState.lives}
+            onPause={handlePause}
+          />
+
+          <PauseModal
+            visible={isPauseModalVisible}
+            onResume={handleResume}
+            onGoHome={handleGoHome}
+            onStageSelect={handleStageSelect}
           />
         </View>
 
@@ -182,6 +212,7 @@ export default function GameScreen() {
             <FallingObject key={object.id} object={{...object, y: object.y - 70}} onTap={tapObject} />
           ))}
         </View>
+
         <DangerLine y={DANGER_LINE_Y} width={SCREEN_WIDTH} />
 
         {gameState.isStageComplete && !gameState.isGameComplete && (
@@ -244,6 +275,8 @@ export default function GameScreen() {
             </View>
           </View>
         )}
+
+        <References color={ColorsTheme.blue400} withSchool />
       </ImageBackground>
     </SafeAreaView>
   )

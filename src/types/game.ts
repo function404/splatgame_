@@ -1,5 +1,3 @@
-import { SvgProps } from 'react-native-svg'
-
 export interface GameObject {
   id: string
   x: number
@@ -14,6 +12,7 @@ export interface GameState {
   level: number
   lives: number
   isPlaying: boolean
+  isPaused: boolean
   isGameOver: boolean
   isStageComplete: boolean
   isGameComplete: boolean

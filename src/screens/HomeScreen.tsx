@@ -8,11 +8,11 @@ import { auth, db } from '@/src/firebase/config'
 import { doc, getDoc } from 'firebase/firestore'
 import { signOut } from 'firebase/auth'
 
+import { References } from '@/src/components/References'
 import { TNavigationProp } from '@/src/navigation/types'
 import { User } from '@/src/types/game'
 import { ColorsTheme } from '@/src/theme/colors'
 import { AppVersion } from '@/src/utils/AppVersion'
-
 
 export default function HomeScreen() {
   const navigation = useNavigation<TNavigationProp>()
@@ -187,6 +187,8 @@ export default function HomeScreen() {
             <Trophy size={24} color={ColorsTheme.white} />
           </TouchableOpacity>
         </View>
+
+        <References color={ColorsTheme.orange100} withSchool />
       </ImageBackground>
     </SafeAreaView>
   )
