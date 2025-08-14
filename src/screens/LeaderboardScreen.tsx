@@ -22,9 +22,7 @@ export default function LeaderboardScreen() {
   const loadLeaderboard = useCallback(async () => {
     try {
       const usersCollectionRef = collection(db, 'users')
-
-      const q = query(usersCollectionRef, orderBy('highScore', 'desc'), limit(20))
-
+      const q = query(usersCollectionRef, orderBy('highScore', 'desc'), limit(50))
       const querySnapshot = await getDocs(q)
 
       const topScores = querySnapshot.docs.map(doc => ({
@@ -77,26 +75,22 @@ export default function LeaderboardScreen() {
 
     const borderColor =
       rank === 1 ? ColorsTheme.yellow100 :
-        rank === 2 ? ColorsTheme.grey250 :
-          rank === 3 ? ColorsTheme.brown100 :
-            ColorsTheme.orange100
+      rank === 2 ? ColorsTheme.grey250 :
+      rank === 3 ? ColorsTheme.brown100 :
+      ColorsTheme.orange100
 
     return (
       <View style={[
-        styles.leaderboardItem,
-        {
-          borderLeftWidth: 5,
-          borderLeftColor: borderColor,
-          borderBottomWidth: 5,
-          borderBottomColor: borderColor
-        }
-      ]}>
-        <View style={styles.rankContainer}>
-          {getRankIcon(rank)}
-        </View>
-
+        styles.leaderboardItem, 
+          {
+            borderLeftColor: borderColor,
+            borderBottomColor: borderColor
+          }
+        ]}
+      >
+        <View style={styles.rankContainer}>{getRankIcon(rank)}</View>
         <View style={styles.playerInfo}>
-          <Text style={styles.playerName}>{item.username}</Text>
+          <Text style={styles.playerName} numberOfLines={1}>{item.username}</Text>
           <Text style={styles.scoreText}>{item.highScore.toLocaleString()} pts</Text>
         </View>
       </View>
@@ -104,52 +98,59 @@ export default function LeaderboardScreen() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: ColorsTheme.orange50 }}>
+    <SafeAreaView style={styles.safeArea}>
       <StatusBar backgroundColor={ColorsTheme.orange50} barStyle="dark-content" />
       
       <ImageBackground
         source={require('@/assets/images/homeBackground.png')}
-        style={styles.container}
+        style={styles.background}
         resizeMode='cover'
       >
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.buttonGoBack}
-        >
-          <Undo2 size={24} color={ColorsTheme.white} />
-        </TouchableOpacity>
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <TouchableOpacity 
+              onPress={() => navigation.goBack()} 
+              style={styles.buttonGoBack}
+            >
+              <Undo2 size={24} color={ColorsTheme.white} />
+            </TouchableOpacity>
 
-        <View style={styles.header}>
-          <Text style={styles.title}>Classificação</Text>
-          <Text style={styles.subtitle}>Melhores jogadores</Text>
+            <View style={styles.headerTitleContainer}>
+              <Text style={styles.title}>Classificação</Text>
+              <Text style={styles.subtitle}>Melhores jogadores</Text>
+            </View>
+
+            <View style={{ width: 44 }} /> 
+          </View>
+
+          {isLoading ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color={ColorsTheme.white} />
+              <Text style={styles.loadingText}>Carregando pontuações...</Text>
+            </View>
+          ) : leaderboard.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Trophy size={48} color={ColorsTheme.yellow100} />
+              <Text style={styles.emptyTitle}>Sem pontuações ainda</Text>
+              <Text style={styles.emptySubtitle}>Seja o primeiro a definir um recorde!</Text>
+            </View>
+          ) : (
+            <FlatList
+              style={{ flex: 1 }}
+              data={leaderboard}
+              renderItem={renderLeaderboardItem}
+              keyExtractor={(item) => item.userId}
+              contentContainerStyle={styles.listContainer}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  tintColor={ColorsTheme.white}
+                />
+              }
+            />
+          )}
         </View>
-
-        {isLoading ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color={ColorsTheme.white} />
-            <Text style={styles.loadingText}>Carregando pontuações...</Text>
-          </View>
-        ) : leaderboard.length === 0 ? (
-          <View style={styles.emptyContainer}>
-            <Trophy size={48} color={ColorsTheme.yellow100} />
-            <Text style={styles.emptyTitle}>Sem pontuações ainda</Text>
-            <Text style={styles.emptySubtitle}>Seja o primeiro a definir um recorde!</Text>
-          </View>
-        ) : (
-          <FlatList
-            data={leaderboard}
-            renderItem={renderLeaderboardItem}
-            keyExtractor={(item) => item.userId}
-            contentContainerStyle={styles.listContainer}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                tintColor={ColorsTheme.white}
-              />
-            }
-          />
-        )}
       </ImageBackground>
     </SafeAreaView>
   )
@@ -162,40 +163,44 @@ const textShadow = {
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: ColorsTheme.orange50
+  },
+  background: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    paddingTop: 60,
+    paddingTop: 10,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
+  headerTitleContainer: {
+    alignItems: 'center'
   },
   buttonGoBack: {
     width: 60,
     height: 60,
     borderRadius: 15,
     backgroundColor: ColorsTheme.blue200,
-    position: 'absolute',
-    top: 10,
-    left: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 10,
-  },
-  header: {
-    position: 'absolute',
-    top: 20,
-    left: 20,
-    right: 0,
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    zIndex: 1,
   },
   title: {
-    fontSize: 36,
+    fontSize: 32,
     fontFamily: 'PixelifySans-Bold',
     color: ColorsTheme.blue200,
     textAlign: 'center',
     ...textShadow
   },
   subtitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: 'PixelifySans-Bold',
     color: ColorsTheme.orange100,
     textAlign: 'center',
@@ -215,10 +220,10 @@ const styles = StyleSheet.create({
     ...textShadow
   },
   emptyContainer: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
-    marginTop: 150,
   },
   emptyTitle: {
     fontSize: 28,
@@ -236,18 +241,18 @@ const styles = StyleSheet.create({
     ...textShadow
   },
   listContainer: {
-    flexGrow: 1,
     paddingHorizontal: 16,
     paddingBottom: 20,
-    marginTop: 80,
   },
   leaderboardItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: ColorsTheme.white,
+    backgroundColor: ColorsTheme.orange10,
     padding: 16,
     marginBottom: 12,
-    borderRadius: 5,
+    borderRadius: 8,
+    borderLeftWidth: 5,
+    borderBottomWidth: 5,
   },
   rankContainer: {
     width: 40,

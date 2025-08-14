@@ -12,6 +12,7 @@ const initialGameState: GameState = {
     level: 1,
     lives: 3,
     isPlaying: false,
+    isPaused: false,
     isGameOver: false,
     isStageComplete: false,
     isGameComplete: false,
@@ -58,7 +59,7 @@ export const useGameEngine = () => {
 
     const moveObjects = useCallback(() => {
         setGameState(prev => {
-            if (!prev.isPlaying) return prev
+            if (!prev.isPlaying || prev.isPaused) return prev
 
             const stageConfig =
                 STAGES.find(s => s.level === prev.currentStage) || STAGES[0]
@@ -96,6 +97,8 @@ export const useGameEngine = () => {
 
     const tapObject = useCallback((objectId: string) => {
         setGameState(prev => {
+            if (prev.isPaused) return prev
+
             const tappedObject = prev.objects.find(obj => obj.id === objectId)
 
             if (!tappedObject || tappedObject.y > DANGER_LINE_Y) {
@@ -158,6 +161,7 @@ export const useGameEngine = () => {
             score: 0,
             level: stageToStart,
             isPlaying: true,
+            isPaused: false,
             currentStage: stageToStart,
         }))
     }, [])
@@ -166,8 +170,16 @@ export const useGameEngine = () => {
         setGameState(initialGameState)
     }, [])
 
+    const pauseGame = () => {
+        setGameState(prev => ({ ...prev, isPlaying: false, isPaused: true }))
+    }
+
+    const resumeGame = () => {
+        setGameState(prev => ({ ...prev, isPlaying: true, isPaused: false }))
+    }
+
     useEffect(() => {
-        if (gameState.isPlaying) {
+        if (gameState.isPlaying && !gameState.isPaused) {
             gameLoopRef.current = requestAnimationFrame(moveObjects)
 
             const stageConfig =
@@ -194,6 +206,7 @@ export const useGameEngine = () => {
         }
     }, [
         gameState.isPlaying,
+        gameState.isPaused,
         gameState.level,
         gameState.score,
         gameState.currentStage,
@@ -206,6 +219,8 @@ export const useGameEngine = () => {
         startGame,
         resetGame,
         tapObject,
+        pauseGame,
+        resumeGame,
         DANGER_LINE_Y,
         SCREEN_WIDTH,
     }

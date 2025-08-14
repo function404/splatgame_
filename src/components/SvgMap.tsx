@@ -46,9 +46,6 @@ import MicrophoneSvg from '@/assets/images/fase5svgs/microfone.svg'
 import BuildingSvg from '@/assets/images/fase5svgs/predio.svg'
 import RobotSvg from '@/assets/images/fase5svgs/robo.svg'
 
-// Adicione aqui os imports para as outras fases...
-
-// Mapeamento de nome do SVG para o componente
 const SvgComponents: { [key: string]: React.FC<SvgProps> } = {
   // Fase 1
   'bolo.svg': CakeSvg,

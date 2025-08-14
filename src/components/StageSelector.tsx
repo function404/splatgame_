@@ -10,25 +10,26 @@ import {
    Dimensions,
 } from 'react-native'
 import { ChevronLeft, ChevronRight, Lock, Play, Undo2 } from 'lucide-react-native'
-import Animated, { useSharedValue, withSequence, withTiming, withRepeat, useAnimatedStyle } from 'react-native-reanimated'
+import Animated, { useSharedValue, withSequence, withTiming, useAnimatedStyle } from 'react-native-reanimated'
 
+import { References } from '@/src/components/References'
 import { STAGES, StageConfig } from '@/src/config/stages'
 import { ColorsTheme } from '@/src/theme/colors'
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window')
 
 interface StageSelectorProps {
-  unlockedStages: number[]
-  newlyUnlockedStage: number | null
-  onStartGame: (level: number) => void
-  onGoBack: () => void
+   unlockedStages: number[]
+   newlyUnlockedStage: number | null
+   onStartGame: (level: number) => void
+   onGoBack: () => void
 }
 
 export const StageSelector: React.FC<StageSelectorProps> = ({
-  unlockedStages,
-  newlyUnlockedStage,
-  onStartGame,
-  onGoBack,
+   unlockedStages,
+   newlyUnlockedStage,
+   onStartGame,
+   onGoBack,
 }) => {
    const [currentIndex, setCurrentIndex] = useState(0)
    const flatListRef = useRef<FlatList>(null)
@@ -37,21 +38,18 @@ export const StageSelector: React.FC<StageSelectorProps> = ({
    useEffect(() => {
       if (newlyUnlockedStage !== null) {
          const newIndex = STAGES.findIndex(s => s.level === newlyUnlockedStage)
-
          if (newIndex !== -1) {
             setTimeout(() => {
                flatListRef.current?.scrollToIndex({ 
-                  animated: true, 
-                  index: newIndex 
+                  animated: true, index: newIndex 
                })
-               
                playButtonScale.value = withSequence(
                   withTiming(1.2, { duration: 300 }),
                   withTiming(1, { duration: 400 }),
                   withTiming(1.2, { duration: 300 }),
                   withTiming(1, { duration: 400 }),
                )
-            }, 500)
+            }, 150)
          }
       }
    }, [newlyUnlockedStage, playButtonScale])
@@ -60,21 +58,18 @@ export const StageSelector: React.FC<StageSelectorProps> = ({
       transform: [{ scale: playButtonScale.value }],
    }))
 
-   const handlePrevStage = () => {
-      if (currentIndex > 0) {
-         flatListRef.current?.scrollToIndex({ animated: true, index: currentIndex - 1 })
+   const handleScrollToIndex = (index: number) => {
+      if (flatListRef.current && index >= 0 && index < STAGES.length) {
+         flatListRef.current.scrollToIndex({ animated: true, index });
       }
    }
 
-   const handleNextStage = () => {
-      if (currentIndex < STAGES.length - 1) {
-         flatListRef.current?.scrollToIndex({ animated: true, index: currentIndex + 1 })
-      }
-   }
+   const handlePrevStage = () => handleScrollToIndex(currentIndex - 1)
+   const handleNextStage = () => handleScrollToIndex(currentIndex + 1)
 
-   const onViewableItemsChanged = useRef(({ viewableItems }: 
-      { viewableItems: Array<{ index: number | null }> }) => {
-
+   const onViewableItemsChanged = useRef(({ viewableItems }: { 
+      viewableItems: Array<{ index: number | null }> 
+   }) => {
       if (viewableItems.length > 0 && viewableItems[0].index !== null) {
          setCurrentIndex(viewableItems[0].index)
       }
@@ -94,8 +89,10 @@ export const StageSelector: React.FC<StageSelectorProps> = ({
             <View style={styles.carouselOverlay}>
                {!isUnlocked && (
                   <View style={styles.lockedInfo}>
-                  <Lock color={ColorsTheme.white} size={60} />
-                  <Text style={styles.lockedText}>Requer {item.scoreThreshold} pontos</Text>
+                     <Lock color={ColorsTheme.white} size={60} />
+                     <Text style={styles.lockedText}>
+                        Requer {item.scoreThreshold} pontos
+                     </Text>
                   </View>
                )}
             </View>
@@ -103,11 +100,11 @@ export const StageSelector: React.FC<StageSelectorProps> = ({
       )
    }, [unlockedStages])
   
-   const getItemLayout = useCallback((_data: any, index: number) => ({
+   const getItemLayout = (_data: any, index: number) => ({
       length: SCREEN_WIDTH,
       offset: SCREEN_WIDTH * index,
       index,
-   }), [])
+   })
 
    const currentSelection = STAGES[currentIndex]
    const isCurrentUnlocked = unlockedStages.includes(currentSelection.level)
@@ -134,37 +131,81 @@ export const StageSelector: React.FC<StageSelectorProps> = ({
                <Undo2 size={24} color={ColorsTheme.white} />
             </TouchableOpacity>
 
-            <View style={styles.bottomControls}>
-               <TouchableOpacity
-                  onPress={handlePrevStage}
-                  disabled={currentIndex === 0}
-                  style={[styles.buttonSide, currentIndex === 0 && styles.navButtonDisabled]}
-               >
-                  <ChevronLeft size={24} color={ColorsTheme.white} />
-               </TouchableOpacity>
-
-               <Animated.View style={animatedPlayButtonStyle}>
+            <View style={styles.footer}>
+               <View style={styles.bottomControls}>
                   <TouchableOpacity
-                     style={[styles.buttonCenter, !isCurrentUnlocked && styles.playButtonDisabled]}
-                     disabled={!isCurrentUnlocked}
-                     onPress={() => onStartGame(currentSelection.level)}
+                     onPress={handlePrevStage}
+                     disabled={currentIndex === 0}
+                     style={[
+                        styles.buttonSide, 
+                        currentIndex === 0 && styles.navButtonDisabled
+                     ]}
                   >
-                  <Play size={42} color={isCurrentUnlocked ? ColorsTheme.white : ColorsTheme.grey300} />
-                  
-                  <Text style={styles.playButtonText}>
-                     {isCurrentUnlocked ? 'Jogar' : 'Bloqueado'}
-                  </Text>
+                     <ChevronLeft size={24} color={ColorsTheme.white} />
                   </TouchableOpacity>
-               </Animated.View>
 
-               <TouchableOpacity
-                  onPress={handleNextStage}
-                  disabled={currentIndex === STAGES.length - 1}
-                  style={[styles.buttonSide, currentIndex === STAGES.length - 1 && styles.navButtonDisabled]}
-               >
-                  <ChevronRight size={24} color={ColorsTheme.white} />
-               </TouchableOpacity>
+                  <Animated.View style={animatedPlayButtonStyle}>
+                     <TouchableOpacity
+                        style={[
+                           styles.buttonCenter, 
+                           !isCurrentUnlocked && styles.playButtonDisabled
+                        ]}
+                        disabled={!isCurrentUnlocked}
+                        onPress={() => onStartGame(currentSelection.level)}
+                     >
+                        <Play 
+                           size={42} 
+                           color={
+                              isCurrentUnlocked ? 
+                              ColorsTheme.white : 
+                              ColorsTheme.grey300
+                           } 
+                        />
+                        <Text 
+                           style={[
+                              styles.playButtonText, 
+                              !isCurrentUnlocked && 
+                              { color: ColorsTheme.grey300 }
+                           ]}
+                        >
+                           {isCurrentUnlocked ? 'Jogar' : 'Bloqueado'}
+                        </Text>
+                     </TouchableOpacity>
+                  </Animated.View>
+
+                  <TouchableOpacity
+                     onPress={handleNextStage}
+                     disabled={currentIndex === STAGES.length - 1}
+                     style={[
+                        styles.buttonSide, 
+                        currentIndex === STAGES.length - 1 && 
+                        styles.navButtonDisabled
+                     ]}
+                  >
+                     <ChevronRight size={24} color={ColorsTheme.white} />
+                  </TouchableOpacity>
+               </View>
+
+               <View style={styles.paginationContainer}>
+                  {STAGES.map((stage, index) => {
+                     const isUnlocked = unlockedStages.includes(stage.level)
+                     const isActive = index === currentIndex
+
+                     return (
+                        <TouchableOpacity
+                           key={stage.level}
+                           onPress={() => handleScrollToIndex(index)}
+                           style={[
+                              styles.paginationDot,
+                              isActive && styles.paginationDotActive,
+                              !isUnlocked && styles.paginationDotLocked,
+                           ]}
+                        />
+                     )
+                  })}
+               </View>
             </View>
+            <References color={ColorsTheme.blue500} withSchool />
          </SafeAreaView>
       </View>
    )
@@ -173,7 +214,7 @@ export const StageSelector: React.FC<StageSelectorProps> = ({
 const styles = StyleSheet.create({
    container: {
       flex: 1,
-      backgroundColor: 'black',
+      backgroundColor: ColorsTheme.green500,
    },
    carouselItem: {
       width: SCREEN_WIDTH,
@@ -186,14 +227,14 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
    },
-   lockedInfo: {
+   lockedInfo: {      
       justifyContent: 'center',
       alignItems: 'center',
    },
    lockedText: {
       fontSize: 18,
       color: ColorsTheme.white,
-      fontWeight: '600',
+      fontFamily: 'PixelifySans-Bold',
       marginTop: 10,
       backgroundColor: 'rgba(0,0,0,0.5)',
       paddingHorizontal: 12,
@@ -204,19 +245,38 @@ const styles = StyleSheet.create({
       ...StyleSheet.absoluteFillObject,
       justifyContent: 'space-between',
       paddingHorizontal: 20,
-      paddingTop: 10,
-      pointerEvents: 'box-none',
    },
-   bottomControls: {
+   footer: {
+      alignSelf: 'center',
       position: 'absolute',
       bottom: 25,
       width: '100%',
+   },
+   paginationContainer: {
       flexDirection: 'row',
       justifyContent: 'center',
+      marginTop: 20,
+   },
+   paginationDot: {
+      width: 12,
+      height: 12,
+      borderRadius: 6,
+      backgroundColor: ColorsTheme.orange50,
+      marginHorizontal: 8,
+   },
+   paginationDotActive: {
+      backgroundColor: ColorsTheme.orange100,
+      transform: [{ scale: 1.4 }],
+   },
+   paginationDotLocked: {
+      backgroundColor: ColorsTheme.orange10,
+   },
+   bottomControls: {
+      width: '100%',
+      flexDirection: 'row',
+      justifyContent: 'space-around', 
       alignItems: 'center',
-      gap: 40,
       alignSelf: 'center',
-      pointerEvents: 'auto',
    },
    buttonGoBack: {
       width: 60,
@@ -224,10 +284,11 @@ const styles = StyleSheet.create({
       borderRadius: 15,
       backgroundColor: ColorsTheme.blue200,
       position: 'absolute',
-      top: 5,
-      left: 5,
+      top: 16,
+      left: 16,
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      zIndex: 10,
    },
    buttonSide: {
       width: 70,
@@ -241,7 +302,6 @@ const styles = StyleSheet.create({
       shadowOpacity: 0.15,
       shadowRadius: 5,
       elevation: 8,
-      pointerEvents: 'auto',
    },
    buttonCenter: {
       width: 110,
