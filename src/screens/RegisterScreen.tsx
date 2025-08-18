@@ -6,7 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { auth, db } from '@/src/firebase/config'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword, signOut } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
 
 import { TNavigationProp } from '@/src/navigation/types'
@@ -56,9 +56,18 @@ export default function RegisterScreen() {
             await setDoc(doc(db, "usernames", username.trim().toLowerCase()), {
                 userId: user.uid
             })
+
+            await signOut(auth)
+
+            Alert.alert(
+                'Conta Criada!',
+                'Sua conta foi criada com sucesso. Agora você pode fazer o login.',
+                [{ text: 'OK', onPress: () => navigation.navigate('Login') }]
+            )
+
         } catch (error: any) {
             let errorMessage = 'Ocorreu um erro ao tentar criar a conta.'
-            
+
             if (error.code === 'auth/email-already-in-use') {
                 errorMessage = 'Este e-mail já está em uso por outra conta.'
             } else if (error.code === 'auth/invalid-email') {

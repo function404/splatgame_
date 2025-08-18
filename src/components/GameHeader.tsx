@@ -21,7 +21,7 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
       <ImageBackground 
         source={require('@/assets/images/nuvem-header.png')}
         style={styles.container}
-        resizeMode='repeat' 
+        resizeMode='cover' 
       >
         <View style={styles.contentContainer}>
           <View style={styles.leftSection}>
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
   container: {
     width: '100%',
-    height: 110,
+    height: 120,
   },
   contentContainer: {
     flex: 1,
