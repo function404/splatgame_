@@ -1,16 +1,16 @@
 # 💥 Splat - Jogo Mobile
 
-![Versão do Jogo](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Versão do Jogo](https://img.shields.io/badge/version-1.8.22-blue.svg)
 ![Licença](https://img.shields.io/badge/license-MIT-green.svg)
 ![React Native](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 
-Um jogo mobile de reflexos rápidos onde seu objetivo é tocar nas frutas que caem para marcar pontos, enquanto desvia de bombas perigosas. Perfeito para testar sua agilidade e competir pelo topo do placar!
+Um jogo mobile de reflexos rápidos onde seu objetivo é tocar nos objetos que caem para marcar pontos, desviar de perigos e progredir através de fases temáticas. Teste sua agilidade e compita pelo topo do placar global!
 
 ---
 
 ### 🎮 Sobre o Jogo
 
-Em **Splat**, os jogadores são desafiados a tocar em frutas que caem na tela para acumular a maior pontuação possível. A cada fruta tocada, pontos são somados e o nível de dificuldade aumenta. Mas cuidado! Tocar em uma bomba ou deixar uma fruta cair resulta na perda de vidas. O jogo termina quando todas as vidas acabam.
+Em **Splat Game**, os jogadores são desafiados a tocar em objetos que caem na tela para acumular a maior pontuação possível em diversas fases, cada uma com sua própria temática, como Gastronomia, Administração, Enfermagem e Análise e Desenvolvimento de Sistemas. A cada objeto tocado, pontos são somados e o nível de dificuldade aumenta. Mas cuidado! Tocar em um objeto perigoso ou deixar um objeto bom cair resulta na perda de vidas. O jogo termina quando todas as vidas acabam.
 
 <!-- <br>
 
@@ -21,11 +21,11 @@ Em **Splat**, os jogadores são desafiados a tocar em frutas que caem na tela pa
 ### ✨ Funcionalidades Principais
 
 * **Jogabilidade Rápida e Viciante:** Teste seus reflexos em um desafio que fica cada vez mais rápido.
-* **Sistema de Pontuação e Níveis:** A dificuldade aumenta dinamicamente conforme você joga melhor.
-* **Placar de Líderes Local:** Compita contra si mesmo e veja os seus melhores recordes.
-* **Perfil de Jogador:** Salve seu nome para aparecer no placar.
-* **Armazenamento Offline:** Todos os seus recordes e seu nome são salvos diretamente no seu dispositivo, sem necessidade de internet.
-* **Reset de Dados:** Opção para limpar todo o progresso e começar do zero.
+* **Sistema de Pontuação e Múltiplas Fases:**  A dificuldade aumenta dinamicamente e novas fases temáticas são desbloqueadas conforme você atinge as pontuações necessárias.
+* **Placar de Líderes Local:**  Compita com jogadores de todo o mundo e veja sua posição no ranking.
+* **Autenticação e Perfil de Jogador:** Crie sua conta para salvar seu progresso e competir no placar.
+* **Progresso Salvo na Nuvem::** Seus recordes e fases desbloqueadas são salvos online com o Firebase.
+* **Interface com Ícones Modernos:** Utiliza a biblioteca Lucide para ícones leves e modernos.
 
 ---
 
@@ -34,8 +34,8 @@ Em **Splat**, os jogadores são desafiados a tocar em frutas que caem na tela pa
 * **React Native:** Estrutura principal para o desenvolvimento multiplataforma.
 * **Expo (Bare Workflow):** Plataforma e conjunto de ferramentas para facilitar o desenvolvimento e a compilação.
 * **TypeScript:** Para um código mais robusto e seguro.
-* **React Navigation:** Para a navegação entre as telas do aplicativo.
-* **AsyncStorage:** Para o armazenamento de dados localmente no dispositivo.
+* **Firebase:** Para autenticação de usuários e banco de dados em tempo real (Firestore) para salvar o progresso e o placar de líderes.
+* **AReact Navigation:** Para a navegação entre as telas do aplicativo.
 * **Lucide React Native:** Para os ícones modernos e leves usados na interface.
 
 ---
