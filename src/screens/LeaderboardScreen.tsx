@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import { View, Text, FlatList, StyleSheet, RefreshControl, TouchableOpacity, StatusBar, ImageBackground, ActivityIndicator, Alert } from 'react-native'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
-import { Trophy, Medal, Award, Undo2 } from 'lucide-react-native'
+import { Trophy, Medal, Award, Undo2, ChevronDown } from 'lucide-react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { db } from '@/src/firebase/config'
@@ -9,7 +9,9 @@ import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore'
 
 import { TNavigationProp } from '@/src/navigation/types'
 import { User } from '@/src/types/game'
+import { horizontalScale, isTablet, verticalScale } from '@/src/theme/scaling'
 import { ColorsTheme } from '@/src/theme/colors'
+import { auth } from '@/src/firebase/config'
 
 type LeaderboardEntry = Pick<User, 'userId' | 'username' | 'highScore'>
 
@@ -73,6 +75,8 @@ export default function LeaderboardScreen() {
   const renderLeaderboardItem = ({ item, index }: { item: LeaderboardEntry; index: number }) => {
     const rank = index + 1
 
+    const isCurrentUser = item.userId === auth.currentUser?.uid
+
     const borderColor =
       rank === 1 ? ColorsTheme.yellow100 :
       rank === 2 ? ColorsTheme.grey250 :
@@ -85,12 +89,15 @@ export default function LeaderboardScreen() {
           {
             borderLeftColor: borderColor,
             borderBottomColor: borderColor
-          }
+          },
         ]}
       >
         <View style={styles.rankContainer}>{getRankIcon(rank)}</View>
         <View style={styles.playerInfo}>
-          <Text style={styles.playerName} numberOfLines={1}>{item.username}</Text>
+          <View style={styles.playerNameContainer}>
+            <Text style={styles.playerName} numberOfLines={1}>{item.username}</Text>
+            {isCurrentUser && <Text style={styles.youTag}>(Você)</Text>}
+          </View>
           <Text style={styles.scoreText}>{item.highScore.toLocaleString()} pts</Text>
         </View>
       </View>
@@ -104,7 +111,7 @@ export default function LeaderboardScreen() {
       <ImageBackground
         source={require('@/assets/images/homeBackground.png')}
         style={styles.background}
-        resizeMode='cover'
+        resizeMode='stretch'
       >
         <View style={styles.container}>
           <View style={styles.header}>
@@ -115,12 +122,8 @@ export default function LeaderboardScreen() {
               <Undo2 size={24} color={ColorsTheme.white} />
             </TouchableOpacity>
 
-            <View style={styles.headerTitleContainer}>
-              <Text style={styles.title}>Classificação</Text>
-              <Text style={styles.subtitle}>Melhores jogadores</Text>
-            </View>
-
-            <View style={{ width: 44 }} /> 
+            <Text style={styles.title}>Classificação</Text>
+            <Text style={styles.subtitle}>Melhores jogadores</Text>
           </View>
 
           {isLoading ? (
@@ -135,22 +138,27 @@ export default function LeaderboardScreen() {
               <Text style={styles.emptySubtitle}>Seja o primeiro a definir um recorde!</Text>
             </View>
           ) : (
-            <FlatList
-              style={{ flex: 1 }}
-              data={leaderboard}
-              renderItem={renderLeaderboardItem}
-              keyExtractor={(item) => item.userId}
-              contentContainerStyle={styles.listContainer}
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={onRefresh}
-                  tintColor={ColorsTheme.white}
-                />
-              }
-            />
-          )}
-        </View>
+          <>
+            <View style={styles.listWrapper}>
+              <FlatList
+                style={{ height: '100%' }}
+                data={leaderboard}
+                renderItem={renderLeaderboardItem}
+                keyExtractor={(item) => item.userId}
+                contentContainerStyle={styles.listContainer}
+                showsVerticalScrollIndicator={false}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    tintColor={ColorsTheme.white}
+                  />
+                }
+              />
+            </View>
+          </>
+        )}
+      </View>
       </ImageBackground>
     </SafeAreaView>
   )
@@ -172,39 +180,39 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingTop: 10,
+    paddingTop: verticalScale(10),
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingBottom: 16,
-  },
-  headerTitleContainer: {
-    alignItems: 'center'
+    paddingHorizontal: horizontalScale(16),
+    paddingBottom: verticalScale(16),
   },
   buttonGoBack: {
-    width: 60,
-    height: 60,
+    width: isTablet ? 72 : 60,
+    height: isTablet ? 72 : 60,
     borderRadius: 15,
-    backgroundColor: ColorsTheme.blue200,
+    backgroundColor: ColorsTheme.orange100,
+    textAlign: 'center',
     alignItems: 'center',
     justifyContent: 'center',
+    position: 'absolute',
+    left: horizontalScale(18),
+    top: verticalScale(18),
   },
   title: {
-    fontSize: 32,
+    fontSize: isTablet ? 72 : 32,
     fontFamily: 'PixelifySans-Bold',
     color: ColorsTheme.blue200,
     textAlign: 'center',
+    marginTop: verticalScale(15),
     ...textShadow
   },
   subtitle: {
-    fontSize: 16,
+    fontSize:  isTablet ? 32 : 18,
     fontFamily: 'PixelifySans-Bold',
     color: ColorsTheme.orange100,
     textAlign: 'center',
-    marginTop: 4,
+    marginTop: verticalScale(4),
     ...textShadow
   },
   loadingContainer: {
@@ -213,43 +221,43 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loadingText: {
-    fontSize: 16,
+    fontSize: isTablet ? 20 : 16,
     color: ColorsTheme.white,
     fontFamily: 'PixelifySans-Regular',
-    marginTop: 10,
+    marginTop: verticalScale(10),
     ...textShadow
   },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: horizontalScale(20),
   },
   emptyTitle: {
-    fontSize: 28,
+    fontSize: isTablet ? 32 : 28,
     fontFamily: 'PixelifySans-Bold',
     color: ColorsTheme.white,
-    marginTop: 16,
+    marginTop: verticalScale(16),
     ...textShadow
   },
   emptySubtitle: {
-    fontSize: 24,
+    fontSize: isTablet ? 28 : 24,
     fontFamily: 'PixelifySans-Regular',
     color: ColorsTheme.white,
     textAlign: 'center',
-    marginTop: 8,
+    marginTop: verticalScale(8),
     ...textShadow
   },
   listContainer: {
-    paddingHorizontal: 16,
-    paddingBottom: 20,
+    paddingHorizontal: horizontalScale(16),
+    paddingBottom: verticalScale(20),
   },
   leaderboardItem: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: ColorsTheme.orange10,
-    padding: 16,
-    marginBottom: 12,
+    padding: verticalScale(12),
+    marginBottom: verticalScale(12),
     borderRadius: 8,
     borderLeftWidth: 5,
     borderBottomWidth: 5,
@@ -260,33 +268,51 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   rankNumber: {
-    width: 28,
-    height: 28,
+    width: isTablet ? 32 : 28,
+    height: isTablet ? 32 : 28,
     backgroundColor: ColorsTheme.blue100,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
     borderColor: ColorsTheme.blue200,
-    borderRadius: 14,
+    borderRadius: isTablet ? 28 : 14,
   },
   rankNumberText: {
-    fontSize: 14,
+    fontSize: isTablet ? 18 : 14,
     fontFamily: 'PixelifySans-Bold',
     color: ColorsTheme.blue500,
   },
   playerInfo: {
     flex: 1,
-    marginLeft: 16,
+    marginLeft: verticalScale(16),
+  },
+  playerNameContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   playerName: {
-    fontSize: 18,
+    fontSize: isTablet ? 22 : 18,
     fontFamily: 'PixelifySans-Bold',
     color: ColorsTheme.blue500,
   },
+  youTag: {
+    fontSize: isTablet ? 18 : 14,
+    fontFamily: 'PixelifySans-Bold',
+    color: ColorsTheme.green350,
+    marginLeft: verticalScale(8),
+  },
   scoreText: {
-    fontSize: 14,
+    fontSize: isTablet ? 18 : 14,
     fontFamily: 'PixelifySans-Regular',
     color: ColorsTheme.blue200,
-    marginTop: 2,
+    marginTop: verticalScale(2),
+  },
+  listWrapper: {
+    height: verticalScale(535),
+    marginTop: verticalScale(25),
+  },
+  scrollIndicator: {
+    alignItems: 'center',
+    marginTop: verticalScale(8),
   },
 })

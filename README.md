@@ -12,9 +12,9 @@ Um jogo mobile de reflexos rápidos onde seu objetivo é tocar nas frutas que ca
 
 Em **Splat**, os jogadores são desafiados a tocar em frutas que caem na tela para acumular a maior pontuação possível. A cada fruta tocada, pontos são somados e o nível de dificuldade aumenta. Mas cuidado! Tocar em uma bomba ou deixar uma fruta cair resulta na perda de vidas. O jogo termina quando todas as vidas acabam.
 
-<br>
+<!-- <br>
 
-<img src="./assets/splatdemo.gif" alt="Gameplay do Splat" width="300"/>
+<img src="./assets/splatdemo.gif" alt="Gameplay do Splat" width="300"/> -->
 
 ---
 

@@ -15,6 +15,7 @@ import Animated, { useSharedValue, withSequence, withTiming, useAnimatedStyle } 
 import { References } from '@/src/components/References'
 import { STAGES, StageConfig } from '@/src/config/stages'
 import { ColorsTheme } from '@/src/theme/colors'
+import { horizontalScale, isTablet, verticalScale } from '@/src/theme/scaling'
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window')
 
@@ -84,7 +85,7 @@ export const StageSelector: React.FC<StageSelectorProps> = ({
          <ImageBackground
             source={item.backgroundStageImage}
             style={styles.carouselItem}
-            resizeMode="cover"
+            resizeMode="stretch"
          >
             <View style={styles.carouselOverlay}>
                {!isUnlocked && (
@@ -232,37 +233,37 @@ const styles = StyleSheet.create({
       alignItems: 'center',
    },
    lockedText: {
-      fontSize: 18,
+      fontSize: isTablet ? 22 : 18,
       color: ColorsTheme.white,
       fontFamily: 'PixelifySans-Bold',
-      marginTop: 10,
+      marginTop: verticalScale(10),
       backgroundColor: 'rgba(0,0,0,0.5)',
-      paddingHorizontal: 12,
-      paddingVertical: 6,
+      paddingHorizontal: horizontalScale(12),
+      paddingVertical: verticalScale(6),
       borderRadius: 8,
    },
    controlsOverlay: {
       ...StyleSheet.absoluteFillObject,
       justifyContent: 'space-between',
-      paddingHorizontal: 20,
+      paddingHorizontal: horizontalScale(20),
    },
    footer: {
       alignSelf: 'center',
       position: 'absolute',
-      bottom: 25,
+      bottom: verticalScale(25),
       width: '100%',
    },
    paginationContainer: {
       flexDirection: 'row',
       justifyContent: 'center',
-      marginTop: 20,
+      marginTop: verticalScale(20),
    },
    paginationDot: {
-      width: 12,
-      height: 12,
-      borderRadius: 6,
+      width: isTablet ? 16 : 12,
+      height: isTablet ? 16 : 12,
+      borderRadius: isTablet ? 8 : 6,
       backgroundColor: ColorsTheme.orange50,
-      marginHorizontal: 8,
+      marginHorizontal: horizontalScale(8),
    },
    paginationDotActive: {
       backgroundColor: ColorsTheme.orange100,
@@ -279,20 +280,20 @@ const styles = StyleSheet.create({
       alignSelf: 'center',
    },
    buttonGoBack: {
-      width: 60,
-      height: 60,
+      width: isTablet ? 72 : 60,
+      height: isTablet ? 72 : 60,
       borderRadius: 15,
-      backgroundColor: ColorsTheme.blue200,
+      backgroundColor: ColorsTheme.orange100,
       position: 'absolute',
-      top: 16,
-      left: 16,
+      top: verticalScale(16),
+      left: horizontalScale(16),
       alignItems: 'center',
       justifyContent: 'center',
       zIndex: 10,
    },
    buttonSide: {
-      width: 70,
-      height: 70,
+      width: isTablet ? 80 : 70,
+      height: isTablet ? 80 : 70,
       borderRadius: 25,
       backgroundColor: ColorsTheme.blue200,
       justifyContent: 'center',
@@ -304,8 +305,8 @@ const styles = StyleSheet.create({
       elevation: 8,
    },
    buttonCenter: {
-      width: 110,
-      height: 110,
+      width: isTablet ? 120 : 110,
+      height: isTablet ? 120 : 110,
       borderRadius: 40,
       backgroundColor: ColorsTheme.orange100,
       justifyContent: 'center',
@@ -319,11 +320,11 @@ const styles = StyleSheet.create({
    playButtonText: {
       textAlign: 'center',
       color: ColorsTheme.white,
-      fontSize: 16,
+      fontSize: isTablet ? 20 : 16,
       fontFamily: 'PixelifySans-Medium',
    },
    navButtonDisabled: {
-      opacity: 0.4,
+      opacity: 0.5,
    },
    playButtonDisabled: {
       backgroundColor: ColorsTheme.grey200,

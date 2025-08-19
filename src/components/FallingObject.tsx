@@ -1,9 +1,11 @@
 import React from 'react'
 import { TouchableOpacity, Text, StyleSheet } from 'react-native'
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated'
-import { GameObject } from '@/src/types/game'
-import { ColorsTheme } from '@/src/theme/colors'
+
 import { SvgMap } from '@/src/components/SvgMap'
+import { ColorsTheme } from '@/src/theme/colors'
+import { horizontalScale, isTablet, verticalScale } from '@/src/theme/scaling'
+import { GameObject } from '@/src/types/game'
 
 interface FallingObjectProps {
   object: GameObject
@@ -48,34 +50,34 @@ export const FallingObject: React.FC<FallingObjectProps> = ({ object, onTap }) =
 
 const styles = StyleSheet.create({
   container: {
-    width: 60,
-    height: 60,
+    width: isTablet ? 72 : 60,
+    height: isTablet ? 72 : 60,
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
   },
   pointsText: {
     position: 'absolute',
-    top: 0,
-    right: -5,
-    fontSize: 14,
+    top: verticalScale(0),
+    right: horizontalScale(-5),
+    fontSize: isTablet ? 18 : 14,
     fontWeight: 'bold',
     zIndex: 1,
   },
   morePoints: {
     position: 'absolute',
-    top: 0,
-    right: -5,
-    fontSize: 14,
+    top: verticalScale(0),
+    right: horizontalScale(-5),
+    fontSize: isTablet ? 18 : 14,
     fontWeight: 'bold',
     zIndex: 1,
     color: ColorsTheme.green300,
   },
   fewerPoints: {
     position: 'absolute',
-    top: 0,
-    right: -5,
-    fontSize: 14,
+    top: verticalScale(0),
+    right: horizontalScale(-5),
+    fontSize: isTablet ? 18 : 14,
     fontWeight: 'bold',
     zIndex: 1,
     color: ColorsTheme.red,

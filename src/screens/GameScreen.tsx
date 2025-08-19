@@ -18,6 +18,7 @@ import { STAGES } from '@/src/config/stages'
 import { useGameEngine } from '@/src/hooks/useGameEngine'
 import { TNavigationProp } from '@/src/navigation/types'
 import { ColorsTheme } from '@/src/theme/colors'
+import { verticalScale, horizontalScale, isTablet } from '@/src/theme/scaling'
 import { User } from '@/src/types/game'
 
 export default function GameScreen() {
@@ -189,7 +190,7 @@ export default function GameScreen() {
       <ImageBackground
         source={currentStageConfig.backgroundImage}
         style={styles.gameArea}
-        resizeMode="cover"
+        resizeMode="stretch"
       >
         <View style={{ zIndex: 2 }}>
           <GameHeader
@@ -296,10 +297,10 @@ const styles = StyleSheet.create({
   },
   modal: {
     backgroundColor: ColorsTheme.orange50,
-    padding: 32,
+    padding: verticalScale(32),
     borderRadius: 16,
     alignItems: 'center',
-    marginHorizontal: 20,
+    marginHorizontal: horizontalScale(20),
     width: '90%',
     shadowColor: ColorsTheme.black,
     shadowOffset: { width: 0, height: 8 },
@@ -308,22 +309,22 @@ const styles = StyleSheet.create({
     elevation: 15,
   },
   modalTitle: {
-    fontSize: 28,
-    marginBottom: 16,
-    marginTop: 8,
+    fontSize: isTablet ? 32 : 28,
+    marginBottom: verticalScale(16),
+    marginTop: verticalScale(8),
     fontFamily: 'PixelifySans-Bold',
   },
   finalScore: {
-    fontSize: 18,
+    fontSize: isTablet ? 22 : 18,
     color: ColorsTheme.blue500,
-    marginBottom: 8,
+    marginBottom: verticalScale(8),
     textAlign: 'center',
     fontFamily: 'PixelifySans-Medium',
   },
   levelReached: {
-    fontSize: 16,
+    fontSize: isTablet ? 20 : 16,
     color: ColorsTheme.grey300,
-    marginBottom: 16,
+    marginBottom: verticalScale(16),
     fontFamily: 'PixelifySans-Regular',
   },
   modalButtons: {
@@ -334,7 +335,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 14,
+    paddingVertical: verticalScale(14),
     borderRadius: 12,
     gap: 10,
     backgroundColor: ColorsTheme.orange40,
@@ -342,7 +343,7 @@ const styles = StyleSheet.create({
     borderColor: ColorsTheme.orange100,
   },
   playAgainText: {
-    fontSize: 18,
+    fontSize: isTablet ? 22 : 18,
     fontFamily: 'PixelifySans-Bold',
     color: ColorsTheme.orange100,
   },
@@ -353,13 +354,13 @@ const styles = StyleSheet.create({
     backgroundColor: ColorsTheme.blue150,
     borderWidth: 2,
     borderColor: ColorsTheme.blue200,
-    paddingVertical: 14,
-    paddingHorizontal: 24,
+    paddingVertical: verticalScale(14),
+    paddingHorizontal: horizontalScale(24),
     borderRadius: 10,
     gap: 8,
   },
   homeButtonText: {
-    fontSize: 16,
+    fontSize: isTablet ? 20 : 16,
     fontFamily: 'PixelifySans-Bold',
     color: ColorsTheme.blue200,
   },

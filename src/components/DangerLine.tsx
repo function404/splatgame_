@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming } from 'react-native-reanimated'
+
 import { ColorsTheme } from '@/src/theme/colors'
+import { isTablet, verticalScale } from '@/src/theme/scaling'
 
 interface DangerLineProps {
   y: number
@@ -48,12 +50,12 @@ const styles = StyleSheet.create({
   },
   line: {
     width: '100%',
-    height: 3,
+    height: verticalScale(3),
     backgroundColor: ColorsTheme.red,
-    marginBottom: 5,
+    marginBottom: verticalScale(5),
   },
   text: {
-    fontSize: 12,
+    fontSize: isTablet ? 16 : 12,
     fontWeight: 'bold',
     color: ColorsTheme.red,
     letterSpacing: 1,

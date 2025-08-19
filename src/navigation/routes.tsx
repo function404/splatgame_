@@ -15,7 +15,7 @@ export const ROUTES: IRoute[] = [
       isPrivate: true,
       options: {
          title: 'Início',
-         ...TransitionPresets.FadeFromBottomAndroid,
+         ...TransitionPresets.FadeFromRightAndroid,
       },
    },
    {
@@ -24,7 +24,7 @@ export const ROUTES: IRoute[] = [
       isPrivate: false,
       options: {
          title: 'Login',
-         ...TransitionPresets.FadeFromBottomAndroid,
+         ...TransitionPresets.FadeFromRightAndroid,
       },
    },
    {
@@ -33,7 +33,7 @@ export const ROUTES: IRoute[] = [
       isPrivate: false,
       options: {
          title: 'Registro',
-         ...TransitionPresets.FadeFromBottomAndroid,
+         ...TransitionPresets.FadeFromRightAndroid,
       },
    },
    {
@@ -51,6 +51,7 @@ export const ROUTES: IRoute[] = [
       isPrivate: true,
       options: {
          title: 'Classificação',
+         ...TransitionPresets.FadeFromRightAndroid,
       },
    },
 ]
