@@ -5,7 +5,7 @@ import { STAGES, StageObject } from '@/src/config/stages'
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window')
 const GAME_AREA_HEIGHT = SCREEN_HEIGHT * 0.9
-const DANGER_LINE_Y = GAME_AREA_HEIGHT - 50
+const DANGER_LINE_Y = GAME_AREA_HEIGHT - 100
 
 const initialGameState: GameState = {
     score: 0,
@@ -32,9 +32,9 @@ export const useGameEngine = () => {
         const randomNumber = Math.random()
         let objectData: StageObject
 
-        if (randomNumber < 0.05) {
+        if (randomNumber < 0.10) {
             objectData = golden
-        } else if (randomNumber < 0.25) {
+        } else if (randomNumber < 0.40) {
             objectData = bomb
         } else {
             objectData = normal[Math.floor(Math.random() * normal.length)]
@@ -63,7 +63,8 @@ export const useGameEngine = () => {
 
             const stageConfig =
                 STAGES.find(s => s.level === prev.currentStage) || STAGES[0]
-            const speed = (0.8 + prev.level * 0.2) * stageConfig.speedModifier
+
+            const speed = stageConfig.speedModifier
 
             let livesLostThisFrame = 0
 
@@ -185,13 +186,10 @@ export const useGameEngine = () => {
             const stageConfig =
                 STAGES.find(s => s.level === gameState.currentStage) || STAGES[0]
             const baseInterval = 800
-            const levelReduction = gameState.level * 50
-            const scoreReduction = Math.floor(gameState.score / 100) * 20
-
+            
             const spawnInterval = Math.max(
-                (baseInterval - levelReduction - scoreReduction) /
-                stageConfig.spawnRateModifier,
-                150,
+                baseInterval / stageConfig.spawnRateModifier,
+                200,
             )
 
             spawnTimerRef.current = setInterval(spawnObject, spawnInterval)
@@ -207,8 +205,6 @@ export const useGameEngine = () => {
     }, [
         gameState.isPlaying,
         gameState.isPaused,
-        gameState.level,
-        gameState.score,
         gameState.currentStage,
         moveObjects,
         spawnObject,

@@ -9,27 +9,27 @@
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		ACB1A822E75271DC378DACE9 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = FF0DCF31247A45C20996C196 /* PrivacyInfo.xcprivacy */; };
-		BAE88892B9F273DA856FCAC7 /* libPods-SplatGame.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 115E933242AFA58FA386D6F9 /* libPods-SplatGame.a */; };
+		590B57BEE8408E9E16AE5A72 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3502AD455ECD1D7C7A100C /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		D190F7769D67C6AC08F1A22D /* libPods-SplatGame.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEA0EC15816425FCBF8264BB /* libPods-SplatGame.a */; };
+		EE20E4D2325E7A1E93B6506E /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D13C3C1B49D7EA2F37AEBE14 /* PrivacyInfo.xcprivacy */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
-		FCF6A70DF0AD0A9B30243603 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41B26A1F0D95FEB2839F01ED /* ExpoModulesProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		115E933242AFA58FA386D6F9 /* libPods-SplatGame.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SplatGame.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		04C09E4EC0610887EF94B06E /* Pods-SplatGame.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SplatGame.release.xcconfig"; path = "Target Support Files/Pods-SplatGame/Pods-SplatGame.release.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* SplatGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplatGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = SplatGame/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = SplatGame/Info.plist; sourceTree = "<group>"; };
-		41B26A1F0D95FEB2839F01ED /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-SplatGame/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		9C55AD6C1C2F62D117C43889 /* Pods-SplatGame.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SplatGame.release.xcconfig"; path = "Target Support Files/Pods-SplatGame/Pods-SplatGame.release.xcconfig"; sourceTree = "<group>"; };
+		A3352DBB6FF4C7719D98C2CE /* Pods-SplatGame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SplatGame.debug.xcconfig"; path = "Target Support Files/Pods-SplatGame/Pods-SplatGame.debug.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = SplatGame/SplashScreen.storyboard; sourceTree = "<group>"; };
+		AC3502AD455ECD1D7C7A100C /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-SplatGame/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
+		BEA0EC15816425FCBF8264BB /* libPods-SplatGame.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SplatGame.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D13C3C1B49D7EA2F37AEBE14 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = SplatGame/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = SplatGame/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* SplatGame-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "SplatGame-Bridging-Header.h"; path = "SplatGame/SplatGame-Bridging-Header.h"; sourceTree = "<group>"; };
-		FBB43A5A3A69B3EBEAC98125 /* Pods-SplatGame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SplatGame.debug.xcconfig"; path = "Target Support Files/Pods-SplatGame/Pods-SplatGame.debug.xcconfig"; sourceTree = "<group>"; };
-		FF0DCF31247A45C20996C196 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = SplatGame/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BAE88892B9F273DA856FCAC7 /* libPods-SplatGame.a in Frameworks */,
+				D190F7769D67C6AC08F1A22D /* libPods-SplatGame.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,18 +53,36 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				FF0DCF31247A45C20996C196 /* PrivacyInfo.xcprivacy */,
+				D13C3C1B49D7EA2F37AEBE14 /* PrivacyInfo.xcprivacy */,
 			);
 			name = SplatGame;
+			sourceTree = "<group>";
+		};
+		17BB160011FE7F8FFEBA6545 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				A3352DBB6FF4C7719D98C2CE /* Pods-SplatGame.debug.xcconfig */,
+				04C09E4EC0610887EF94B06E /* Pods-SplatGame.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				115E933242AFA58FA386D6F9 /* libPods-SplatGame.a */,
+				BEA0EC15816425FCBF8264BB /* libPods-SplatGame.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6F5277B8C8F6ACF11B75BF76 /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				9BD28C6A7491E8C9048B1329 /* SplatGame */,
+			);
+			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -81,8 +99,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				EA00A7C86FEC3A1A6633B4E9 /* Pods */,
-				9462C2F53DE6F022F0A5E845 /* ExpoModulesProviders */,
+				17BB160011FE7F8FFEBA6545 /* Pods */,
+				6F5277B8C8F6ACF11B75BF76 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -97,18 +115,10 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		9462C2F53DE6F022F0A5E845 /* ExpoModulesProviders */ = {
+		9BD28C6A7491E8C9048B1329 /* SplatGame */ = {
 			isa = PBXGroup;
 			children = (
-				AE955498654FE17B495393B4 /* SplatGame */,
-			);
-			name = ExpoModulesProviders;
-			sourceTree = "<group>";
-		};
-		AE955498654FE17B495393B4 /* SplatGame */ = {
-			isa = PBXGroup;
-			children = (
-				41B26A1F0D95FEB2839F01ED /* ExpoModulesProvider.swift */,
+				AC3502AD455ECD1D7C7A100C /* ExpoModulesProvider.swift */,
 			);
 			name = SplatGame;
 			sourceTree = "<group>";
@@ -122,16 +132,6 @@
 			path = SplatGame/Supporting;
 			sourceTree = "<group>";
 		};
-		EA00A7C86FEC3A1A6633B4E9 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				FBB43A5A3A69B3EBEAC98125 /* Pods-SplatGame.debug.xcconfig */,
-				9C55AD6C1C2F62D117C43889 /* Pods-SplatGame.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -140,13 +140,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "SplatGame" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				DDED9C5D0E04B798D11AD0F9 /* [Expo] Configure project */,
+				242691375891BCD9EA1D7C51 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				EC2E1F1277D79C2CA3D436AD /* [CP] Embed Pods Frameworks */,
+				2678EA5E762021B10A2FBB87 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -196,7 +196,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				ACB1A822E75271DC378DACE9 /* PrivacyInfo.xcprivacy in Resources */,
+				EE20E4D2325E7A1E93B6506E /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,6 +240,43 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		242691375891BCD9EA1D7C51 /* [Expo] Configure project */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[Expo] Configure project";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-SplatGame/expo-configure-project.sh\"\n";
+		};
+		2678EA5E762021B10A2FBB87 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SplatGame/Pods-SplatGame-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SplatGame/Pods-SplatGame-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -278,43 +315,6 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SplatGame/Pods-SplatGame-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		DDED9C5D0E04B798D11AD0F9 /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-SplatGame/expo-configure-project.sh\"\n";
-		};
-		EC2E1F1277D79C2CA3D436AD /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SplatGame/Pods-SplatGame-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SplatGame/Pods-SplatGame-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -323,7 +323,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				FCF6A70DF0AD0A9B30243603 /* ExpoModulesProvider.swift in Sources */,
+				590B57BEE8408E9E16AE5A72 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -332,7 +332,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FBB43A5A3A69B3EBEAC98125 /* Pods-SplatGame.debug.xcconfig */;
+			baseConfigurationReference = A3352DBB6FF4C7719D98C2CE /* Pods-SplatGame.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -357,7 +357,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.zfunction404.splatgame-";
-				PRODUCT_NAME = SplatGame;
+				PRODUCT_NAME = "SplatGame";
 				SWIFT_OBJC_BRIDGING_HEADER = "SplatGame/SplatGame-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -368,7 +368,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9C55AD6C1C2F62D117C43889 /* Pods-SplatGame.release.xcconfig */;
+			baseConfigurationReference = 04C09E4EC0610887EF94B06E /* Pods-SplatGame.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -388,7 +388,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.zfunction404.splatgame-";
-				PRODUCT_NAME = SplatGame;
+				PRODUCT_NAME = "SplatGame";
 				SWIFT_OBJC_BRIDGING_HEADER = "SplatGame/SplatGame-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

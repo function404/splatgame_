@@ -1,8 +1,10 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native'
 import { Play, House, MenuSquare } from 'lucide-react-native'
-import { ColorsTheme } from '@/src/theme/colors'
+
 import { References } from '@/src/components/References'
+import { ColorsTheme } from '@/src/theme/colors'
+import { horizontalScale, isTablet, verticalScale } from '@/src/theme/scaling'
 
 interface PauseModalProps {
    visible: boolean
@@ -56,7 +58,7 @@ const styles = StyleSheet.create({
    },
    modalContainer: {
       backgroundColor: ColorsTheme.orange50,
-      padding: 32,
+      padding: verticalScale(32),
       borderRadius: 16,
       alignItems: 'center',
       width: '85%',
@@ -67,10 +69,10 @@ const styles = StyleSheet.create({
       elevation: 15,
    },
    modalTitle: {
-      fontSize: 28,
+      fontSize: isTablet ? 32 : 28,
       fontFamily: 'PixelifySans-Bold',
       color: ColorsTheme.blue500,
-      marginBottom: 24,
+      marginBottom: verticalScale(24),
    },
    modalButtons: {
       gap: 12,
@@ -83,8 +85,8 @@ const styles = StyleSheet.create({
       backgroundColor: ColorsTheme.blue150,
       borderWidth: 2,
       borderColor: ColorsTheme.blue200,
-      paddingVertical: 14,
-      paddingHorizontal: 24,
+      paddingVertical: verticalScale(14),
+      paddingHorizontal: horizontalScale(24),
       borderRadius: 10,
       gap: 8,
    },
@@ -95,18 +97,18 @@ const styles = StyleSheet.create({
       backgroundColor: ColorsTheme.orange40,
       borderWidth: 2,
       borderColor: ColorsTheme.orange100,
-      paddingVertical: 14,
-      paddingHorizontal: 24,
+      paddingVertical: verticalScale(14),
+      paddingHorizontal: horizontalScale(24),
       borderRadius: 10,
       gap: 8,
    },
    buttonTextContinue: {
-      fontSize: 18,
+      fontSize: isTablet ? 22 : 18,
       fontFamily: 'PixelifySans-Bold',
       color: ColorsTheme.orange100,
    },
    buttonText: {
-      fontSize: 18,
+      fontSize: isTablet ? 22 : 18,
       fontFamily: 'PixelifySans-Bold',
       color: ColorsTheme.blue200,
    },

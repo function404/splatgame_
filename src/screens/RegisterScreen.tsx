@@ -6,12 +6,13 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { auth, db } from '@/src/firebase/config'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword, signOut } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
 
 import { TNavigationProp } from '@/src/navigation/types'
 import { ColorsTheme } from '@/src/theme/colors'
 import { AppVersion } from '@/src/utils/AppVersion'
+import { horizontalScale, isTablet, verticalScale } from '@/src/theme/scaling'
 
 export default function RegisterScreen() {
     const navigation = useNavigation<TNavigationProp>()
@@ -56,9 +57,18 @@ export default function RegisterScreen() {
             await setDoc(doc(db, "usernames", username.trim().toLowerCase()), {
                 userId: user.uid
             })
+
+            await signOut(auth)
+
+            Alert.alert(
+                'Conta Criada!',
+                'Sua conta foi criada com sucesso. Agora você pode fazer o login.',
+                [{ text: 'OK', onPress: () => navigation.navigate('Login') }]
+            )
+
         } catch (error: any) {
             let errorMessage = 'Ocorreu um erro ao tentar criar a conta.'
-            
+
             if (error.code === 'auth/email-already-in-use') {
                 errorMessage = 'Este e-mail já está em uso por outra conta.'
             } else if (error.code === 'auth/invalid-email') {
@@ -82,7 +92,7 @@ export default function RegisterScreen() {
             
             <ImageBackground
                 source={require('@/assets/images/homeBackground.png')}
-                resizeMode='cover'
+                resizeMode='stretch'
                 style={{ flex: 1, justifyContent: 'center' }}
             >
                 <View style={styles.header}>
@@ -203,11 +213,11 @@ const textShadow = {
 const styles = StyleSheet.create({
     header: {
         alignItems: 'center',
-        marginBottom: 30,
-        paddingHorizontal: 16,
+        marginBottom: verticalScale(30),
+        paddingHorizontal: horizontalScale(16),
     },
     title: {
-        fontSize: 58,
+        fontSize: isTablet ? 72 : 58,
         fontFamily: 'PixelifySans-Bold',
         color: ColorsTheme.blue200,
         ...textShadow
@@ -216,43 +226,42 @@ const styles = StyleSheet.create({
         color: ColorsTheme.orange100,
     },
     subtitle: {
-        fontSize: 22,
-        color: ColorsTheme.white,
+        fontSize: isTablet ? 32 : 24,
+        color: ColorsTheme.orange100,
         fontFamily: 'PixelifySans-Medium',
         ...textShadow,
-        marginTop: 8,
+        marginTop: verticalScale(8),
     },
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 16,
-        marginHorizontal: 24,
+        marginBottom: verticalScale(16),
+        marginHorizontal: horizontalScale(24),
         backgroundColor: ColorsTheme.white,
         borderRadius: 12,
         borderWidth: 2,
         borderColor: ColorsTheme.grey100,
     },
     icon: {
-        marginLeft: 16,
+        marginLeft: horizontalScale(16),
     },
     textInput: {
         flex: 1,
-        paddingVertical: 14,
-        paddingHorizontal: 12,
-        fontSize: 16,
+        paddingVertical: verticalScale(14),
+        paddingHorizontal: horizontalScale(12),
+        fontSize: isTablet ? 20 : 16,
         color: ColorsTheme.blue500,
         fontFamily: 'PixelifySans-Bold',
-        
     },
     registerButton: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: ColorsTheme.green400,
-        marginHorizontal: 24,
-        paddingVertical: 16,
+        marginHorizontal: horizontalScale(24),
+        paddingVertical: verticalScale(16),
         borderRadius: 12,
-        marginTop: 16,
+        marginTop: verticalScale(16),
         gap: 10,
         shadowColor: ColorsTheme.black,
         shadowOffset: { width: 0, height: 4 },
@@ -262,18 +271,18 @@ const styles = StyleSheet.create({
     },
     registerButtonTextAction: {
         color: ColorsTheme.white,
-        fontSize: 18,
+        fontSize: isTablet ? 22 : 18,
         fontFamily: 'PixelifySans-Bold',
     },
     loginLink: {
-        marginTop: 24,
-        paddingBottom: 20,
+        marginTop: verticalScale(24),
+        paddingBottom: verticalScale(20),
         alignItems: 'center',
     },
     loginLinkText: {
-        fontSize: 16,
+        fontSize: isTablet ? 20 : 16,
         color: ColorsTheme.white,
-        fontFamily: 'PixelifySans-Bold',
+        fontFamily: 'PixelifySans-Regular',
         ...textShadow
     },
 })

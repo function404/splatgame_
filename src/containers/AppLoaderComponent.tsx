@@ -7,6 +7,7 @@ import { Asset } from 'expo-asset'
 import { IAppLoaderProps } from '@/src/containers/AppLoaderComponent.types'
 
 import { ColorsTheme } from '@/src/theme/colors'
+import { horizontalScale, isTablet, verticalScale } from '@/src/theme/scaling'
 
 type LoadingStage = 'companySplash' | 'assetLoading' | 'ready'
 
@@ -32,8 +33,8 @@ export const AppLoader: React.FC<IAppLoaderProps> = ({ children }) => {
       require('@/assets/images/fase5-menu.png'),
       require('@/assets/images/fase5.png'),
       require('@/assets/images/homeBackground.png'),
+      require('@/assets/images/iconSplatgame.png'),
       require('@/assets/images/nuvem-header.png'),
-      require('@/assets/images/senac-icon.png'),
       companyLogo,
    ]
 
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
    },
    container: {
       position: 'absolute',
-      bottom: 0,
+      bottom: verticalScale(0),
       width: '100%',
       justifyContent: 'center',
       alignItems: 'center',
@@ -202,7 +203,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
    },
    textLoading: {
-      fontSize: 24,
+      fontSize: isTablet ? 28 : 24,
       color: ColorsTheme.white,
       fontWeight: '600',
       fontFamily: 'PixelifySans-Bold',

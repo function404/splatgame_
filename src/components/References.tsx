@@ -1,5 +1,6 @@
 import React from 'react'
 import { Text, StyleSheet } from 'react-native'
+import { horizontalScale, isTablet, verticalScale } from '@/src/theme/scaling'
 
 interface IReferencesProps {
    color?: string
@@ -28,10 +29,10 @@ export const References: React.FC<IReferencesProps> = ({
 const styles = StyleSheet.create({
    containerText: {
       position: 'absolute',
-      bottom: 6,
-      left: 0,
-      right: 0,
-      fontSize: 10,
+      bottom: verticalScale(6),
+      left: horizontalScale(0),
+      right: horizontalScale(0),
+      fontSize: isTablet ? 14 : 10,
       fontFamily: 'PixelifySans-Regular',
       textAlign: 'center',
    }

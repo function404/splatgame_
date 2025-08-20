@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "608670444190",
+    "project_id": "splatgame-bf878",
+    "storage_bucket": "splatgame-bf878.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:608670444190:android:4093926ce5ba3850c8298f",
+        "android_client_info": {
+          "package_name": "com.zfunction404.splatgame_"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBScj1FVYzjmJB-rIGG9sPHXIF1UoHgT2g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

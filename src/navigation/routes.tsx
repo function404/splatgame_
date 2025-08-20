@@ -10,12 +10,21 @@ import LeaderboardScreen from '@/src/screens/LeaderboardScreen'
 
 export const ROUTES: IRoute[] = [
    {
+      name: 'Home',
+      component: HomeScreen,
+      isPrivate: true,
+      options: {
+         title: 'Início',
+         ...TransitionPresets.FadeFromRightAndroid,
+      },
+   },
+   {
       name: 'Login',
       component: LoginScreen,
       isPrivate: false,
       options: {
          title: 'Login',
-         ...TransitionPresets.FadeFromBottomAndroid,
+         ...TransitionPresets.FadeFromRightAndroid,
       },
    },
    {
@@ -24,16 +33,7 @@ export const ROUTES: IRoute[] = [
       isPrivate: false,
       options: {
          title: 'Registro',
-         ...TransitionPresets.FadeFromBottomAndroid,
-      },
-   },
-   {
-      name: 'Home',
-      component: HomeScreen,
-      isPrivate: true,
-      options: {
-         title: 'Início',
-         ...TransitionPresets.FadeFromBottomAndroid,
+         ...TransitionPresets.FadeFromRightAndroid,
       },
    },
    {
@@ -51,6 +51,7 @@ export const ROUTES: IRoute[] = [
       isPrivate: true,
       options: {
          title: 'Classificação',
+         ...TransitionPresets.FadeFromRightAndroid,
       },
    },
 ]

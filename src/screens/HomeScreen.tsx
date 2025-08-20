@@ -12,6 +12,7 @@ import { References } from '@/src/components/References'
 import { TNavigationProp } from '@/src/navigation/types'
 import { User } from '@/src/types/game'
 import { ColorsTheme } from '@/src/theme/colors'
+import { horizontalScale, isTablet, verticalScale } from '@/src/theme/scaling'
 import { AppVersion } from '@/src/utils/AppVersion'
 
 export default function HomeScreen() {
@@ -99,7 +100,7 @@ export default function HomeScreen() {
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Configurações</Text>
             <TouchableOpacity onPress={() => setSettingsModalVisible(false)}>
-              <X size={24} color={ColorsTheme.blue500} />
+              <X size={isTablet ? 32 : 24} color={ColorsTheme.blue500} />
             </TouchableOpacity>
           </View>
 
@@ -145,7 +146,7 @@ export default function HomeScreen() {
 
       <ImageBackground
         source={require('@/assets/images/homeBackground.png')}
-        resizeMode='cover'
+        resizeMode='stretch'
         style={{ flex: 1 }}
       >
         <View style={styles.header}>
@@ -203,11 +204,11 @@ const textShadow = {
 const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
-    marginBottom: 20,
-    marginTop: 10,
+    marginBottom: verticalScale(20),
+    marginTop: verticalScale(10),
   },
   title: {
-    fontSize: 58,
+    fontSize: isTablet ? 72 : 58,
     fontFamily: 'PixelifySans-Bold',
     color: ColorsTheme.blue200,
     ...textShadow
@@ -216,11 +217,11 @@ const styles = StyleSheet.create({
     color: ColorsTheme.orange100,
   },
   subtitle: {
-    textAlign: 'center',
-    fontSize: 24,
+    fontSize: isTablet ? 32 : 24,
     color: ColorsTheme.orange100,
     fontFamily: 'PixelifySans-Bold',
-    paddingHorizontal: 16,
+    textAlign: 'center',
+    paddingHorizontal: horizontalScale(16),
     ...textShadow
   },
   subtitleUser: {
@@ -229,16 +230,16 @@ const styles = StyleSheet.create({
   statsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginVertical: 40,
+    marginVertical: verticalScale(40),
   },
   statLabel: {
-    fontSize: 14,
+    fontSize: isTablet ? 18 : 14,
     color: ColorsTheme.grey300,
-    marginBottom: 4,
+    marginBottom: verticalScale(4),
     fontFamily: 'PixelifySans-Medium',
   },
   statValue: {
-    fontSize: 24,
+    fontSize: isTablet ? 28 : 24,
     color: ColorsTheme.blue500,
     fontFamily: 'PixelifySans-Regular',
   },
@@ -252,8 +253,8 @@ const styles = StyleSheet.create({
     gap: 40,
   },
   buttonSide: {
-    width: 70,
-    height: 70,
+    width: isTablet ? 80 : 70,
+    height: isTablet ? 80 : 70,
     borderRadius: 25,
     backgroundColor: ColorsTheme.blue200,
     justifyContent: 'center',
@@ -261,8 +262,8 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   buttonCenter: {
-    width: 110,
-    height: 110,
+    width: isTablet ? 120 : 110,
+    height: isTablet ? 120 : 110,
     borderRadius: 40,
     backgroundColor: ColorsTheme.orange100,
     justifyContent: 'center',
@@ -272,7 +273,7 @@ const styles = StyleSheet.create({
   playButtonText: {
     textAlign: 'center',
     color: ColorsTheme.white,
-    fontSize: 16,
+    fontSize: isTablet ? 20 : 16,
     fontFamily: 'PixelifySans-Medium',
   },
   modalOverlay: {
@@ -285,7 +286,7 @@ const styles = StyleSheet.create({
     width: '85%',
     backgroundColor: ColorsTheme.orange50,
     borderRadius: 20,
-    padding: 20,
+    padding: verticalScale(20),
     alignItems: 'center',
     shadowColor: ColorsTheme.black,
     shadowOffset: {
@@ -301,10 +302,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: verticalScale(20),
   },
   modalTitle: {
-    fontSize: 22,
+    fontSize: isTablet ? 26 : 22,
     fontFamily: 'PixelifySans-Bold',
     color: ColorsTheme.blue500,
   },
@@ -314,20 +315,20 @@ const styles = StyleSheet.create({
   userInfoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: verticalScale(12),
     backgroundColor: ColorsTheme.blue100,
-    padding: 10,
+    padding: verticalScale(10),
     borderRadius: 8,
   },
   userInfoText: {
-    fontSize: 16,
+    fontSize: isTablet ? 20 : 16,
     fontFamily: 'PixelifySans-Medium',
     color: ColorsTheme.blue500,
-    marginLeft: 10,
+    marginLeft: horizontalScale(10),
   },
   statBoxModal: {
     backgroundColor: ColorsTheme.blue100,
-    padding: 15,
+    padding: verticalScale(15),
     borderRadius: 12,
     alignItems: 'center',
   },
@@ -335,16 +336,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 14,
+    paddingVertical: verticalScale(14),
     borderRadius: 12,
     gap: 10,
     backgroundColor: ColorsTheme.red100,
     borderWidth: 2,
     borderColor: ColorsTheme.red200,
-    marginTop: 12,
+    marginTop: verticalScale(12),
   },
   logoutButtonText: {
-    fontSize: 16,
+    fontSize: isTablet ? 20 : 16,
     fontFamily: 'PixelifySans-Bold',
     color: ColorsTheme.red300,
   },
