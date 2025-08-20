@@ -29,8 +29,8 @@ export const STAGES: StageConfig[] = [
       scoreThreshold: 0,
       backgroundImage: require('@/assets/images/fase1.png'),
       backgroundStageImage: require('@/assets/images/fase1-menu.png'),
-      speedModifier: 1.7,
-      spawnRateModifier: 1.10,
+      speedModifier: 1.8,
+      spawnRateModifier: 1.15,
       objects: {
          normal: [
             { svg: 'bolo.svg', points: 40, type: 'normal' },
@@ -49,8 +49,8 @@ export const STAGES: StageConfig[] = [
       scoreThreshold: 800,
       backgroundImage: require('@/assets/images/fase2.png'),
       backgroundStageImage: require('@/assets/images/fase2-menu.png'),
-      speedModifier: 1.7,
-      spawnRateModifier: 1.11,
+      speedModifier: 2.2,
+      spawnRateModifier: 1.2,
       objects: {
          normal: [
             { svg: 'ampulheta.svg', points: 50, type: 'normal' },
@@ -69,8 +69,8 @@ export const STAGES: StageConfig[] = [
       scoreThreshold: 1200,
       backgroundImage: require('@/assets/images/fase3.png'),
       backgroundStageImage:require('@/assets/images/fase3-menu.png'),
-      speedModifier: 1.7,
-      spawnRateModifier: 1.13,
+      speedModifier: 2.8,
+      spawnRateModifier: 1.3,
       objects: {
          normal: [
             { svg: 'agulha.svg', points: 60, type: 'normal' },
@@ -89,8 +89,8 @@ export const STAGES: StageConfig[] = [
       scoreThreshold: 1800,
       backgroundImage: require('@/assets/images/fase4.png'),
       backgroundStageImage:require('@/assets/images/fase4-menu.png'),
-      speedModifier: 1.7,
-      spawnRateModifier: 1.14,
+      speedModifier: 3.5,
+      spawnRateModifier: 1.4,
       objects: {
          normal: [
             { svg: 'c.svg', points: 70, type: 'normal' },
@@ -110,8 +110,8 @@ export const STAGES: StageConfig[] = [
       completionScore: 3600,
       backgroundImage: require('@/assets/images/fase5.png'),
       backgroundStageImage:require('@/assets/images/fase5-menu.png'),
-      speedModifier: 1.7,
-      spawnRateModifier: 1.15,
+      speedModifier: 4.1,
+      spawnRateModifier: 1.5,
       objects: {
          normal: [
             { svg: 'holograma.svg', points: 80, type: 'normal' },

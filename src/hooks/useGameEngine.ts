@@ -189,7 +189,7 @@ export const useGameEngine = () => {
             
             const spawnInterval = Math.max(
                 baseInterval / stageConfig.spawnRateModifier,
-                150,
+                200,
             )
 
             spawnTimerRef.current = setInterval(spawnObject, spawnInterval)
