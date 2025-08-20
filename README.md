@@ -1,6 +1,6 @@
 # 💥 Splat - Jogo Mobile
 
-![Versão do Jogo](https://img.shields.io/badge/version-1.8.22-blue.svg)
+![Versão do Jogo](https://img.shields.io/badge/version-1.8.25-blue.svg)
 ![Licença](https://img.shields.io/badge/license-MIT-green.svg)
 ![React Native](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 
