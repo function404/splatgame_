@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useEffect } from 'react'
 import { Dimensions } from 'react-native'
 import { GameObject, GameState } from '@/src/types/game'
 import { STAGES, StageObject } from '@/src/config/stages'
+import { prizePool, IPrize } from '@/src/config/prizes'
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window')
 const GAME_AREA_HEIGHT = SCREEN_HEIGHT * 0.9
@@ -18,13 +19,17 @@ const initialGameState: GameState = {
     isGameComplete: false,
     objects: [],
     currentStage: 1,
+    awardedPrize: null,
+    wonPrizes: {},
 }
 
 export const useGameEngine = () => {
-  const [gameState, setGameState] = useState<GameState>(initialGameState)
-  const gameLoopRef = useRef<number | null>(null)
-  const spawnTimerRef = useRef<NodeJS.Timeout | null>(null)
+    const [gameState, setGameState] = useState<GameState>(initialGameState)
+    const [prizeStock, setPrizeStock] = useState<IPrize[]>(prizePool)
 
+    const gameLoopRef = useRef<number | null>(null)
+    const spawnTimerRef = useRef<NodeJS.Timeout | null>(null)
+    
     const generateRandomObject = useCallback((): GameObject => {
         const stageConfig = STAGES.find(s => s.level === gameState.currentStage) || STAGES[0]
         const { normal, golden, bomb } = stageConfig.objects
@@ -96,6 +101,44 @@ export const useGameEngine = () => {
         gameLoopRef.current = requestAnimationFrame(moveObjects)
     }, [])
 
+    const awardPrize = useCallback(() => {
+        const availablePrizes = prizeStock.filter(p => p.stock > 0)
+
+        if (availablePrizes.length === 0) {
+            return null
+        }
+
+        const probabilityList: { prize: IPrize; weight: number }[] = []
+        let cumulativeWeight = 0
+        
+        availablePrizes.forEach(prize => {
+            cumulativeWeight += prize.chance
+            probabilityList.push({ prize, weight: cumulativeWeight })
+        })
+
+        const totalWeight = probabilityList[probabilityList.length - 1].weight
+        
+        const random = Math.random() * totalWeight
+        
+        const chosenEntry = probabilityList.find(entry => random < entry.weight)
+        
+        const chosenPrize = chosenEntry ? chosenEntry.prize : availablePrizes[0]
+
+        if (!chosenPrize) {
+            return null
+        }
+
+        const newPrizeStock = prizeStock.map(prize =>
+            prize.name === chosenPrize.name
+            ? { ...prize, stock: prize.stock - 1 }
+            : prize
+        )
+
+        setPrizeStock(newPrizeStock)
+
+        return chosenPrize.name
+    }, [prizeStock])
+
     const tapObject = useCallback((objectId: string) => {
         setGameState(prev => {
             if (prev.isPaused) return prev
@@ -110,17 +153,28 @@ export const useGameEngine = () => {
             const currentStageConfig =
                 STAGES.find(s => s.level === prev.currentStage) || STAGES[0]
 
+            const updatePrizes = (prize: string | null) => {
+                if (!prize) return prev.wonPrizes
+                return {
+                    ...prev.wonPrizes,
+                    [prize]: (prev.wonPrizes[prize] || 0) + 1,
+                }
+            }
+
             if (
                 currentStageConfig.completionScore &&
                 newScore >= currentStageConfig.completionScore
             ) {
+                const prize = awardPrize()
                 return {
-                ...prev,
-                score: newScore,
-                isPlaying: false,
-                isGameComplete: true,
-                isStageComplete: true,
-                objects: [],
+                    ...prev,
+                    score: newScore,
+                    isPlaying: false,
+                    isGameComplete: true,
+                    isStageComplete: true,
+                    objects: [],
+                    awardedPrize: prize,
+                    wonPrizes: updatePrizes(prize),
                 }
             }
 
@@ -129,12 +183,15 @@ export const useGameEngine = () => {
             )
 
             if (nextStageConfig && newScore >= nextStageConfig.scoreThreshold) {
+                const prize = awardPrize()
                 return {
                     ...prev,
                     score: newScore,
                     isPlaying: false,
                     isStageComplete: true,
                     objects: prev.objects.filter(obj => obj.id !== objectId),
+                    awardedPrize: prize,
+                    wonPrizes: updatePrizes(prize),
                 }
             }
 
@@ -154,7 +211,7 @@ export const useGameEngine = () => {
                 isPlaying: !isGameOver,
             }
         })
-    }, [])
+    }, [awardPrize])
 
     const startGame = useCallback((stageToStart: number = 1) => {
         setGameState(prev => ({
@@ -212,6 +269,7 @@ export const useGameEngine = () => {
 
     return {
         gameState,
+        prizeStock,
         startGame,
         resetGame,
         tapObject,

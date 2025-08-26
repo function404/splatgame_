@@ -18,6 +18,8 @@ export interface GameState {
   isGameComplete: boolean
   objects: GameObject[]
   currentStage: number
+  awardedPrize: string | null
+  wonPrizes: Record<string, number>
 }
 
 export interface User {
