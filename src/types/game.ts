@@ -7,6 +7,12 @@ export interface GameObject {
   svg: string
 }
 
+export interface IPrize {
+   name: string
+   stock: number
+   chance: number 
+}
+
 export interface GameState {
   score: number
   level: number
