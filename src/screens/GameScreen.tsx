@@ -25,6 +25,7 @@ export default function GameScreen() {
   const navigation = useNavigation<TNavigationProp>()
   const {
     gameState,
+    prizeStock,
     startGame,
     resetGame,
     tapObject,
@@ -183,6 +184,17 @@ export default function GameScreen() {
     )
   }
 
+  const renderWonPrizes = () => (
+    <View style={styles.prizesContainer}>
+      <Text style={styles.prizesTitle}>Prêmios Restantes:</Text>
+      {prizeStock.map(({ name, stock }) => (
+        <Text key={name} style={styles.prizeItem}>
+          {`${name}: `}{stock > 0 ? `${stock}x` : 'Esgotado'}
+        </Text>
+      ))}
+    </View>
+  )
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: ColorsTheme.orange50 }}>
       <StatusBar backgroundColor={ColorsTheme.orange50} barStyle="dark-content" />
@@ -222,7 +234,17 @@ export default function GameScreen() {
               <Text style={[styles.modalTitle, { color: ColorsTheme.green350 }]}>Fase Concluída!</Text>
 
               <Text style={styles.finalScore}>Você completou a fase "{currentStageConfig.name}"</Text>
+
+              {gameState.awardedPrize && (
+                <Text style={styles.prizeText}>Você ganhou:
+                  <Text style={{ fontFamily: 'PixelifySans-Bold', fontSize: isTablet ? 26 : 22 }}>
+                    {` ${gameState.awardedPrize}!`}
+                  </Text>
+                </Text>
+              )}
               
+              {renderWonPrizes()}
+
               <Text style={styles.levelReached}>Pontuação: {gameState.score}</Text>
               
               <View style={styles.modalButtons}>
@@ -240,7 +262,17 @@ export default function GameScreen() {
               <Text style={[styles.modalTitle, { color: ColorsTheme.green350 }]}>Parabéns!</Text>
               
               <Text style={styles.finalScore}>Você concluiu todos os desafios!</Text>
+
+              {gameState.awardedPrize && (
+                <Text style={styles.prizeText}>Você ganhou:
+                  <Text style={{ fontFamily: 'PixelifySans-Bold', fontSize: isTablet ? 26 : 22 }}>
+                    {` ${gameState.awardedPrize}!`}
+                  </Text>
+                </Text>
+              )}
               
+              {renderWonPrizes()}
+
               <Text style={styles.levelReached}>Pontuação Final: {gameState.score}</Text>
               
               <View style={styles.modalButtons}>
@@ -321,8 +353,34 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'PixelifySans-Medium',
   },
-  levelReached: {
+  prizeText: {
+    fontSize: isTablet ? 24 : 20,
+    color: ColorsTheme.blue300,
+    fontFamily: 'PixelifySans-Regular',
+    marginBottom: verticalScale(10),
+    textAlign: 'center',
+  },
+  prizesContainer: {
+    alignItems: 'center',
+    marginBottom: verticalScale(10),
+    padding: verticalScale(10),
+    backgroundColor: ColorsTheme.orange60,
+    borderRadius: 8,
+  },
+  prizesTitle: {
+    fontSize: isTablet ? 22 : 18,
+    fontFamily: 'PixelifySans-Medium',
+    color: ColorsTheme.blue300,
+    marginBottom: verticalScale(5),
+  },
+  prizeItem: {
     fontSize: isTablet ? 20 : 16,
+    fontFamily: 'PixelifySans-Regular',
+    color: ColorsTheme.black,
+    textTransform: 'capitalize',
+  },
+  levelReached: {
+    fontSize: isTablet ? 22 : 18,
     color: ColorsTheme.grey300,
     marginBottom: verticalScale(16),
     fontFamily: 'PixelifySans-Regular',

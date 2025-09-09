@@ -7,6 +7,12 @@ export interface GameObject {
   svg: string
 }
 
+export interface IPrize {
+   name: string
+   stock: number
+   chance: number 
+}
+
 export interface GameState {
   score: number
   level: number
@@ -18,6 +24,8 @@ export interface GameState {
   isGameComplete: boolean
   objects: GameObject[]
   currentStage: number
+  awardedPrize: string | null
+  wonPrizes: Record<string, number>
 }
 
 export interface User {
