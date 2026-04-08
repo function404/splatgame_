@@ -184,14 +184,46 @@ export default function GameScreen() {
     )
   }
 
+  // const renderWonPrizes = () => (
+  //   <View style={styles.prizesContainer}>
+  //     <Text style={styles.prizesTitle}>Prêmios Restantes:</Text>
+  //     {prizeStock.map(({ name, stock }) => (
+  //       <Text key={name} style={styles.prizeItem}>
+  //         {`${name}: `}{stock > 0 ? `${stock}x` : 'Esgotado'}
+  //       </Text>
+  //     ))}
+  //   </View>
+  // )
+
   const renderWonPrizes = () => (
     <View style={styles.prizesContainer}>
-      <Text style={styles.prizesTitle}>Prêmios Restantes:</Text>
-      {prizeStock.map(({ name, stock }) => (
-        <Text key={name} style={styles.prizeItem}>
-          {`${name}: `}{stock > 0 ? `${stock}x` : 'Esgotado'}
-        </Text>
-      ))}
+      <Text style={styles.prizesTitle}>Estoque de Prêmios:</Text>
+      
+      <View style={styles.prizesList}>
+        {prizeStock.map(({ name, stock }) => {
+          const isOutOfStock = stock <= 0;
+          
+          return (
+            <View 
+              key={name} 
+              style={[
+                styles.prizeBadge, 
+                isOutOfStock && styles.prizeBadgeEmpty
+              ]}
+            >
+              <Text style={[styles.prizeName, isOutOfStock && styles.prizeTextEmpty]}>
+                {name}
+              </Text>
+              
+              <View style={[styles.prizeStockContainer, isOutOfStock && styles.prizeStockContainerEmpty]}>
+                <Text style={[styles.prizeStockText, isOutOfStock && styles.prizeTextEmpty]}>
+                  {isOutOfStock ? 'Esgotado' : `${stock} un`}
+                </Text>
+              </View>
+            </View>
+          );
+        })}
+      </View>
     </View>
   )
 
@@ -361,23 +393,66 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   prizesContainer: {
+    width: '100%',
     alignItems: 'center',
-    marginBottom: verticalScale(10),
-    padding: verticalScale(10),
-    backgroundColor: ColorsTheme.orange60,
-    borderRadius: 8,
+    marginVertical: verticalScale(12),
+    padding: verticalScale(16),
+    backgroundColor: ColorsTheme.orange40,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: ColorsTheme.orange100,
   },
   prizesTitle: {
     fontSize: isTablet ? 22 : 18,
-    fontFamily: 'PixelifySans-Medium',
-    color: ColorsTheme.blue300,
-    marginBottom: verticalScale(5),
+    fontFamily: 'PixelifySans-Bold',
+    color: ColorsTheme.blue500,
+    marginBottom: verticalScale(12),
   },
-  prizeItem: {
-    fontSize: isTablet ? 20 : 16,
-    fontFamily: 'PixelifySans-Regular',
-    color: ColorsTheme.black,
+  prizesList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  prizeBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: ColorsTheme.orange50,
+    borderWidth: 2,
+    borderColor: ColorsTheme.blue300,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  prizeBadgeEmpty: {
+    borderColor: ColorsTheme.grey300,
+    backgroundColor: ColorsTheme.orange50,
+  },
+  prizeName: {
+    paddingHorizontal: horizontalScale(8),
+    paddingVertical: verticalScale(4),
+    fontSize: isTablet ? 18 : 14,
+    fontFamily: 'PixelifySans-Medium',
+    color: ColorsTheme.blue500,
     textTransform: 'capitalize',
+  },
+  prizeStockContainer: {
+    backgroundColor: ColorsTheme.blue300,
+    paddingHorizontal: horizontalScale(8),
+    paddingVertical: verticalScale(4),
+    borderLeftWidth: 2,
+    borderLeftColor: ColorsTheme.blue300,
+  },
+  prizeStockContainerEmpty: {
+    backgroundColor: ColorsTheme.grey300,
+    borderLeftColor: ColorsTheme.grey300,
+  },
+  prizeStockText: {
+    fontSize: isTablet ? 18 : 14,
+    fontFamily: 'PixelifySans-Bold',
+    color: ColorsTheme.orange50,
+  },
+  prizeTextEmpty: {
+    color: ColorsTheme.orange50,
   },
   levelReached: {
     fontSize: isTablet ? 22 : 18,
